@@ -19,9 +19,7 @@ class TestE2E(unittest.TestCase):
               
               tableau_internal_ami_id = "foo"
               tableau_internal_instance_type = "foo"
-              
-              from_port = "foo"
-              to_port = "foo"
+  
               protocol = "foo"
               security_cidr = "foo" 
               
