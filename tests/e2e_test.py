@@ -23,7 +23,11 @@ class TestE2E(unittest.TestCase):
               from_port = "foo"
               to_port = "foo"
               protocol = "foo"
-              cidr_blocks = "foo"      
+              security_cidr = "foo" 
+              
+              vpc_id = "foo"
+              subnet_cidr = "foo"
+                  
               
             } 
             
@@ -38,7 +42,6 @@ class TestE2E(unittest.TestCase):
     def test_instance_type(self):
         self.assertEqual(self.result["root_modules"]["aws_instance.internal_tableau"]["instance_type"], "foo")
 
-
     # Security group
     def test_security_group_from_port(self):
         self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau"]["from_port"], "foo")
@@ -51,6 +54,13 @@ class TestE2E(unittest.TestCase):
 
     def test_security_group_cidr_blocks(self):
         self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau"]["cidr_blocks"], "foo")
+
+    # Subnet
+    def test_subnet_vpc(self):
+        self.assertEqual(self.result["root_modules"]["aws_subnet.internal_tableau"]["vpc_id"], "foo")
+
+    def test_subnet_cidr(self):
+        self.assertEqual(self.result["root_modules"]["aws_subnet.internal_tableau"]["cidr_block"], "foo")
 
 
 if __name__ == '__main__':

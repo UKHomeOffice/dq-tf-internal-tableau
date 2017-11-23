@@ -5,7 +5,10 @@ variable "tableau_user_data" {}
 variable "from_port" {}
 variable "to_port" {}
 variable "protocol" {}
-variable "cidr_blocks" {}
+variable "security_cidr" {}
+
+variable "vpc_id" {}
+variable "subnet_cidr" {}
 
 resource "aws_instance" "internal_tableau" {
   ami           = "${var.tableau_ami_id}"
@@ -29,6 +32,15 @@ resource "aws_security_group" "internal_tableau" {
     from_port = "${var.from_port}"
     to_port = "${var.to_port}"
     protocol = "${var.protocol}"
-    cidr_blocks = "${var.cidr_blocks}"
+    cidr_blocks = "${var.security_cidr}"
+  }
+}
+
+resource "aws_subnet" "internal_tableau" {
+  vpc_id     = "${var.vpc_id}"
+  cidr_block = "${var.subnet_cidr}"
+
+  tags {
+    Name = "internal_tableau"
   }
 }
