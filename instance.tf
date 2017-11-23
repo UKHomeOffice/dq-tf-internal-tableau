@@ -1,3 +1,7 @@
+variable "access_key" {}
+variable "secret_key" {}
+variable "region" {}
+
 variable "tableau_ami_id" {}
 variable "tableau_instance_type" {}
 variable "tableau_user_data" {}
@@ -9,6 +13,12 @@ variable "security_cidr" {}
 
 variable "vpc_id" {}
 variable "subnet_cidr" {}
+
+provider "aws" {
+  access_key = "${var.access_key}"
+  secret_key = "${var.secret_key}"
+  region = "${var.region}"
+}
 
 resource "aws_instance" "internal_tableau" {
   ami           = "${var.tableau_ami_id}"
