@@ -19,16 +19,38 @@ class TestE2E(unittest.TestCase):
               
               tableau_internal_ami_id = "foo"
               tableau_internal_instance_type = "foo"
-            }
+              
+              from_port = "foo"
+              to_port = "foo"
+              protocol = "foo"
+              cidr_blocks = "foo"      
+              
+            } 
             
         """
         self.result = Runner(self.snippet).result
 
+
+    # Instance
     def test_instance_ami(self):
         self.assertEqual(self.result["root_modules"]["aws_instance.internal_tableau"]["ami"], "foo")
 
     def test_instance_type(self):
-        self.assertEqual(self.result["root_modules"]["aws_instance.Internal_Tableau"]["instance_type"], "foo")
+        self.assertEqual(self.result["root_modules"]["aws_instance.internal_tableau"]["instance_type"], "foo")
+
+
+    # Security group
+    def test_security_group_from_port(self):
+        self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau"]["from_port"], "foo")
+
+    def test_security_group_to_port(self):
+        self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau"]["to_port"], "foo")
+
+    def test_security_group_protocol(self):
+        self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau"]["protocol"], "foo")
+
+    def test_security_group_cidr_blocks(self):
+        self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau"]["cidr_blocks"], "foo")
 
 
 if __name__ == '__main__':
