@@ -42,10 +42,10 @@ class TestE2E(unittest.TestCase):
 
     # Security group
     def test_security_group_from_port(self):
-        self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau"]["from_port"], "foo")
+        self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau"]["from_port"], "443")
 
     def test_security_group_to_port(self):
-        self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau"]["to_port"], "foo")
+        self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau"]["to_port"], "443")
 
     def test_security_group_protocol(self):
         self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau"]["protocol"], "foo")
