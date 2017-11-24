@@ -19,12 +19,10 @@ class TestE2E(unittest.TestCase):
               
               tableau_internal_ami_id = "foo"
               tableau_internal_instance_type = "foo"
+              subnet_id = "${aws_subnet.OPSSubnet.id}"
   
               protocol = "foo"
               security_cidr = "foo" 
-              
-              vpc_id = "foo"
-              subnet_cidr = "foo"
                   
               
             } 
