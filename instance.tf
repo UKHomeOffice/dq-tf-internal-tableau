@@ -1,16 +1,16 @@
 variable "tableau_ami_id" {}
 variable "tableau_instance_type" {}
 variable "tableau_user_data" {}
+variable "subnet_id" {}
 
 variable "protocol" {}
 variable "security_cidr" {}
 
-variable "vpc_id" {}
-variable "subnet_cidr" {}
 
 resource "aws_instance" "internal_tableau" {
   ami           = "${var.tableau_ami_id}"
   instance_type = "${var.tableau_instance_type}"
+  subnet_id = "${var.subnet_id}"
 
   user_data = <<-EOF
               #!/bin/bash
@@ -34,12 +34,4 @@ resource "aws_security_group" "internal_tableau" {
   }
 }
 
-resource "aws_subnet" "internal_tableau" {
-  vpc_id     = "${var.vpc_id}"
-  cidr_block = "${var.subnet_cidr}"
-  
-  tags {
-    Name = "internal_tableau"
-  }
-}
 
