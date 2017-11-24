@@ -27,8 +27,8 @@ resource "aws_security_group" "internal_tableau" {
   name = "internal_tableau"
 
   ingress {
-    from_port =
-    to_port =
+    from_port = 443
+    to_port = 443
     protocol = "${var.protocol}"
     cidr_blocks = "${var.security_cidr}"
   }
