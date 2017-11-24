@@ -37,10 +37,9 @@ resource "aws_security_group" "internal_tableau" {
 resource "aws_subnet" "internal_tableau" {
   vpc_id     = "${var.vpc_id}"
   cidr_block = "${var.subnet_cidr}"
-
-
-
+  
   tags {
     Name = "internal_tableau"
   }
 }
+
