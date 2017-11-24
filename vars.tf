@@ -1,4 +1,4 @@
-variable "access_key" {}
-variable "secret_key" {}
+variable "TF_VAR_aws_access_key" {}
+variable "TF_VAR_aws_access_key" {}
 variable "region" {}
 
