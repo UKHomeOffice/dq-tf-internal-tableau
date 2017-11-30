@@ -1,5 +1,6 @@
 # pylint: disable=missing-docstring, line-too-long, protected-access
 import unittest
+import hashlib
 from runner import Runner
 
 
@@ -16,15 +17,16 @@ class TestE2E(unittest.TestCase):
             
             module "root_modules" {
               source = "./mymodule"
+              providers = {aws = "aws"}
               
-              tableau_internal_ami_id = "foo"
-              tableau_internal_instance_type = "foo"
-              subnet_id = "${aws_subnet.OPSSubnet.id}"
-  
-              protocol = "foo"
-              security_cidr = "foo" 
-                  
-              
+              greenplum_ip                 = "foo"
+              ops_ingress_cidr             = "0.0.0.0/0"
+              acp_ingress_cidr             = "0.0.0.0/0"
+              service                      = "dq-dashboard-int"
+              environment                  = "prprd"
+              environment_group            = "prprd"
+              apps_vpc_id                  = "module.apps.appsvpc_id"
+              apps_cidr                    = "10.1.0.0/16"  
             } 
             
         """
@@ -33,31 +35,54 @@ class TestE2E(unittest.TestCase):
 
     # Instance
     def test_instance_ami(self):
-        self.assertEqual(self.result["root_modules"]["aws_instance.internal_tableau"]["ami"], "foo")
+        self.assertEqual(self.result["root_modules"]["aws_instance.instance"]["ami"], "foo")
 
     def test_instance_type(self):
-        self.assertEqual(self.result["root_modules"]["aws_instance.internal_tableau"]["instance_type"], "foo")
+        self.assertEqual(self.result["root_modules"]["aws_instance.instance"]["instance_type"], "t2.nano")
 
-    # Security group
-    def test_security_group_from_port(self):
-        self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau"]["from_port"], "443")
+    @unittest.skip  # @TODO
+    def test_instance_user_data(self):
+        greenplum_listen = hashlib.sha224("LISTEN_HTTP=0.0.0.0:443 CHECK_GP=foo:5432").sha1()
+        self.assertEqual(self.result["root_modules"]["aws_instance.instance"]["user_data"], greenplum_listen)
 
-    def test_security_group_to_port(self):
-        self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau"]["to_port"], "443")
+    def test_instance_tags_name(self):
+        self.assertEqual(self.result["root_modules"]["aws_instance.instance"]["tags.Name"], "instance-tableau-internal-{1}-dq-dashboard-int-prprd")
 
-    def test_security_group_protocol(self):
-        self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau"]["protocol"], "foo")
+    def test_instance_tags_service(self):
+        self.assertEqual(self.result["root_modules"]["aws_instance.instance"]["tags.Service"], "dq-dashboard-int")
 
-    def test_security_group_cidr_blocks(self):
-        self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau"]["cidr_blocks"], "foo")
+    def test_instance_tags_environment(self):
+            self.assertEqual(self.result["root_modules"]["aws_instance.instance"]["tags.Environment"], "prprd")
+
+    def test_instance_tags_environmentzone(self):
+        self.assertEqual(self.result["root_modules"]["aws_instance.instance"]["tags.EnvironmentGroup"], "prprd")
 
     # Subnet
     def test_subnet_vpc(self):
-        self.assertEqual(self.result["root_modules"]["aws_subnet.internal_tableau"]["vpc_id"], "foo")
+        self.assertEqual(self.result["root_modules"]["aws_subnet.subnet"]["vpc_id"], "module.apps.appsvpc_id")
 
     def test_subnet_cidr(self):
-        self.assertEqual(self.result["root_modules"]["aws_subnet.internal_tableau"]["cidr_block"], "foo")
+        self.assertEqual(self.result["root_modules"]["aws_subnet.subnet"]["cidr_block"], "10.1.0.0/16")
 
+    # Security group
+    @unittest.skip
+    def test_security_group_ingress(self):
+        self.assertTrue(Runner.finder(self.result["root_modules"]["aws_security_group.sgrp"], ingress, {
+            'from_port': '443',
+            'to_port': '443',
+            'from_port': '3389',
+            'to_port': '3389',
+            'Protocol': 'tcp',
+            'Cidr_blocks': '0.0.0.0/0'
+        }))
+    @unittest.skip
+    def test_security_group_egress(self):
+        self.assertTrue(Runner.finder(self.result["root_modules"]["aws_security_group.sgrp"], egress, {
+            'from_port': '0',
+            'to_port': '0',
+            'Protocol': '-1',
+            'Cidr_blocks': '0.0.0.0/0'
+        }))
 
 if __name__ == '__main__':
     unittest.main()
