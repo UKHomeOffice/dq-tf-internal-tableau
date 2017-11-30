@@ -1,14 +1,22 @@
-# DQ Terraform Module
+# dq-tf-internal-tableau
 
-Deploying an ami to an instance, setting up a security group that allows http traffic. Listening on ports 5432 and 443.
+This Terraform module has one subnet and deploys an EC2 instance representing a web server with postgress to a greenplum database. Allowing inbound HTTPS TCP traffic on port 443, and inbound RDP TCP traffic on port 3389 .
 
-Requires the env vars `TF_VAR_aws_access_key` and `TF_VAR_aws_secret_key` to be set.
+
+## Connectivity
+
+| In/Out        | Type           | Protocol | FromPort| To Port | TLS |
+| ------------- |:-------------:| -----:| -----:|-----:| -----:|
+|INBOUND | RDP | TCP |3389 | 3389| TLS to Internal Tableau ELB |
+|INBOUND | HTTPS | TCP | 443 | 443 | TLS to Internal Tableau ELB |
+|INBOUND | HTTPS | TCP | 443 | 443 | TLS to Internal Tableau ELB |
+
 
 ## Usage
 
-To run tests with the [tf testrunner](https://github.com/UKHomeOffice/tf-testrunner) framework:
+To run tests using the [tf testsuite](https://github.com/UKHomeOffice/dq-tf-testsuite):
 ```shell
-drone5 exec --repo.trusted
+drone exec --repo.trusted
 ```
 To launch:
 ```shell
