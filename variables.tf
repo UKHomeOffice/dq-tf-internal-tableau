@@ -1,3 +1,38 @@
+variable "instance_type" {
+  default     = "t2.nano"
+  description = "EC2 Instance type"
+}
+
+variable "https_from_port" {
+  default     = 443
+  description = "From port for HTTPS traffic"
+}
+
+variable "https_to_port" {
+  default     = 443
+  description = "To port for HTTPS traffic"
+}
+
+variable "https_protocol" {
+  default     = "tcp"
+  description = "Protocol for HTTPS traffic"
+}
+
+variable "RDP_from_port" {
+  default     = 3389
+  description = "From port for RDP traffic"
+}
+
+variable "RDP_to_port" {
+  default     = 3389
+  description = "To port for RDP traffic"
+}
+
+variable "RDP_protocol" {
+  default     = "tcp"
+  description = "Protocol for RDP traffic"
+}
+
 variable "greenplum_ip" {
   default     = false
   description = "IP address for Greenplum"

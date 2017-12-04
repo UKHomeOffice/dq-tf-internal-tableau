@@ -9,7 +9,6 @@ This Terraform module has one subnet and deploys an EC2 instance representing a 
 | ------------- |:-------------:| -----:| -----:|-----:| -----:|
 |INBOUND | RDP | TCP |3389 | 3389| TLS to Internal Tableau ELB |
 |INBOUND | HTTPS | TCP | 443 | 443 | TLS to Internal Tableau ELB |
-|INBOUND | HTTPS | TCP | 443 | 443 | TLS to Internal Tableau ELB |
 
 
 ## Usage
