@@ -42,6 +42,8 @@ resource "aws_subnet" "subnet" {
 }
 
 resource "aws_security_group" "sgrp" {
+  vpc_id = "${var.apps_vpc_id}"
+
   ingress {
     from_port = "${var.https_from_port}"
     to_port   = "${var.https_to_port}"
