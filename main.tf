@@ -31,7 +31,7 @@ resource "aws_instance" "instance" {
 
 resource "aws_subnet" "subnet" {
   vpc_id     = "${var.apps_vpc_id}"
-  cidr_block = "${var.apps_cidr}"
+  cidr_block = "${var.dq_apps_cidr}"
 
   tags {
     Name             = "sn-tableau-internal-${var.service}-${var.environment}-{az}"
@@ -47,8 +47,8 @@ resource "aws_security_group" "sgrp" {
     to_port   = 443
     protocol  = "tcp"
 
-    cidr_blocks = ["${var.ops_ingress_cidr}",
-      "${var.acp_ingress_cidr}",
+    cidr_blocks = ["${var.dq_ops_ingress_cidr}",
+      "${var.acp_prod_ingress_cidr}",
     ]
   }
 
@@ -56,7 +56,7 @@ resource "aws_security_group" "sgrp" {
     from_port   = 3389
     to_port     = 3889
     protocol    = "tcp"
-    cidr_blocks = ["${var.ops_ingress_cidr}"]
+    cidr_blocks = ["${var.dq_ops_ingress_cidr}"]
   }
 
   egress {

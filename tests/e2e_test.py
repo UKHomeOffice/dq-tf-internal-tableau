@@ -20,13 +20,7 @@ class TestE2E(unittest.TestCase):
               providers = {aws = "aws"}
               
               greenplum_ip                 = "foo"
-              ops_ingress_cidr             = "0.0.0.0/0"
-              acp_ingress_cidr             = "0.0.0.0/0"
-              service                      = "dq-dashboard-int"
-              environment                  = "prprd"
-              environment_group            = "prprd"
-              apps_vpc_id                  = "module.apps.appsvpc_id"
-              apps_cidr                    = "10.1.0.0/16"  
+              apps_vpc_id                  = "${module.apps.appsvpc_id}"
             } 
             
         """
