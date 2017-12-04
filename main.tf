@@ -15,7 +15,7 @@ data "aws_ami" "linux_connectivity_tester" {
 }
 
 resource "aws_instance" "instance" {
-  instance_type          = "t2.nano"
+  instance_type          = "${var.instance_type}"
   ami                    = "${data.aws_ami.linux_connectivity_tester.id}"
   subnet_id              = "${aws_subnet.subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.sgrp.id}"]
@@ -43,9 +43,9 @@ resource "aws_subnet" "subnet" {
 
 resource "aws_security_group" "sgrp" {
   ingress {
-    from_port = 443
-    to_port   = 443
-    protocol  = "tcp"
+    from_port = "${var.https_from_port}"
+    to_port   = "${var.https_to_port}"
+    protocol  = "${var.https_protocol}"
 
     cidr_blocks = ["${var.dq_ops_ingress_cidr}",
       "${var.acp_prod_ingress_cidr}",
@@ -53,9 +53,9 @@ resource "aws_security_group" "sgrp" {
   }
 
   ingress {
-    from_port   = 3389
-    to_port     = 3889
-    protocol    = "tcp"
+    from_port   = "${var.RDP_from_port}"
+    to_port     = "${var.RDP_to_port}"
+    protocol    = "${var.RDP_protocol}"
     cidr_blocks = ["${var.dq_ops_ingress_cidr}"]
   }
 
