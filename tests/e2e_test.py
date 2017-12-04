@@ -19,6 +19,9 @@ class TestE2E(unittest.TestCase):
               source = "./mymodule"
               providers = {aws = "aws"}
               
+              acp_prod_ingress_cidr        = "10.5.0.0/16"
+              dq_ops_ingress_cidr          = "10.2.0.0/16"
+              dq_apps_cidr                 = "10.1.0.0/16"
               greenplum_ip                 = "foo"
               apps_vpc_id                  = "${module.apps.appsvpc_id}"
             } 
