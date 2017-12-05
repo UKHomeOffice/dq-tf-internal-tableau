@@ -48,8 +48,8 @@ variable "dq_ops_ingress_cidr" {
   description = "DQ Ops CIDR as per IP Addresses and CIDR blocks document"
 }
 
-variable "dq_apps_cidr" {
-  default     = "10.1.0.0/16"
+variable "dq_internal_dashboard_subnet_cidr" {
+  default     = "10.1.12.0/24"
   description = "DQ Apps CIDR as per IP Addresses and CIDR blocks document"
 }
 
