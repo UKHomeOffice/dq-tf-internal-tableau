@@ -31,7 +31,7 @@ resource "aws_instance" "instance" {
 
 resource "aws_subnet" "subnet" {
   vpc_id     = "${var.apps_vpc_id}"
-  cidr_block = "${var.dq_apps_cidr}"
+  cidr_block = "${var.dq_internal_dashboard_subnet_cidr}"
 
   tags {
     Name             = "sn-tableau-internal-${var.service}-${var.environment}-{az}"
