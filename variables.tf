@@ -1,8 +1,3 @@
-variable "instance_type" {
-  default     = "t2.nano"
-  description = "EC2 Instance type"
-}
-
 variable "https_from_port" {
   default     = 443
   description = "From port for HTTPS traffic"
