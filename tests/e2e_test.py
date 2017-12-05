@@ -14,18 +14,18 @@ class TestE2E(unittest.TestCase):
               skip_credentials_validation = true
               skip_get_ec2_platforms = true
             }
-            
+
             module "root_modules" {
               source = "./mymodule"
               providers = {aws = "aws"}
-              
+
               acp_prod_ingress_cidr        = "10.5.0.0/16"
               dq_ops_ingress_cidr          = "10.2.0.0/16"
               dq_internal_dashboard_subnet_cidr                 = "10.1.12.0/24"
               greenplum_ip                 = "foo"
               apps_vpc_id                  = "foo"
-            } 
-            
+            }
+
         """
         self.result = Runner(self.snippet).result
 
@@ -34,25 +34,10 @@ class TestE2E(unittest.TestCase):
     def test_instance_ami(self):
         self.assertEqual(self.result["root_modules"]["aws_instance.instance"]["ami"], "foo")
 
-    def test_instance_type(self):
-        self.assertEqual(self.result["root_modules"]["aws_instance.instance"]["instance_type"], "t2.nano")
-
     @unittest.skip  # @TODO
     def test_instance_user_data(self):
         greenplum_listen = hashlib.sha224("LISTEN_HTTP=0.0.0.0:443 CHECK_GP=foo:5432").sha1()
         self.assertEqual(self.result["root_modules"]["aws_instance.instance"]["user_data"], greenplum_listen)
-
-    def test_instance_tags_name(self):
-        self.assertEqual(self.result["root_modules"]["aws_instance.instance"]["tags.Name"], "instance-tableau-internal-{1}-dq-dashboard-int-preprod")
-
-    def test_instance_tags_service(self):
-        self.assertEqual(self.result["root_modules"]["aws_instance.instance"]["tags.Service"], "dq-dashboard-int")
-
-    def test_instance_tags_environment(self):
-        self.assertEqual(self.result["root_modules"]["aws_instance.instance"]["tags.Environment"], "preprod")
-
-    def test_instance_tags_envgroup(self):
-        self.assertEqual(self.result["root_modules"]["aws_instance.instance"]["tags.EnvironmentGroup"], "dq-apps")
 
     def test_subnet_vpc(self):
         self.assertEqual(self.result["root_modules"]["aws_subnet.subnet"]["vpc_id"], "foo")
