@@ -17,6 +17,11 @@ resource "aws_subnet" "subnet" {
   }
 }
 
+resource "aws_route_table_association" "internal_tableau_rt_association" {
+  subnet_id      = "${aws_subnet.subnet.id}"
+  route_table_id = "${var.route_table_id}"
+}
+
 resource "aws_security_group" "sgrp" {
   vpc_id = "${var.apps_vpc_id}"
 

@@ -67,3 +67,8 @@ variable "apps_vpc_id" {
   default     = false
   description = "Value obtained from Apps module"
 }
+
+variable "route_table_id" {
+  default     = false
+  description = "Value obtained from Apps module"
+}
