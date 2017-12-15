@@ -77,3 +77,8 @@ variable "route_table_id" {
   default     = false
   description = "Value obtained from Apps module"
 }
+
+variable "az" {
+  default     = "eu-west-2a"
+  description = "Default availability zone for the subnet."
+}
