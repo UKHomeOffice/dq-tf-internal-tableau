@@ -25,6 +25,7 @@ class TestE2E(unittest.TestCase):
               peering_cidr_block           = "1.1.1.0/24"
               greenplum_ip                 = "foo"
               apps_vpc_id                  = "foo"
+              naming_suffix                = "apps-preprod-dq"
             }
 
         """
