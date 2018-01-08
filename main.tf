@@ -1,3 +1,7 @@
+locals {
+  naming_suffix = "internal-tableau-${var.naming_suffix}"
+}
+
 module "instance" {
   source          = "github.com/UKHomeOffice/connectivity-tester-tf"
   subnet_id       = "${aws_subnet.subnet.id}"
