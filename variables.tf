@@ -63,21 +63,6 @@ variable "dq_internal_dashboard_instance_ip" {
   default     = "10.1.12.11"
 }
 
-variable "service" {
-  default     = "dq-dashboard-int"
-  description = "As per naming standards in AWS-DQ-Network-Routing 0.4 document"
-}
-
-variable "environment" {
-  default     = "preprod"
-  description = "As per naming standards in AWS-DQ-Network-Routing 0.4 document"
-}
-
-variable "environment_group" {
-  default     = "dq-apps"
-  description = "As per naming standards in AWS-DQ-Network-Routing 0.4 document"
-}
-
 variable "apps_vpc_id" {
   default     = false
   description = "Value obtained from Apps module"

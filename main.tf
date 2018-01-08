@@ -10,10 +10,7 @@ module "instance" {
   private_ip      = "${var.dq_internal_dashboard_instance_ip}"
 
   tags = {
-    Name             = "instance-${var.service}-${var.environment}-{az}"
-    Service          = "${var.service}"
-    Environment      = "${var.environment}"
-    EnvironmentGroup = "${var.environment_group}"
+    Name = "instance-${local.naming_suffix}"
   }
 }
 
@@ -23,10 +20,7 @@ resource "aws_subnet" "subnet" {
   availability_zone = "${var.az}"
 
   tags {
-    Name             = "sn-tableau-internal-${var.service}-${var.environment}-{az}"
-    Service          = "${var.service}"
-    Environment      = "${var.environment}"
-    EnvironmentGroup = "${var.environment_group}"
+    Name = "subnet-${local.naming_suffix}"
   }
 }
 
@@ -69,9 +63,6 @@ resource "aws_security_group" "sgrp" {
   }
 
   tags {
-    Name             = "sg-internal-tableau-${var.service}-${var.environment}"
-    Service          = "${var.service}"
-    Environment      = "${var.environment}"
-    EnvironmentGroup = "${var.environment_group}"
+    Name = "sg-${local.naming_suffix}"
   }
 }
