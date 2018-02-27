@@ -2,15 +2,27 @@ locals {
   naming_suffix = "internal-tableau-${var.naming_suffix}"
 }
 
-module "instance" {
-  source          = "github.com/UKHomeOffice/connectivity-tester-tf"
-  subnet_id       = "${aws_subnet.subnet.id}"
-  user_data       = "LISTEN_HTTPS=0.0.0.0:443 LISTEN_RDP=0.0.0.0:3389 CHECK_GP=${var.greenplum_ip}:5432"
-  security_groups = ["${aws_security_group.sgrp.id}"]
-  private_ip      = "${var.dq_internal_dashboard_instance_ip}"
+resource "aws_instance" "int_tableau" {
+  key_name                    = "${var.key_name}"
+  ami                         = "${data.aws_ami.int_tableau.id}"
+  instance_type               = "t2.xlarge"
+  vpc_security_group_ids      = ["${aws_security_group.sgrp.id}"]
+  associate_public_ip_address = false
+  subnet_id                   = "${aws_subnet.subnet.id}"
+  private_ip                  = "${var.dq_internal_dashboard_instance_ip}"
+
+  lifecycle {
+    prevent_destroy = true
+
+    ignore_changes = [
+      "user_data",
+      "ami",
+      "instance_type",
+    ]
+  }
 
   tags = {
-    Name = "instance-${local.naming_suffix}"
+    Name = "ec2-${local.naming_suffix}"
   }
 }
 

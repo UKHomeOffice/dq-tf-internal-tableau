@@ -72,5 +72,8 @@ class TestE2E(unittest.TestCase):
     def test_security_group_tags(self):
         self.assertEqual(self.result["root_modules"]["aws_security_group.sgrp"]["tags.Name"], "sg-internal-tableau-apps-preprod-dq")
 
+    def test_ec2_tags(self):
+        self.assertEqual(self.result["root_modules"]["aws_instance.int_tableau"]["tags.Name"], "ec2-internal-tableau-apps-preprod-dq")
+
 if __name__ == '__main__':
     unittest.main()
