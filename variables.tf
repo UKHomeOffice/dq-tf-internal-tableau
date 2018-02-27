@@ -77,3 +77,7 @@ variable "az" {
   default     = "eu-west-2a"
   description = "Default availability zone for the subnet."
 }
+
+variable "key_name" {
+  default = "test_instance"
+}
