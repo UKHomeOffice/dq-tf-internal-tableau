@@ -45,9 +45,9 @@ resource "aws_security_group" "sgrp" {
   vpc_id = "${var.apps_vpc_id}"
 
   ingress {
-    from_port = "${var.https_from_port}"
-    to_port   = "${var.https_to_port}"
-    protocol  = "${var.https_protocol}"
+    from_port = "${var.http_from_port}"
+    to_port   = "${var.http_to_port}"
+    protocol  = "${var.http_protocol}"
 
     cidr_blocks = [
       "${var.dq_ops_ingress_cidr}",
