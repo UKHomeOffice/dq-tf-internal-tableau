@@ -50,8 +50,8 @@ class TestE2E(unittest.TestCase):
     @unittest.skip
     def test_security_group_ingress(self):
         self.assertTrue(Runner.finder(self.result["root_modules"]["aws_security_group.sgrp"], ingress, {
-            'from_port': '443',
-            'to_port': '443',
+            'from_port': '80',
+            'to_port': '80',
             'from_port': '3389',
             'to_port': '3389',
             'Protocol': 'tcp',

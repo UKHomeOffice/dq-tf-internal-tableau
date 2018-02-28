@@ -3,17 +3,17 @@ variable "naming_suffix" {
   description = "Naming suffix for tags, value passed from dq-tf-apps"
 }
 
-variable "https_from_port" {
-  default     = 443
+variable "http_from_port" {
+  default     = 80
   description = "From port for HTTPS traffic"
 }
 
-variable "https_to_port" {
-  default     = 443
+variable "http_to_port" {
+  default     = 80
   description = "To port for HTTPS traffic"
 }
 
-variable "https_protocol" {
+variable "http_protocol" {
   default     = "tcp"
   description = "Protocol for HTTPS traffic"
 }
