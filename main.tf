@@ -5,7 +5,7 @@ locals {
 resource "aws_instance" "int_tableau" {
   key_name                    = "${var.key_name}"
   ami                         = "${data.aws_ami.int_tableau.id}"
-  instance_type               = "t2.xlarge"
+  instance_type               = "r4.4xlarge"
   vpc_security_group_ids      = ["${aws_security_group.sgrp.id}"]
   associate_public_ip_address = false
   subnet_id                   = "${aws_subnet.subnet.id}"
