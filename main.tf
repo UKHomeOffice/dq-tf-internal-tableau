@@ -11,16 +11,6 @@ resource "aws_instance" "int_tableau" {
   subnet_id                   = "${aws_subnet.subnet.id}"
   private_ip                  = "${var.dq_internal_dashboard_instance_ip}"
 
-  lifecycle {
-    prevent_destroy = true
-
-    ignore_changes = [
-      "user_data",
-      "ami",
-      "instance_type",
-    ]
-  }
-
   tags = {
     Name = "ec2-${local.naming_suffix}"
   }
