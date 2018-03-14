@@ -17,7 +17,7 @@ resource "aws_instance" "int_tableau" {
   $password = aws --region eu-west-2 ssm get-parameter --name addomainjoin --query 'Parameter.Value' --output text --with-decryption
   $username = "DQ\domain.join"
   $credential = New-Object System.Management.Automation.PSCredential($username,$password)
-  $instanceID = $instanceID = aws --region eu-west-2 ssm get-parameter --name int_tableau_hostname --query 'Parameter.Value' --output text --with-decryption
+  $instanceID = aws --region eu-west-2 ssm get-parameter --name int_tableau_hostname --query 'Parameter.Value' --output text --with-decryption
   Add-Computer -DomainName DQ.HOMEOFFICE.GOV.UK -OUPath "OU=Computers,OU=dq,DC=dq,DC=homeoffice,DC=gov,DC=uk" -NewName $instanceID -Credential $credential -Force -Restart
   </powershell>
 EOF
