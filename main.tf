@@ -1,5 +1,5 @@
 locals {
-  naming_suffix = "internal-tableau-${var.naming_suffix}",
+  naming_suffix    = "internal-tableau-${var.naming_suffix}"
   secondary_suffix = "internal-tableau-10-2-${var.naming_suffix}"
 }
 
