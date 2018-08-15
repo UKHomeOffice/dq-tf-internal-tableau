@@ -75,5 +75,9 @@ class TestE2E(unittest.TestCase):
     def test_ec2_tags(self):
         self.assertEqual(self.result["root_modules"]["aws_instance.int_tableau"]["tags.Name"], "ec2-internal-tableau-apps-preprod-dq")
 
+    def test_ec2_secondary_tags(self):
+        self.assertEqual(self.result["root_modules"]["aws_instance.int_tableau_10_2"]["tags.Name"], "ec2-internal-tableau-10-2-apps-preprod-dq")
+
+
 if __name__ == '__main__':
     unittest.main()
