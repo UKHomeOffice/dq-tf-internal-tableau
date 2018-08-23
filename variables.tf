@@ -33,11 +33,6 @@ variable "RDP_protocol" {
   description = "Protocol for RDP traffic"
 }
 
-variable "greenplum_ip" {
-  default     = false
-  description = "IP address for Greenplum"
-}
-
 variable "acp_prod_ingress_cidr" {
   default     = "10.5.0.0/16"
   description = "ACP Prod CIDR as per IP Addresses and CIDR blocks document"
