@@ -19,13 +19,12 @@ class TestE2E(unittest.TestCase):
               source = "./mymodule"
               providers = {aws = "aws"}
 
-              acp_prod_ingress_cidr        = "10.5.0.0/16"
-              dq_ops_ingress_cidr          = "10.2.0.0/16"
-              dq_internal_dashboard_subnet_cidr                 = "10.1.12.0/24"
-              peering_cidr_block           = "1.1.1.0/24"
-              greenplum_ip                 = "foo"
-              apps_vpc_id                  = "foo"
-              naming_suffix                = "apps-preprod-dq"
+              acp_prod_ingress_cidr             = "10.5.0.0/16"
+              dq_ops_ingress_cidr               = "10.2.0.0/16"
+              dq_internal_dashboard_subnet_cidr = "10.1.12.0/24"
+              peering_cidr_block                = "1.1.1.0/24"
+              apps_vpc_id                       = "foo"
+              naming_suffix                     = "apps-preprod-dq"
             }
 
         """
