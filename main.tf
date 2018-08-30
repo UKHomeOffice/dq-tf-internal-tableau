@@ -1,6 +1,6 @@
 locals {
   naming_suffix    = "internal-tableau-${var.naming_suffix}"
-  secondary_suffix = "internal-tableau-10-2-${var.naming_suffix}"
+  secondary_suffix = "internal-tableau-2018-02-${var.naming_suffix}"
 }
 
 resource "aws_instance" "int_tableau" {
@@ -33,9 +33,9 @@ EOF
   }
 }
 
-resource "aws_instance" "int_tableau_10_2" {
+resource "aws_instance" "int_tableau_2018_02" {
   key_name                    = "${var.key_name}"
-  ami                         = "${data.aws_ami.int_tableau_10_2.id}"
+  ami                         = "${data.aws_ami.int_tableau_2018_02.id}"
   instance_type               = "r4.4xlarge"
   iam_instance_profile        = "${aws_iam_instance_profile.int_tableau.id}"
   vpc_security_group_ids      = ["${aws_security_group.sgrp.id}"]
