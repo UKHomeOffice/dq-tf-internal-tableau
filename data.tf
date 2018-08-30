@@ -18,14 +18,14 @@ data "aws_ami" "int_tableau" {
   ]
 }
 
-data "aws_ami" "int_tableau_10_2" {
+data "aws_ami" "int_tableau_2018_02" {
   most_recent = true
 
   filter {
     name = "name"
 
     values = [
-      "dq-int-tableau-10-2",
+      "dq-int-tableau-2018-02",
     ]
   }
 
