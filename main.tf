@@ -1,7 +1,5 @@
 locals {
   naming_suffix    = "internal-tableau-${var.naming_suffix}"
-  secondary_suffix = "internal-tableau-2018-02-${var.naming_suffix}"
-  magic_suffix     = "internal-tableau-magic-machine-${var.naming_suffix}"
 }
 
 resource "aws_instance" "int_tableau" {
@@ -27,66 +25,6 @@ EOF
 
   tags = {
     Name = "ec2-${local.naming_suffix}"
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "aws_instance" "int_tableau_2018_02" {
-  key_name                    = "${var.key_name}"
-  ami                         = "${data.aws_ami.int_tableau_2018_02.id}"
-  instance_type               = "r4.4xlarge"
-  iam_instance_profile        = "${aws_iam_instance_profile.int_tableau.id}"
-  vpc_security_group_ids      = ["${aws_security_group.sgrp.id}"]
-  associate_public_ip_address = false
-  subnet_id                   = "${aws_subnet.subnet.id}"
-  private_ip                  = "${var.dq_internal_dashboard_10_2_instance_ip}"
-  monitoring                  = true
-
-  user_data = <<EOF
-  <powershell>
-  $password = aws --region eu-west-2 ssm get-parameter --name addomainjoin --query 'Parameter.Value' --output text --with-decryption
-  $username = "DQ\domain.join"
-  $credential = New-Object System.Management.Automation.PSCredential($username,$password)
-  $instanceID = aws --region eu-west-2 ssm get-parameter --name int_tableau_hostname --query 'Parameter.Value' --output text --with-decryption
-  Add-Computer -DomainName DQ.HOMEOFFICE.GOV.UK -OUPath "OU=Computers,OU=dq,DC=dq,DC=homeoffice,DC=gov,DC=uk" -NewName $instanceID -Credential $credential -Force -Restart
-  </powershell>
-EOF
-
-  tags = {
-    Name = "ec2-${local.secondary_suffix}"
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "aws_instance" "int_tableau_magic_machine" {
-  key_name                    = "${var.key_name}"
-  ami                         = "${data.aws_ami.int_tableau_magic_machine.id}"
-  instance_type               = "r4.4xlarge"
-  iam_instance_profile        = "${aws_iam_instance_profile.int_tableau.id}"
-  vpc_security_group_ids      = ["${aws_security_group.sgrp.id}"]
-  associate_public_ip_address = false
-  subnet_id                   = "${aws_subnet.subnet.id}"
-  private_ip                  = "${var.dq_internal_dashboard_magic_machine_instance_ip}"
-  monitoring                  = true
-
-  user_data = <<EOF
-  <powershell>
-  $password = aws --region eu-west-2 ssm get-parameter --name addomainjoin --query 'Parameter.Value' --output text --with-decryption
-  $username = "DQ\domain.join"
-  $credential = New-Object System.Management.Automation.PSCredential($username,$password)
-  $instanceID = aws --region eu-west-2 ssm get-parameter --name int_tableau_hostname --query 'Parameter.Value' --output text --with-decryption
-  Add-Computer -DomainName DQ.HOMEOFFICE.GOV.UK -OUPath "OU=Computers,OU=dq,DC=dq,DC=homeoffice,DC=gov,DC=uk" -NewName $instanceID -Credential $credential -Force -Restart
-  </powershell>
-EOF
-
-  tags = {
-    Name = "ec2-${local.magic_suffix}"
   }
 
   lifecycle {
