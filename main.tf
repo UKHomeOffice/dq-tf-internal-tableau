@@ -1,5 +1,5 @@
 locals {
-  naming_suffix    = "internal-tableau-${var.naming_suffix}"
+  naming_suffix = "internal-tableau-${var.naming_suffix}"
 }
 
 resource "aws_instance" "int_tableau" {
