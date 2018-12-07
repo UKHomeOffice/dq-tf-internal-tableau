@@ -25,6 +25,8 @@ class TestE2E(unittest.TestCase):
               peering_cidr_block                = "1.1.1.0/24"
               apps_vpc_id                       = "vpc-12345"
               naming_suffix                     = "apps-preprod-dq"
+              s3_archive_bucket                 = "bucket-name"
+              s3_archive_bucket_key             = "1234567890"
               s3_archive_bucket_name            = "bucket-name"
             }
 
