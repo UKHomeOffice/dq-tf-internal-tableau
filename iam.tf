@@ -41,6 +41,42 @@ resource "aws_iam_role_policy" "int_tableau" {
 EOF
 }
 
+resource "aws_iam_role_policy" "int_tableau_s3" {
+  role = "${aws_iam_role.int_tableau.id}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket"],
+      "Resource": "${var.s3_archive_bucket}"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject"
+      ],
+      "Resource": "${var.s3_archive_bucket}/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+        ],
+      "Resource": "${var.s3_archive_bucket_key}"
+    }
+  ]
+}
+EOF
+}
+
 resource "aws_iam_instance_profile" "int_tableau" {
   role = "${aws_iam_role.int_tableau.name}"
 }

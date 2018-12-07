@@ -85,3 +85,11 @@ variable "key_name" {
 variable "s3_archive_bucket_name" {
   description = "Name of archive bucket"
 }
+
+variable "s3_archive_bucket_key" {
+  description = "S3 archive bucket KMS key"
+}
+
+variable "s3_archive_bucket_name" {
+  description = "Name of archive bucket"
+}
