@@ -54,8 +54,13 @@ variable "dq_internal_dashboard_subnet_cidr" {
 }
 
 variable "dq_internal_dashboard_instance_ip" {
-  description = "Mock IP address of EC2 instance"
+  description = "IP address of EC2 instance"
   default     = "10.1.12.11"
+}
+
+variable "dq_internal_dashboard_blue_instance_ip" {
+  description = "IP address of EC2 instance"
+  default     = "10.1.12.12"
 }
 
 variable "apps_vpc_id" {
@@ -75,4 +80,8 @@ variable "az" {
 
 variable "key_name" {
   default = "test_instance"
+}
+
+variable "s3_archive_bucket_name" {
+  description = "Name of archive bucket"
 }
