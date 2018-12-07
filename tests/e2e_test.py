@@ -25,6 +25,7 @@ class TestE2E(unittest.TestCase):
               peering_cidr_block                = "1.1.1.0/24"
               apps_vpc_id                       = "vpc-12345"
               naming_suffix                     = "apps-preprod-dq"
+              s3_archive_bucket_name            = "bucket-name"
             }
 
         """
@@ -73,6 +74,9 @@ class TestE2E(unittest.TestCase):
 
     def test_ec2_tags(self):
         self.assertEqual(self.result["root_modules"]["aws_instance.int_tableau"]["tags.Name"], "ec2-internal-tableau-apps-preprod-dq")
+
+    def test_ec2_blue_tags(self):
+        self.assertEqual(self.result["root_modules"]["aws_instance.int_tableau_blue"]["tags.Name"], "ec2-internal-tableau-v2018-03-apps-preprod-dq")
 
 if __name__ == '__main__':
     unittest.main()

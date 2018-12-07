@@ -9,7 +9,7 @@ data "aws_ami" "int_tableau" {
     name = "name"
 
     values = [
-      "dq-int-tableau-no1",
+      "dq-tableau-7",
     ]
   }
 
