@@ -99,41 +99,42 @@ resource "aws_instance" "int_tableau_linux" {
 #!/bin/bash
 echo "Hello world"
 
-##Initialise TSM (finishes off Tableau Server install/config)
-#/opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
-#
-#source /etc/profile.d/tableau_server.sh
-#tsm register --file /tmp/install/tab_reg_file.json
-#
-#
-#aws --region eu-west-2 ssm get-parameter --name tableau_linux_ssh_private_key --query 'Parameter.Value' --output text --with-decryption > /home/tableau_srv/.ssh/gitlab_key
-#chmod 0400 /home/tableau_srv/.ssh/gitlab_key
-#
-#su - tableau_srv
-#aws --region eu-west-2 ssm get-parameter --name tableau_linux_ssh_public_key --query 'Parameter.Value' --output text --with-decryption > /home/tableau_srv/.ssh/gitlab_key.pub
-#chmod 0444 /home/tableau_srv/.ssh/gitlab_key.pub
-#
-#
-##Get most recent Tableau backup from S3
-##***get DATA_ARCHIVE_TAB_INT_BACKUP_URL from ParamStore***
-#export DATA_ARCHIVE_TAB_INT_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name DATA_ARCHIVE_TAB_INT_BACKUP_URL --query 'Parameter.Value' --output text`
-#export LATEST_BACKUP_NAME=`aws s3 ls $DATA_ARCHIVE_TAB_INT_BACKUP_URL | tail -1 | awk '{print $4}'`
-#aws s3 cp $DATA_ARCHIVE_TAB_INT_BACKUP_URL$LATEST_BACKUP_NAME /home/tableau_srv/tableau_backups/$LATEST_BACKUP_NAME
-#
-##As tableau_srv restore latest backup to Tableau Server
-#su - tableau_srv
-#export LATEST_BACKUP_NAME=`ls -1 /home/tableau_srv/tableau_backups/ | tail -1'`
-#tsm stop && tsm maintenance restore --file /home/tableau_srv/tableau_backups/$LATEST_BACKUP_NAME
-#exit
-#
+#Initialise TSM (finishes off Tableau Server install/config)
+/opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
+
+source /etc/profile.d/tableau_server.sh
+tsm register --file /tmp/install/tab_reg_file.json
+
+
+aws --region eu-west-2 ssm get-parameter --name tableau_linux_ssh_private_key --query 'Parameter.Value' --output text --with-decryption > /home/tableau_srv/.ssh/gitlab_key
+chmod 0400 /home/tableau_srv/.ssh/gitlab_key
+
+su - tableau_srv
+aws --region eu-west-2 ssm get-parameter --name tableau_linux_ssh_public_key --query 'Parameter.Value' --output text --with-decryption > /home/tableau_srv/.ssh/gitlab_key.pub
+chmod 0444 /home/tableau_srv/.ssh/gitlab_key.pub
+
+
+#Get most recent Tableau backup from S3
+#***get DATA_ARCHIVE_TAB_INT_BACKUP_URL from ParamStore***
+export DATA_ARCHIVE_TAB_INT_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name DATA_ARCHIVE_TAB_INT_BACKUP_URL --query 'Parameter.Value' --output text`
+export LATEST_BACKUP_NAME=`aws s3 ls $DATA_ARCHIVE_TAB_INT_BACKUP_URL | tail -1 | awk '{print $4}'`
+aws s3 cp $DATA_ARCHIVE_TAB_INT_BACKUP_URL$LATEST_BACKUP_NAME /home/tableau_srv/tableau_backups/$LATEST_BACKUP_NAME
+
+#As tableau_srv restore latest backup to Tableau Server
+su - tableau_srv
+export LATEST_BACKUP_NAME=`ls -1 /home/tableau_srv/tableau_backups/ | tail -1'`
+tsm stop && tsm maintenance restore --file /home/tableau_srv/tableau_backups/$LATEST_BACKUP_NAME && tsm start
+exit
+
 #As tableau_srv, get latest code
 su - tableau_srv
 export TAB_INT_REPO_URL="NOT SET"
 git clone $TAB_INT_REPO_URL
 exit
-#
+
 ##Publish the *required* workbook(s)/DataSource(s) - specified somehow...?
-#
+
+
 #DELETE the rest
 #aws --region eu-west-2 ssm get-parameter --name gpadmin_public_key --query 'Parameter.Value' --output text --with-decryption >> /home/wherescape/.ssh/authorized_keys
 #sudo touch /etc/profile.d/script_envs.sh
