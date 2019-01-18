@@ -126,11 +126,11 @@ echo "Hello world"
 #tsm stop && tsm maintenance restore --file /home/tableau_srv/tableau_backups/${LATEST_BACKUP_NAME}
 #exit
 #
-##As tableau_srv, get latest code
-#su - tableau_srv
-#export TAB_INT_REPO_URL="NOT SET"
-#git clone ${TAB_INT_REPO_URL}
-#exit
+#As tableau_srv, get latest code
+su - tableau_srv
+export TAB_INT_REPO_URL="NOT SET"
+git clone ${TAB_INT_REPO_URL}
+exit
 #
 ##Publish the *required* workbook(s)/DataSource(s) - specified somehow...?
 #
