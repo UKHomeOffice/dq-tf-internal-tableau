@@ -1,28 +1,31 @@
-data "aws_ami"
+data "aws_ami" "int_tableau" {
+  most_recent = true
 
-"int_tableau" {
-most_recent = true
+  filter {
+    name = "name"
 
-filter {
-  name = "name"
+    values = [
+      "dq-tableau-17*",
+    ]
+  }
 
-  values = [
-    "dq-tableau-17*",
+  owners = [
+    "self",
   ]
 }
 
-"int_tableau_linux" {
-most_recent = true
+data "aws_ami" "int_tableau_linux" {
+  most_recent = true
 
-filter {
-  name = "name"
+  filter {
+    name = "name"
 
-  values = [
-    "dq-tableau-linux-20 *",
+    values = [
+      "dq-tableau-linux-20 *",
+    ]
+  }
+
+  owners = [
+    "self",
   ]
-}
-
-owners = [
-  "self",
-]
 }
