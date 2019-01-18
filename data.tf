@@ -18,7 +18,7 @@ filter {
   name = "name"
 
   values = [
-    "dq-tableau-linux-13 *",
+    "dq-tableau-linux-16 *",
   ]
 }
 
