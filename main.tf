@@ -164,7 +164,7 @@ exit
 EOF
 
   tags = {
-    Name = "ec2-${local.naming_suffix}"
+    Name = "ec2-${local.naming_suffix_linux}"
   }
 
   lifecycle {
