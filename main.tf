@@ -87,7 +87,7 @@ EOF
 resource "aws_instance" "int_tableau_linux" {
   key_name                    = "${var.key_name}"
   ami                         = "${data.aws_ami.int_tableau_linux.id}"
-  instance_type               = "r5d.4xlarge"
+  instance_type               = "m5.4xlarge"
   iam_instance_profile        = "${aws_iam_instance_profile.int_tableau.id}"
   vpc_security_group_ids      = ["${aws_security_group.sgrp.id}"]
   associate_public_ip_address = false
@@ -97,56 +97,67 @@ resource "aws_instance" "int_tableau_linux" {
 
   user_data = <<EOF
 #!/bin/bash
+#Initialise TSM (finishes off Tableau Server install/config)
+/opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
+
+source /etc/profile.d/tableau_server.sh
+tsm register --file /tmp/install/tab_reg_file.json
+
 
 aws --region eu-west-2 ssm get-parameter --name tableau_linux_ssh_private_key --query 'Parameter.Value' --output text --with-decryption > /home/tableau_srv/.ssh/gitlab_key
 chmod 0400 /home/tableau_srv/.ssh/gitlab_key
+
+su - tableau_srv
 aws --region eu-west-2 ssm get-parameter --name tableau_linux_ssh_public_key --query 'Parameter.Value' --output text --with-decryption > /home/tableau_srv/.ssh/gitlab_key.pub
 chmod 0444 /home/tableau_srv/.ssh/gitlab_key.pub
 
 
 #Get most recent Tableau backup from S3
 #***get DATA_ARCHIVE_TAB_INT_BACKUP_URL from ParamStore***
-export LATEST_BACKUP_NAME=`aws s3 ls $DATA_ARCHIVE_TAB_INT_BACKUP_URL | tail -1 | awk '{print $4}'`
+export DATA_ARCHIVE_TAB_INT_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name DATA_ARCHIVE_TAB_INT_BACKUP_URL --query 'Parameter.Value' --output text`
+export LATEST_BACKUP_NAME=`aws s3 ls ${DATA_ARCHIVE_TAB_INT_BACKUP_URL} | tail -1 | awk '{print $4}'`
 aws s3 cp ${DATA_ARCHIVE_TAB_INT_BACKUP_URL}${LATEST_BACKUP_NAME} /home/tableau_srv/tableau_backups/$LATEST_BACKUP_NAME
 
 #As tableau_srv restore latest backup to Tableau Server
 su - tableau_srv
-tsm stop && tsm maintenance restore --file /home/tableau_srv/tableau_backups/
+export LATEST_BACKUP_NAME=`ls -1 /home/tableau_srv/tableau_backups/ | tail -1'`
+tsm stop && tsm maintenance restore --file /home/tableau_srv/tableau_backups/${LATEST_BACKUP_NAME}
 exit
 
 #As tableau_srv, get latest code
 su - tableau_srv
+export TAB_INT_REPO_URL="NOT SET"
 git clone $TAB_INT_REPO_URL
 exit
 
 #Publish the *required* workbook(s)/DataSource(s) - specified somehow...?
 
 #DELETE the rest
-aws --region eu-west-2 ssm get-parameter --name gpadmin_public_key --query 'Parameter.Value' --output text --with-decryption >> /home/wherescape/.ssh/authorized_keys
-sudo touch /etc/profile.d/script_envs.sh
-sudo setfacl -m u:wherescape:rwx /etc/profile.d/script_envs.sh
-sudo -u wherescape echo "
-export BUCKET_NAME=`aws --region eu-west-2 ssm get-parameter --name DRT_BUCKET_NAME --query 'Parameter.Value' --output text --with-decryption`
-export EF_DB_HOST=`aws --region eu-west-2 ssm get-parameter --name ef_rds_dns_name --query 'Parameter.Value' --output text --with-decryption`
-export EF_DB_USER=`aws --region eu-west-2 ssm get-parameter --name EF_DB_USER --query 'Parameter.Value' --output text --with-decryption`
-export EF_DB=`aws --region eu-west-2 ssm get-parameter --name EF_DB --query 'Parameter.Value' --output text --with-decryption`
-export PGPASSWORD=`aws --region eu-west-2 ssm get-parameter --name ef_dbuser_password --query 'Parameter.Value' --output text --with-decryption`
-export DRT_AWS_ACCESS_KEY_ID=`aws --region eu-west-2 ssm get-parameter --name DRT_AWS_ACCESS_KEY_ID --query 'Parameter.Value' --output text --with-decryption`
-export DRT_AWS_SECRET_ACCESS_KEY=`aws --region eu-west-2 ssm get-parameter --name DRT_AWS_SECRET_ACCESS_KEY --query 'Parameter.Value' --output text --with-decryption`
-export KMS_ID=`aws --region eu-west-2 ssm get-parameter --name DRT_AWS_KMS_KEY_ID --query 'Parameter.Value' --output text --with-decryption`
-export DEBUG=`aws --region eu-west-2 ssm get-parameter --name DRT_AWS_DEBUG --query 'Parameter.Value' --output text --with-decryption`
-" > /etc/profile.d/script_envs.sh
-su -c "/etc/profile.d/script_envs.sh" - wherescape
-export DOMAIN_JOIN=`aws --region eu-west-2 ssm get-parameter --name addomainjoin --query 'Parameter.Value' --output text --with-decryption`
-yum -y install sssd realmd krb5-workstation adcli samba-common-tools expect
-sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
-systemctl reload sshd
-chkconfig sssd on
-systemctl start sssd.service
-echo "%Domain\\ Admins@dq.homeoffice.gov.uk ALL=(ALL:ALL) ALL" >>  /etc/sudoers
-expect -c "spawn realm join -U domain.join@dq.homeoffice.gov.uk DQ.HOMEOFFICE.GOV.UK; expect \"*?assword for domain.join@DQ.HOMEOFFICE.GOV.UK:*\"; send -- \"$DOMAIN_JOIN\r\" ; expect eof"
-systemctl restart sssd.service
-reboot
+#aws --region eu-west-2 ssm get-parameter --name gpadmin_public_key --query 'Parameter.Value' --output text --with-decryption >> /home/wherescape/.ssh/authorized_keys
+#sudo touch /etc/profile.d/script_envs.sh
+#sudo setfacl -m u:wherescape:rwx /etc/profile.d/script_envs.sh
+#sudo -u wherescape echo "
+#export BUCKET_NAME=`aws --region eu-west-2 ssm get-parameter --name DRT_BUCKET_NAME --query 'Parameter.Value' --output text --with-decryption`
+#export EF_DB_HOST=`aws --region eu-west-2 ssm get-parameter --name ef_rds_dns_name --query 'Parameter.Value' --output text --with-decryption`
+#export EF_DB_USER=`aws --region eu-west-2 ssm get-parameter --name EF_DB_USER --query 'Parameter.Value' --output text --with-decryption`
+#export EF_DB=`aws --region eu-west-2 ssm get-parameter --name EF_DB --query 'Parameter.Value' --output text --with-decryption`
+#export PGPASSWORD=`aws --region eu-west-2 ssm get-parameter --name ef_dbuser_password --query 'Parameter.Value' --output text --with-decryption`
+#export DRT_AWS_ACCESS_KEY_ID=`aws --region eu-west-2 ssm get-parameter --name DRT_AWS_ACCESS_KEY_ID --query 'Parameter.Value' --output text --with-decryption`
+#export DRT_AWS_SECRET_ACCESS_KEY=`aws --region eu-west-2 ssm get-parameter --name DRT_AWS_SECRET_ACCESS_KEY --query 'Parameter.Value' --output text --with-decryption`
+#export KMS_ID=`aws --region eu-west-2 ssm get-parameter --name DRT_AWS_KMS_KEY_ID --query 'Parameter.Value' --output text --with-decryption`
+#export DEBUG=`aws --region eu-west-2 ssm get-parameter --name DRT_AWS_DEBUG --query 'Parameter.Value' --output text --with-decryption`
+#" > /etc/profile.d/script_envs.sh
+#su -c "/etc/profile.d/script_envs.sh" - wherescape
+#export DOMAIN_JOIN=`aws --region eu-west-2 ssm get-parameter --name addomainjoin --query 'Parameter.Value' --output text --with-decryption`
+#yum -y install sssd realmd krb5-workstation adcli samba-common-tools expect
+#sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+#systemctl reload sshd
+#chkconfig sssd on
+#systemctl start sssd.service
+#echo "%Domain\\ Admins@dq.homeoffice.gov.uk ALL=(ALL:ALL) ALL" >>  /etc/sudoers
+#expect -c "spawn realm join -U domain.join@dq.homeoffice.gov.uk DQ.HOMEOFFICE.GOV.UK; expect \"*?assword for domain.join@DQ.HOMEOFFICE.GOV.UK:*\"; send -- \"$DOMAIN_JOIN\r\" ; expect eof"
+#systemctl restart sssd.service
+#reboot
 EOF
 
   tags = {
