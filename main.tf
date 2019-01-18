@@ -129,7 +129,7 @@ echo "Hello world"
 #As tableau_srv, get latest code
 su - tableau_srv
 export TAB_INT_REPO_URL="NOT SET"
-git clone ${TAB_INT_REPO_URL}
+git clone $TAB_INT_REPO_URL
 exit
 #
 ##Publish the *required* workbook(s)/DataSource(s) - specified somehow...?
