@@ -33,6 +33,16 @@ variable "RDP_protocol" {
   description = "Protocol for RDP traffic"
 }
 
+variable "TSM_from_port" {
+  default     = 8850
+  description = "From port for TSM traffic"
+}
+
+variable "TSM_to_port" {
+  default     = 8850
+  description = "To port for TSM traffic"
+}
+
 variable "acp_prod_ingress_cidr" {
   default     = "10.5.0.0/16"
   description = "ACP Prod CIDR as per IP Addresses and CIDR blocks document"
@@ -61,6 +71,16 @@ variable "dq_internal_dashboard_instance_ip" {
 variable "dq_internal_dashboard_blue_instance_ip" {
   description = "IP address of EC2 instance"
   default     = "10.1.12.12"
+}
+
+variable "dq_internal_dashboard_linux_instance_ip" {
+  description = "IP address of EC2 instance"
+  default     = "10.1.12.111"
+}
+
+variable "dq_internal_dashboard_linux_blue_instance_ip" {
+  description = "IP address of EC2 instance"
+  default     = "10.1.12.112"
 }
 
 variable "apps_vpc_id" {
