@@ -118,7 +118,7 @@ chmod 0444 /home/tableau_srv/.ssh/gitlab_key.pub
 
 
 #Get most recent Tableau backup from S3
-export DATA_ARCHIVE_TAB_INT_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name DATA_ARCHIVE_TAB_INT_BACKUP_URL --query 'Parameter.Value' --output text`
+export DATA_ARCHIVE_TAB_INT_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_url --query 'Parameter.Value' --output text`
 export LATEST_BACKUP_NAME=`aws s3 ls $DATA_ARCHIVE_TAB_INT_BACKUP_URL | tail -1 | awk '{print $4}'`
 aws s3 cp $DATA_ARCHIVE_TAB_INT_BACKUP_URL$LATEST_BACKUP_NAME /home/tableau_srv/tableau_backups/$LATEST_BACKUP_NAME
 
