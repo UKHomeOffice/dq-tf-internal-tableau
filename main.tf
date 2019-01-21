@@ -228,7 +228,6 @@ resource "aws_security_group" "sgrp" {
 
     cidr_blocks = [
       "${var.dq_ops_ingress_cidr}",
-      "${var.peering_cidr_block}",
     ]
   }
 
