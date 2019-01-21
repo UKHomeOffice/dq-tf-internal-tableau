@@ -97,7 +97,10 @@ resource "aws_instance" "int_tableau_linux" {
 
   user_data = <<EOF
 #!/bin/bash
-echo "Hello world"
+
+set -e
+
+exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
 
 #Initialise TSM (finishes off Tableau Server install/config)
 /opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
@@ -115,7 +118,6 @@ chmod 0444 /home/tableau_srv/.ssh/gitlab_key.pub
 
 
 #Get most recent Tableau backup from S3
-#***get DATA_ARCHIVE_TAB_INT_BACKUP_URL from ParamStore***
 export DATA_ARCHIVE_TAB_INT_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name DATA_ARCHIVE_TAB_INT_BACKUP_URL --query 'Parameter.Value' --output text`
 export LATEST_BACKUP_NAME=`aws s3 ls $DATA_ARCHIVE_TAB_INT_BACKUP_URL | tail -1 | awk '{print $4}'`
 aws s3 cp $DATA_ARCHIVE_TAB_INT_BACKUP_URL$LATEST_BACKUP_NAME /home/tableau_srv/tableau_backups/$LATEST_BACKUP_NAME
