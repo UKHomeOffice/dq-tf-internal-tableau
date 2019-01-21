@@ -33,6 +33,21 @@ variable "RDP_protocol" {
   description = "Protocol for RDP traffic"
 }
 
+variable "SSH_from_port" {
+  default     = 22
+  description = "From port for RDP traffic"
+}
+
+variable "SSH_to_port" {
+  default     = 22
+  description = "To port for RDP traffic"
+}
+
+variable "SSH_protocol" {
+  default     = "tcp"
+  description = "Protocol for RDP traffic"
+}
+
 variable "TSM_from_port" {
   default     = 8850
   description = "From port for TSM traffic"
