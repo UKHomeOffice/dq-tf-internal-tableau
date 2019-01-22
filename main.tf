@@ -100,69 +100,69 @@ resource "aws_instance" "int_tableau_linux" {
 
 set -e
 
+#log output from this user_data script
 exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
+
+#Pull values from Parameter Store and save to profile
+sudo touch /home/tableau_srv/env_vars.sh
+echo "
+export DATA_ARCHIVE_TAB_INT_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_url --query 'Parameter.Value' --output text`
+export TAB_INT_REPO_URL=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_url --query 'Parameter.Value' --output text`
+export TAB_SRV_USER=`aws --region eu-west-2 ssm get-parameter --name tableau_server_username --query 'Parameter.Value' --output text`
+export TAB_SRV_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name tableau_server_password --query 'Parameter.Value' --output text`
+export TAB_ADMIN_USER=`aws --region eu-west-2 ssm get-parameter --name tableau_admin_username --query 'Parameter.Value' --output text`
+export TAB_ADMIN_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name tableau_admin_password --query 'Parameter.Value' --output text`
+" > /home/tableau_srv/env_vars.sh
+
+#Download SSH Key pair to allow DevOps Engineers to log in to the server
+aws --region eu-west-2 ssm get-parameter --name tableau_linux_ssh_private_key --query 'Parameter.Value' --output text --with-decryption > /home/tableau_srv/.ssh/id_rsa
+aws --region eu-west-2 ssm get-parameter --name tableau_linux_ssh_public_key --query 'Parameter.Value' --output text --with-decryption > /home/tableau_srv/.ssh/id_rsa.pub
+
+#Change ownership and permissions of tableau_srv files
+chown -R tableau_srv:tableau_srv /home/tableau_srv/
+chmod 0400 /home/tableau_srv/.ssh/id_rsa
+chmod 0444 /home/tableau_srv/.ssh/id_rsa.pub
+chmod 0644 /home/tableau_srv/env_vars.sh
+
+echo "
+source /home/tableau_srv/env_vars.sh
+" >> /home/tableau_srv/.bashrc
+
+su - tableau_srv
 
 #Initialise TSM (finishes off Tableau Server install/config)
 /opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
 
-source /etc/profile.d/tableau_server.sh
-tsm register --file /tmp/install/tab_reg_file.json
-
-
-aws --region eu-west-2 ssm get-parameter --name tableau_linux_ssh_private_key --query 'Parameter.Value' --output text --with-decryption > /home/tableau_srv/.ssh/gitlab_key
-chmod 0400 /home/tableau_srv/.ssh/gitlab_key
-
+#Run all TSM commands as tableau_srv
 su - tableau_srv
-aws --region eu-west-2 ssm get-parameter --name tableau_linux_ssh_public_key --query 'Parameter.Value' --output text --with-decryption > /home/tableau_srv/.ssh/gitlab_key.pub
-chmod 0444 /home/tableau_srv/.ssh/gitlab_key.pub
+
+tsm licenses activate --trial
+#tsm licenses activate --license-key <PRODUCT_KEY>
+
+tsm register --file /tmp/install/tab_reg_file.json -p $TAB_SRV_PASSWORD
+tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config.json
+tsm pending-changes apply
+tsm initialize --start-server --request-timeout 1800
+tabcmd --accepteula
+tabcmd initialuser --server 'localhost:80' --username '$TAB_ADMIN_USER' --password '$TAB_ADMIN_PASSWORD'
 
 
 #Get most recent Tableau backup from S3
-export DATA_ARCHIVE_TAB_INT_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_url --query 'Parameter.Value' --output text`
 export LATEST_BACKUP_NAME=`aws s3 ls $DATA_ARCHIVE_TAB_INT_BACKUP_URL | tail -1 | awk '{print $4}'`
 aws s3 cp $DATA_ARCHIVE_TAB_INT_BACKUP_URL$LATEST_BACKUP_NAME /home/tableau_srv/tableau_backups/$LATEST_BACKUP_NAME
 
-#As tableau_srv restore latest backup to Tableau Server
-su - tableau_srv
-export LATEST_BACKUP_NAME=`ls -1 /home/tableau_srv/tableau_backups/ | tail -1'`
+#Restore latest backup to Tableau Server
 tsm stop && tsm maintenance restore --file /home/tableau_srv/tableau_backups/$LATEST_BACKUP_NAME && tsm start
-exit
 
-#As tableau_srv, get latest code
-su - tableau_srv
-export TAB_INT_REPO_URL="NOT SET"
+#Add gitlab host to known_hosts
+ssh-keyscan -t rsa -p 2222 gitlab.digital.homeoffice.gov.uk >>  /home/tableau_srv/.ssh/known_hosts
+
+#Get latest code from git
 git clone $TAB_INT_REPO_URL
-exit
 
-##Publish the *required* workbook(s)/DataSource(s) - specified somehow...?
-
-
-#DELETE the rest
-#aws --region eu-west-2 ssm get-parameter --name gpadmin_public_key --query 'Parameter.Value' --output text --with-decryption >> /home/wherescape/.ssh/authorized_keys
-#sudo touch /etc/profile.d/script_envs.sh
-#sudo setfacl -m u:wherescape:rwx /etc/profile.d/script_envs.sh
-#sudo -u wherescape echo "
-#export BUCKET_NAME=`aws --region eu-west-2 ssm get-parameter --name DRT_BUCKET_NAME --query 'Parameter.Value' --output text --with-decryption`
-#export EF_DB_HOST=`aws --region eu-west-2 ssm get-parameter --name ef_rds_dns_name --query 'Parameter.Value' --output text --with-decryption`
-#export EF_DB_USER=`aws --region eu-west-2 ssm get-parameter --name EF_DB_USER --query 'Parameter.Value' --output text --with-decryption`
-#export EF_DB=`aws --region eu-west-2 ssm get-parameter --name EF_DB --query 'Parameter.Value' --output text --with-decryption`
-#export PGPASSWORD=`aws --region eu-west-2 ssm get-parameter --name ef_dbuser_password --query 'Parameter.Value' --output text --with-decryption`
-#export DRT_AWS_ACCESS_KEY_ID=`aws --region eu-west-2 ssm get-parameter --name DRT_AWS_ACCESS_KEY_ID --query 'Parameter.Value' --output text --with-decryption`
-#export DRT_AWS_SECRET_ACCESS_KEY=`aws --region eu-west-2 ssm get-parameter --name DRT_AWS_SECRET_ACCESS_KEY --query 'Parameter.Value' --output text --with-decryption`
-#export KMS_ID=`aws --region eu-west-2 ssm get-parameter --name DRT_AWS_KMS_KEY_ID --query 'Parameter.Value' --output text --with-decryption`
-#export DEBUG=`aws --region eu-west-2 ssm get-parameter --name DRT_AWS_DEBUG --query 'Parameter.Value' --output text --with-decryption`
-#" > /etc/profile.d/script_envs.sh
-#su -c "/etc/profile.d/script_envs.sh" - wherescape
-#export DOMAIN_JOIN=`aws --region eu-west-2 ssm get-parameter --name addomainjoin --query 'Parameter.Value' --output text --with-decryption`
-#yum -y install sssd realmd krb5-workstation adcli samba-common-tools expect
-#sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
-#systemctl reload sshd
-#chkconfig sssd on
-#systemctl start sssd.service
-#echo "%Domain\\ Admins@dq.homeoffice.gov.uk ALL=(ALL:ALL) ALL" >>  /etc/sudoers
-#expect -c "spawn realm join -U domain.join@dq.homeoffice.gov.uk DQ.HOMEOFFICE.GOV.UK; expect \"*?assword for domain.join@DQ.HOMEOFFICE.GOV.UK:*\"; send -- \"$DOMAIN_JOIN\r\" ; expect eof"
-#systemctl restart sssd.service
-#reboot
+###Publish the *required* workbook(s)/DataSource(s) - specified somehow...?
+#tabcmd login -s localhost -u $TAB_ADMIN_USER -t DQDashboards -p $TAB_ADMIN_PASSWORD
+#tabcmd publish /home/tableau_srv/tableau-dq/datasources/Accuracy/Field\ Level\ Scores\ by\ Field\ Aggregrated.tdsx -project "Accuracy" --overwrite
 EOF
 
   tags = {
