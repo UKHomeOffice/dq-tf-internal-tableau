@@ -190,7 +190,6 @@ mount /dev/xvdb /mnt/var/log
 rsync -a /var/log/ /mnt/var/log
 echo '/dev/xvdb /var/log xfs defaults 0 0' >> /etc/fstab
 umount /mnt/var/log/
-reboot
 
 echo "#Mount filesystem - /var/opt/tableau/"
 mkfs.xfs /dev/xvdc
