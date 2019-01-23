@@ -141,6 +141,8 @@ echo "#Initialise TSM (finishes off Tableau Server install/config)"
 
 echo "#Run all TSM commands as tableau_srv"
 su - tableau_srv
+echo "#Did this session Switch User to tableau_srv?"
+whoami
 
 echo "#Checking PATH"
 echo $PATH
@@ -150,8 +152,8 @@ echo "#Checking PATH again"
 echo $PATH
 
 echo "#TSM active license (trial)"
-tsm licenses activate --trial -p $TAB_SRV_PASSWORD
-#tsm licenses activate --license-key <PRODUCT_KEY> -p $TAB_SRV_PASSWORD
+tsm licenses activate --trial -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
+#tsm licenses activate --license-key <PRODUCT_KEY> -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
 
 echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json -p $TAB_SRV_PASSWORD
