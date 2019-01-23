@@ -103,61 +103,75 @@ set -e
 #log output from this user_data script
 exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
 
-#Pull values from Parameter Store and save to profile
+echo "#Pull values from Parameter Store and save to profile"
 sudo touch /home/tableau_srv/env_vars.sh
 echo "
 export DATA_ARCHIVE_TAB_INT_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_url --query 'Parameter.Value' --output text`
 export TAB_INT_REPO_URL=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_url --query 'Parameter.Value' --output text`
 export TAB_SRV_USER=`aws --region eu-west-2 ssm get-parameter --name tableau_server_username --query 'Parameter.Value' --output text`
-export TAB_SRV_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name tableau_server_password --query 'Parameter.Value' --output text`
+export TAB_SRV_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name tableau_server_password --query 'Parameter.Value' --output text --with-decryption`
 export TAB_ADMIN_USER=`aws --region eu-west-2 ssm get-parameter --name tableau_admin_username --query 'Parameter.Value' --output text`
-export TAB_ADMIN_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name tableau_admin_password --query 'Parameter.Value' --output text`
+export TAB_ADMIN_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name tableau_admin_password --query 'Parameter.Value' --output text --with-decryption`
 " > /home/tableau_srv/env_vars.sh
 
-#Download SSH Key pair to allow DevOps Engineers to log in to the server
+echo "#Download SSH Key pair to allow DevOps Engineers to log in to the server"
 aws --region eu-west-2 ssm get-parameter --name tableau_linux_ssh_private_key --query 'Parameter.Value' --output text --with-decryption > /home/tableau_srv/.ssh/id_rsa
 aws --region eu-west-2 ssm get-parameter --name tableau_linux_ssh_public_key --query 'Parameter.Value' --output text --with-decryption > /home/tableau_srv/.ssh/id_rsa.pub
 
-#Change ownership and permissions of tableau_srv files
+echo "#Change ownership and permissions of tableau_srv files"
 chown -R tableau_srv:tableau_srv /home/tableau_srv/
 chmod 0400 /home/tableau_srv/.ssh/id_rsa
 chmod 0444 /home/tableau_srv/.ssh/id_rsa.pub
 chmod 0644 /home/tableau_srv/env_vars.sh
 
+echo "#Store env vars in script"
 echo "
 source /home/tableau_srv/env_vars.sh
 " >> /home/tableau_srv/.bashrc
 
-su - tableau_srv
+echo "#Set password for tableau_srv"
+echo $TAB_SRV_PASSWORD | passwd tableau_srv --stdin
 
-#Initialise TSM (finishes off Tableau Server install/config)
+echo "#Initialise TSM (finishes off Tableau Server install/config)"
 /opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
 
-#Run all TSM commands as tableau_srv
+echo "#Run all TSM commands as tableau_srv"
 su - tableau_srv
 
+echo "#TSM active license (trial)"
 tsm licenses activate --trial
 #tsm licenses activate --license-key <PRODUCT_KEY>
 
+echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json -p $TAB_SRV_PASSWORD
+
+echo "#TSM settings (add default)"
 tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config.json
+
+echo "#TSM apply pending changes"
 tsm pending-changes apply
+
+echo "#TSM initialise & start server"
 tsm initialize --start-server --request-timeout 1800
+
+echo "#TSMCMD accept EULA"
 tabcmd --accepteula
-tabcmd initialuser --server 'localhost:80' --username '$TAB_ADMIN_USER' --password '$TAB_ADMIN_PASSWORD'
+
+echo "#TSMCMD - initial user"
+tabcmd initialuser --server 'localhost:80' --username $TAB_ADMIN_USER --password $TAB_ADMIN_PASSWORD
 
 
-#Get most recent Tableau backup from S3
+echo "#Get most recent Tableau backup from S3"
 export LATEST_BACKUP_NAME=`aws s3 ls $DATA_ARCHIVE_TAB_INT_BACKUP_URL | tail -1 | awk '{print $4}'`
 aws s3 cp $DATA_ARCHIVE_TAB_INT_BACKUP_URL$LATEST_BACKUP_NAME /home/tableau_srv/tableau_backups/$LATEST_BACKUP_NAME
 
-#Restore latest backup to Tableau Server
+echo "#Restore latest backup to Tableau Server"
 tsm stop && tsm maintenance restore --file /home/tableau_srv/tableau_backups/$LATEST_BACKUP_NAME && tsm start
 
-#Add gitlab host to known_hosts
+echo "#Add gitlab host to known_hosts"
 ssh-keyscan -t rsa -p 2222 gitlab.digital.homeoffice.gov.uk >>  /home/tableau_srv/.ssh/known_hosts
 
-#Get latest code from git
+echo "#Get latest code from git"
 git clone $TAB_INT_REPO_URL
 
 ###Publish the *required* workbook(s)/DataSource(s) - specified somehow...?
