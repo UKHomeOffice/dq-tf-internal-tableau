@@ -177,11 +177,30 @@ export LATEST_BACKUP_NAME=`aws s3 ls $DATA_ARCHIVE_TAB_INT_BACKUP_URL | tail -1 
 aws s3 cp $DATA_ARCHIVE_TAB_INT_BACKUP_URL$LATEST_BACKUP_NAME /var/opt/tableau/tableau_server/data/tabsvc/files/backups/$LATEST_BACKUP_NAME
 
 echo "#Restore latest backup to Tableau Server"
-tsm stop -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD && tsm maintenance restore --file /home/tableau_srv/tableau_backups/$LATEST_BACKUP_NAME -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD && tsm start -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
+tsm stop -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD && tsm maintenance restore --file $LATEST_BACKUP_NAME -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD && tsm start -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
 
 ###Publish the *required* workbook(s)/DataSource(s) - specified somehow...?
 #tabcmd login -s localhost -u $TAB_ADMIN_USER -t DQDashboards -p $TAB_ADMIN_PASSWORD
 #tabcmd publish /home/tableau_srv/tableau-dq/datasources/Accuracy/Field\ Level\ Scores\ by\ Field\ Aggregrated.tdsx -project "Accuracy" --overwrite
+
+echo "#Mount filesystem - /var/log/"
+mkfs.xfs /dev/xvdb
+mkdir -p /mnt/var/log/
+mount /dev/xvdb /mnt/var/log
+rsync -a /var/log/ /mnt/var/log
+echo '/dev/xvdb /var/log xfs defaults 0 0' >> /etc/fstab
+umount /mnt/var/log/
+reboot
+
+echo "#Mount filesystem - /var/opt/tableau/"
+mkfs.xfs /dev/xvdc
+mkdir -p /mnt/var/opt/tableau/
+mount /dev/xvdc /mnt/var/opt/tableau
+rsync -a /var/opt/tableau/ /mnt/var/opt/tableau
+echo '/dev/xvdc /var/opt/tableau xfs defaults 0 0' >> /etc/fstab
+umount /mnt/var/opt/tableau/
+reboot
+
 EOF
 
   tags = {
