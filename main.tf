@@ -103,9 +103,6 @@ set -e
 #log output from this user_data script
 exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
 
-echo "#Is this script really run as root?"
-whoami
-
 echo "#Pull values from Parameter Store and save to profile"
 touch /home/tableau_srv/env_vars.sh
 echo "
@@ -119,7 +116,15 @@ export TAB_ADMIN_USER=`aws --region eu-west-2 ssm get-parameter --name tableau_a
 export TAB_ADMIN_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name tableau_admin_password --query 'Parameter.Value' --output text --with-decryption`
 " > /home/tableau_srv/env_vars.sh
 
-echo "#Download SSH Key pair to allow DevOps Engineers to log in to the server"
+echo "#Load the env vars needed for this user_data script"
+source /home/tableau_srv/env_vars.sh
+
+echo "#Load the env vars when tableau_srv logs in"
+echo "
+source /home/tableau_srv/env_vars.sh
+" >> /home/tableau_srv/.bashrc
+
+echo "#Download SSH Key pair to allow us to log in to the GitLab repo"
 aws --region eu-west-2 ssm get-parameter --name tableau_linux_ssh_private_key --query 'Parameter.Value' --output text --with-decryption > /home/tableau_srv/.ssh/id_rsa
 aws --region eu-west-2 ssm get-parameter --name tableau_linux_ssh_public_key --query 'Parameter.Value' --output text --with-decryption > /home/tableau_srv/.ssh/id_rsa.pub
 
@@ -135,13 +140,7 @@ chmod 0400 /home/tableau_srv/.ssh/id_rsa
 chmod 0444 /home/tableau_srv/.ssh/id_rsa.pub
 chmod 0644 /home/tableau_srv/env_vars.sh
 
-echo "#Store env vars in script"
-echo "
-source /home/tableau_srv/env_vars.sh
-" >> /home/tableau_srv/.bashrc
-
 echo "#Set password for tableau_srv"
-source /home/tableau_srv/env_vars.sh
 echo $TAB_SRV_PASSWORD | passwd tableau_srv --stdin
 
 echo "#Initialise TSM (finishes off Tableau Server install/config)"
