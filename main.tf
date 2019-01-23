@@ -144,6 +144,10 @@ su - tableau_srv
 
 echo "#Checking PATH"
 echo $PATH
+echo "#sourcing tableau server envs - even though they should already be present (but they are not)"
+source /etc/profile.d/tableau_server.sh
+echo "#Checking PATH again"
+echo $PATH
 
 echo "#TSM active license (trial)"
 tsm licenses activate --trial -p $TAB_SRV_PASSWORD
