@@ -133,12 +133,7 @@ source /home/tableau_srv/env_vars.sh
 " >> /home/tableau_srv/.bashrc
 
 echo "#Set password for tableau_srv"
-echo "Echoing out the variable - to be sure it is set"
-echo $TAB_SRV_PASSWORD
-echo "#sourcing the env vars file, in case it has not been set"
 source /home/tableau_srv/env_vars.sh
-echo "Echoing out the variable - to be sure it is set now"
-echo $TAB_SRV_PASSWORD
 echo $TAB_SRV_PASSWORD | passwd tableau_srv --stdin
 
 echo "#Initialise TSM (finishes off Tableau Server install/config)"
@@ -147,9 +142,12 @@ echo "#Initialise TSM (finishes off Tableau Server install/config)"
 echo "#Run all TSM commands as tableau_srv"
 su - tableau_srv
 
+echo "#Checking PATH"
+echo $PATH
+
 echo "#TSM active license (trial)"
-tsm licenses activate --trial
-#tsm licenses activate --license-key <PRODUCT_KEY>
+tsm licenses activate --trial -p $TAB_SRV_PASSWORD
+#tsm licenses activate --license-key <PRODUCT_KEY> -p $TAB_SRV_PASSWORD
 
 echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json -p $TAB_SRV_PASSWORD
