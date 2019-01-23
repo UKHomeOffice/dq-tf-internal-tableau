@@ -184,19 +184,19 @@ tsm stop -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD && tsm maintenance restore --file
 #tabcmd publish /home/tableau_srv/tableau-dq/datasources/Accuracy/Field\ Level\ Scores\ by\ Field\ Aggregrated.tdsx -project "Accuracy" --overwrite
 
 echo "#Mount filesystem - /var/log/"
-mkfs.xfs /dev/xvdb
+mkfs.xfs /dev/nvme1n1
 mkdir -p /mnt/var/log/
-mount /dev/xvdb /mnt/var/log
+mount /dev/nvme1n1 /mnt/var/log
 rsync -a /var/log/ /mnt/var/log
-echo '/dev/xvdb /var/log xfs defaults 0 0' >> /etc/fstab
+echo '/dev/nvme1n1 /var/log xfs defaults 0 0' >> /etc/fstab
 umount /mnt/var/log/
 
 echo "#Mount filesystem - /var/opt/tableau/"
-mkfs.xfs /dev/xvdc
+mkfs.xfs /dev/nvme2n1
 mkdir -p /mnt/var/opt/tableau/
-mount /dev/xvdc /mnt/var/opt/tableau
+mount /dev/nvme2n1 /mnt/var/opt/tableau
 rsync -a /var/opt/tableau/ /mnt/var/opt/tableau
-echo '/dev/xvdc /var/opt/tableau xfs defaults 0 0' >> /etc/fstab
+echo '/dev/nvme2n1 /var/opt/tableau xfs defaults 0 0' >> /etc/fstab
 umount /mnt/var/opt/tableau/
 reboot
 
