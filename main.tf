@@ -103,8 +103,11 @@ set -e
 #log output from this user_data script
 exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
 
+echo "#Is this script really run as root?"
+whoami
+
 echo "#Pull values from Parameter Store and save to profile"
-sudo touch /home/tableau_srv/env_vars.sh
+touch /home/tableau_srv/env_vars.sh
 echo "
 export DATA_ARCHIVE_TAB_INT_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_url --query 'Parameter.Value' --output text`
 export TAB_INT_REPO_URL=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_url --query 'Parameter.Value' --output text`
@@ -130,6 +133,12 @@ source /home/tableau_srv/env_vars.sh
 " >> /home/tableau_srv/.bashrc
 
 echo "#Set password for tableau_srv"
+echo "Echoing out the variable - to be sure it is set"
+echo $TAB_SRV_PASSWORD
+echo "#sourcing the env vars file, in case it has not been set"
+source /home/tableau_srv/env_vars.sh
+echo "Echoing out the variable - to be sure it is set now"
+echo $TAB_SRV_PASSWORD
 echo $TAB_SRV_PASSWORD | passwd tableau_srv --stdin
 
 echo "#Initialise TSM (finishes off Tableau Server install/config)"
