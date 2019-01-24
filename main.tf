@@ -197,6 +197,7 @@ mkfs.xfs /dev/nvme1n1
 mkdir -p /mnt/var/log/
 mount /dev/nvme1n1 /mnt/var/log
 rsync -a /var/log/ /mnt/var/log
+semanage fcontext -a -t var_t "/mnt/var" && semanage fcontext -a -e /var/log /mnt/var/log && restorecon -R -v /mnt/var
 echo '/dev/nvme1n1 /var/log xfs defaults 0 0' >> /etc/fstab
 umount /mnt/var/log/
 
