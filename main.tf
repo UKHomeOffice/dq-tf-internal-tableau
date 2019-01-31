@@ -181,7 +181,7 @@ cat >/opt/tableau/tableau_server/packages/scripts.$TAB_VERSION_NUMBER/config-tru
   "configEntities": {
     "trustedAuthenticationSettings": {
       "_type": "trustedAuthenticationSettingsType",
-      "trustedHosts": [ "10.3.0.12" ]
+      "trustedHosts": [ "10.3.0.11" ]
     }
   }
 }
