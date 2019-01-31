@@ -128,3 +128,7 @@ variable "s3_archive_bucket_key" {
 variable "s3_archive_bucket_name" {
   description = "Name of archive bucket"
 }
+
+variable "haproxy_private_ip" {
+  description = "IP of HaProxy 1"
+}
