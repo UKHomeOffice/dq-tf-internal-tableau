@@ -162,3 +162,13 @@ variable "s3_archive_bucket_name" {
 variable "haproxy_private_ip" {
   description = "IP of HaProxy 1"
 }
+
+variable "database_name" {
+  default     = "internal_tableau"
+  description = "RDS Postgres database name"
+}
+
+variable "port" {
+  default     = "5432"
+  description = "RDS Postgres port access"
+}
