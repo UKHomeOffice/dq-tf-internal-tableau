@@ -81,5 +81,17 @@ class TestE2E(unittest.TestCase):
     def test_ec2_blue_tags(self):
         self.assertEqual(self.result["root_modules"]["aws_instance.int_tableau_blue"]["tags.Name"], "ec2-internal-tableau-v2018-03-apps-preprod-dq")
 
+    def test_db_subnet_group_tags(self):
+        self.assertEqual(self.result["root_modules"]["aws_db_subnet_group.rds"]["tags.Name"], "rds-subnet-group-internal-tableau-apps-preprod-dq")
+
+    def test_aws_subnet_tags(self):
+        self.assertEqual(self.result["root_modules"]["aws_subnet.internal_tableau_az2"]["tags.Name"], "az2-subnet-internal-tableau-apps-preprod-dq")
+
+    def test_db_security_group_tags(self):
+        self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau_db"]["tags.Name"], "sg-db-internal-tableau-apps-preprod-dq")
+
+    def test_rds_tags(self):
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["tags.Name"], "rds-postgres-internal-tableau-apps-preprod-dq")
+
 if __name__ == '__main__':
     unittest.main()
