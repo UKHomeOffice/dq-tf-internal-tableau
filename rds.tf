@@ -53,7 +53,7 @@ resource "aws_security_group_rule" "allow_bastion" {
   to_port         = "${var.rds_to_port}"
   protocol        = "${var.rds_protocol}"
   cidr_blocks = [
-    "${var.var.dq_ops_ingress_cidr}",
+    "${var.dq_ops_ingress_cidr}",
     "${var.peering_cidr_block}",
   ]
 
