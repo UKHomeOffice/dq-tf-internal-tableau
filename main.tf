@@ -312,6 +312,17 @@ resource "aws_security_group" "sgrp" {
     ]
   }
 
+  ingress {
+    from_port = "${var.rds_from_port}"
+    to_port   = "${var.rds_to_port}"
+    protocol  = "${var.rds_protocol}"
+
+    cidr_blocks = [
+      "${var.dq_lambda_subnet_cidr}",
+    "${var.dq_lambda_subnet_cidr_az2}",
+    ]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
