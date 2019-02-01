@@ -76,7 +76,7 @@ resource "aws_security_group" "internal_tableau_db" {
 }
 
 resource "aws_db_instance" "postgres" {
-  identifier              = "int-tableau-postgres-${local.naming_suffix}"
+  identifier              = "postgres-${local.naming_suffix}"
   allocated_storage       = 300
   storage_type            = "gp2"
   engine                  = "postgres"
