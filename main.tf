@@ -319,7 +319,7 @@ resource "aws_security_group" "sgrp" {
 
     cidr_blocks = [
       "${var.dq_lambda_subnet_cidr}",
-    "${var.dq_lambda_subnet_cidr_az2}",
+      "${var.dq_lambda_subnet_cidr_az2}",
     ]
   }
 

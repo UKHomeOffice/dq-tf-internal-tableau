@@ -41,52 +41,43 @@ resource "random_string" "username" {
 resource "aws_security_group" "internal_tableau_db" {
   vpc_id = "${var.apps_vpc_id}"
 
+  ingress {
+    from_port = "${var.rds_from_port}"
+    to_port   = "${var.rds_to_port}"
+    protocol  = "${var.rds_protocol}"
+
+    cidr_blocks = [
+      "${var.dq_ops_ingress_cidr}",
+      "${var.peering_cidr_block}",
+    ]
+  }
+
+  ingress {
+    from_port = "${var.rds_from_port}"
+    to_port   = "${var.rds_to_port}"
+    protocol  = "${var.rds_protocol}"
+
+    cidr_blocks = [
+      "${var.dq_lambda_subnet_cidr}",
+      "${var.dq_lambda_subnet_cidr_az2}",
+    ]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   tags {
     Name = "sg-${local.naming_suffix}"
   }
 }
 
-resource "aws_security_group_rule" "allow_bastion" {
-  type            = "ingress"
-  description     = "Postgres from the Bastion host"
-  from_port       = "${var.rds_from_port}"
-  to_port         = "${var.rds_to_port}"
-  protocol        = "${var.rds_protocol}"
-  cidr_blocks = [
-    "${var.dq_ops_ingress_cidr}",
-    "${var.peering_cidr_block}",
-  ]
-
-  security_group_id = "${aws_security_group.internal_tableau_db.id}"
-}
-
-resource "aws_security_group_rule" "allow_db_lambda" {
-  type            = "ingress"
-  description     = "Postgres from the Lambda subnet"
-  from_port       = "${var.rds_from_port}"
-  to_port         = "${var.rds_to_port}"
-  protocol        = "${var.rds_protocol}"
-  cidr_blocks = [
-    "${var.dq_lambda_subnet_cidr}",
-    "${var.dq_lambda_subnet_cidr_az2}",
-  ]
-
-  security_group_id = "${aws_security_group.internal_tableau_db.id}"
-}
-
-resource "aws_security_group_rule" "allow_db_out" {
-  type            = "egress"
-  from_port       = 0
-  to_port         = 0
-  protocol        = -1
-  cidr_blocks     = ["0.0.0.0/0"]
-
-  security_group_id = "${aws_security_group.internal_tableau_db.id}"
-}
-
 resource "aws_db_instance" "postgres" {
   identifier              = "int-tableau-postgres-${local.naming_suffix}"
-  allocated_storage       = 300 
+  allocated_storage       = 300
   storage_type            = "gp2"
   engine                  = "postgres"
   engine_version          = "10.4"
