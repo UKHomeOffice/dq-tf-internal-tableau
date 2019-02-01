@@ -91,7 +91,7 @@ class TestE2E(unittest.TestCase):
         self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau_db"]["tags.Name"], "sg-db-internal-tableau-apps-preprod-dq")
 
     def test_rds_tags(self):
-        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["tags.Name"], "postgres-internal-tableau-apps-preprod-dq")
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["tags.Name"], "rds-postgres-internal-tableau-apps-preprod-dq")
 
 if __name__ == '__main__':
     unittest.main()
