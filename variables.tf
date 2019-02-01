@@ -93,6 +93,11 @@ variable "dq_internal_dashboard_subnet_cidr" {
   description = "DQ Apps CIDR as per IP Addresses and CIDR blocks document"
 }
 
+variable "dq_internal_dashboard_subnet_cidr_az2" {
+  default     = "10.1.13.0/24"
+  description = "DQ Apps CIDR as per IP Addresses and CIDR blocks document"
+}
+
 variable "dq_internal_dashboard_instance_ip" {
   description = "IP address of EC2 instance"
   default     = "10.1.12.11"
