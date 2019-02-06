@@ -45,7 +45,11 @@ resource "aws_iam_role_policy" "int_tableau" {
         "arn:aws:ssm:eu-west-2:*:parameter/tableau_int_openid_provider_client_id",
         "arn:aws:ssm:eu-west-2:*:parameter/tableau_int_openid_client_secret",
         "arn:aws:ssm:eu-west-2:*:parameter/tableau_int_openid_provider_config_url",
-        "arn:aws:ssm:eu-west-2:*:parameter/tableau_int_openid_tableau_server_external_url"
+        "arn:aws:ssm:eu-west-2:*:parameter/tableau_int_openid_tableau_server_external_url",
+        "arn:aws:ssm:eu-west-2:*:parameter/tableau_int_product_key_1",
+        "arn:aws:ssm:eu-west-2:*:parameter/tableau_int_product_key_2",
+        "arn:aws:ssm:eu-west-2:*:parameter/tableau_int_product_key_3",
+        "arn:aws:ssm:eu-west-2:*:parameter/tableau_int_product_key_4"
       ]
     }
   ]

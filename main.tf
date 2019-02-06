@@ -114,6 +114,10 @@ export TAB_SRV_USER=`aws --region eu-west-2 ssm get-parameter --name tableau_ser
 export TAB_SRV_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name tableau_server_password --query 'Parameter.Value' --output text --with-decryption`
 export TAB_ADMIN_USER=`aws --region eu-west-2 ssm get-parameter --name tableau_admin_username --query 'Parameter.Value' --output text`
 export TAB_ADMIN_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name tableau_admin_password --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_1=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_1 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_2=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_2 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_3=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_3 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_4=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_4 --query 'Parameter.Value' --output text --with-decryption`
 " > /home/tableau_srv/env_vars.sh
 
 echo "#Load the env vars needed for this user_data script"
@@ -149,9 +153,12 @@ echo "#Initialise TSM (finishes off Tableau Server install/config)"
 echo "#sourcing tableau server envs - because this script is run as root not tableau_srv"
 source /etc/profile.d/tableau_server.sh
 
-echo "#TSM active license (trial) as tableau_srv"
-tsm licenses activate --trial -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
-#tsm licenses activate --license-key <PRODUCT_KEY> -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
+echo "#TSM active license (4x Product keys) as tableau_srv"
+#tsm licenses activate --trial -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
+tsm licenses activate --license-key $TAB_PRODUCT_KEY_1 -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
+tsm licenses activate --license-key $TAB_PRODUCT_KEY_2 -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
+tsm licenses activate --license-key $TAB_PRODUCT_KEY_3 -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
+tsm licenses activate --license-key $TAB_PRODUCT_KEY_4 -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
 
 echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
