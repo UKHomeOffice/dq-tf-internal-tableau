@@ -158,7 +158,8 @@ echo "#TSM active license (4x Product keys) as tableau_srv"
 tsm licenses activate --license-key $TAB_PRODUCT_KEY_1 -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
 tsm licenses activate --license-key $TAB_PRODUCT_KEY_2 -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
 tsm licenses activate --license-key $TAB_PRODUCT_KEY_3 -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
-tsm licenses activate --license-key $TAB_PRODUCT_KEY_4 -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
+echo "#NOT activating KEY_4 - not deactivated in NotProd yet"
+#tsm licenses activate --license-key $TAB_PRODUCT_KEY_4 -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
 
 echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
