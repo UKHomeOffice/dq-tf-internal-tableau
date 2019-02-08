@@ -49,15 +49,8 @@ resource "aws_security_group" "internal_tableau_db" {
     cidr_blocks = [
       "${var.dq_ops_ingress_cidr}",
       "${var.peering_cidr_block}",
-    ]
-  }
-
-  ingress {
-    from_port = "${var.rds_from_port}"
-    to_port   = "${var.rds_to_port}"
-    protocol  = "${var.rds_protocol}"
-
-    cidr_blocks = [
+      "${var.dq_internal_dashboard_subnet_cidr}",
+      "${var.dq_internal_dashboard_subnet_cidr_az2}",
       "${var.dq_lambda_subnet_cidr}",
       "${var.dq_lambda_subnet_cidr_az2}",
     ]
