@@ -54,7 +54,8 @@ resource "aws_iam_role_policy" "int_tableau" {
         "arn:aws:ssm:eu-west-2:*:parameter/tableau_int_product_key_2",
         "arn:aws:ssm:eu-west-2:*:parameter/tableau_int_product_key_3",
         "arn:aws:ssm:eu-west-2:*:parameter/tableau_int_product_key_4",
-        "arn:aws:ssm:eu-west-2:*:parameter/tableau_int_publish_datasources"
+        "arn:aws:ssm:eu-west-2:*:parameter/tableau_int_publish_datasources",
+        "arn:aws:ssm:eu-west-2:*:parameter/tableau_int_publish_workbooks"
       ]
     }
   ]

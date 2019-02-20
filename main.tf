@@ -296,6 +296,7 @@ export TAB_PRODUCT_KEY_2=`aws --region eu-west-2 ssm get-parameter --name tablea
 export TAB_PRODUCT_KEY_3=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_3 --query 'Parameter.Value' --output text --with-decryption`
 export TAB_PRODUCT_KEY_4=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_4 --query 'Parameter.Value' --output text --with-decryption`
 export DATASOURCES_TO_PUBLISH='`aws --region eu-west-2 ssm get-parameter --name tableau_int_publish_datasources --query 'Parameter.Value' --output text`'
+export WORKBOOKS_TO_PUBLISH='`aws --region eu-west-2 ssm get-parameter --name tableau_int_publish_workbooks --query 'Parameter.Value' --output text`'
 " > /home/tableau_srv/env_vars.sh
 
 echo "#Load the env vars needed for this user_data script"
@@ -391,7 +392,7 @@ echo "#Restore latest backup to Tableau Server"
 tsm stop -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD" && tsm maintenance restore --file $LATEST_BACKUP_NAME -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD" && tsm start -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
 
 echo "#Publishing required DataSources and WorkBooks"
-/home/tableau_srv/scripts/tableau-pub.sh /home/tableau_srv/$TAB_INT_REPO_NAME DQDashboards
+/home/tableau_srv/scripts/tableau-pub.py /home/tableau_srv/$TAB_INT_REPO_NAME DQDashboards
 
 
 
