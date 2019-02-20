@@ -390,9 +390,8 @@ aws s3 cp $DATA_ARCHIVE_TAB_BACKUP_URL$LATEST_BACKUP_NAME /var/opt/tableau/table
 echo "#Restore latest backup to Tableau Server"
 tsm stop -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD" && tsm maintenance restore --file $LATEST_BACKUP_NAME -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD" && tsm start -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
 
-###Publish the *required* workbook(s)/DataSource(s) - specified somehow...?
-/home/tableau_srv/scripts/tableau-login.sh DQDashboards
-/home/tableau_srv/scripts/tableau-pub-ds.sh "Data Receipt" "/home/tableau_srv/tableau-dq/datasources/Data Receipt/Cv_Exploratory_Inbound_SP.tdsx"
+echo "#Publishing required DataSources and WorkBooks"
+/home/tableau_srv/scripts/tableau-pub.sh /home/tableau_srv/$TAB_INT_REPO_NAME DQDashboards
 
 
 
