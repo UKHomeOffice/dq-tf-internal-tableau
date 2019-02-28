@@ -109,3 +109,26 @@ resource "aws_ssm_parameter" "rds_internal_tableau_password" {
   type  = "SecureString"
   value = "${random_string.password.result}"
 }
+
+resource "random_string" "service_username" {
+  length  = 8
+  special = false
+  number  = false
+}
+
+resource "random_string" "service_password" {
+  length  = 16
+  special = false
+}
+
+resource "aws_ssm_parameter" "rds_internal_tableau_service_username" {
+  name  = "rds_internal_tableau_service_username"
+  type  = "SecureString"
+  value = "${random_string.service_username.result}"
+}
+
+resource "aws_ssm_parameter" "rds_internal_tableau_service_password" {
+  name  = "rds_internal_tableau_service_password"
+  type  = "SecureString"
+  value = "${random_string.service_password.result}"
+}
