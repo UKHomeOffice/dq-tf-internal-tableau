@@ -211,6 +211,8 @@ export TAB_ADMIN_USER=`aws --region eu-west-2 ssm get-parameter --name tableau_a
 export TAB_ADMIN_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name tableau_admin_password --query 'Parameter.Value' --output text --with-decryption`
 export TAB_DB_USER=wsr
 export TAB_DB_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name gp_db_user_wsr --query 'Parameter.Value' --output text --with-decryption`
+export TAB_INT_TABSVR_REPO_USER=`aws --region eu-west-2 ssm get-parameter --name tableau_int_tableau_server_repository_username --query 'Parameter.Value' --output text`
+export TAB_INT_TABSVR_REPO_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name tableau_int_tableau_server_repository_password --query 'Parameter.Value' --output text --with-decryption`
 export TAB_PRODUCT_KEY_1=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_1 --query 'Parameter.Value' --output text --with-decryption`
 export TAB_PRODUCT_KEY_2=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_2 --query 'Parameter.Value' --output text --with-decryption`
 export TAB_PRODUCT_KEY_3=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_3 --query 'Parameter.Value' --output text --with-decryption`
@@ -253,6 +255,7 @@ echo "#sourcing tableau server envs - because this script is run as root not tab
 source /etc/profile.d/tableau_server.sh
 
 echo "#TSM active trial license as tableau_srv"
+tsm licenses activate --trial -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
 
 echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
