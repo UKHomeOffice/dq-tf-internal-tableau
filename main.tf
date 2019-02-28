@@ -157,6 +157,7 @@ echo "#TSM active license (3x Product keys (4th cannot be deactivated from Windo
 tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
 tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
 tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_4" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
 
 echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
@@ -333,11 +334,6 @@ echo "#sourcing tableau server envs - because this script is run as root not tab
 source /etc/profile.d/tableau_server.sh
 
 echo "#TSM active trial license as tableau_srv"
-#tsm licenses activate --trial -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_4" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
 
 echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
@@ -396,8 +392,8 @@ echo "#Restore latest backup to Tableau Server"
 tsm stop -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD" && tsm maintenance restore --file $LATEST_BACKUP_NAME -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD" && tsm start -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
 
 echo "#Publishing required DataSources and WorkBooks"
-/home/tableau_srv/scripts/tableau-pub.py /home/tableau_srv/$TAB_INT_REPO_NAME DQDashboards
 
+su -c "/home/tableau_srv/scripts/tableau-pub.py /home/tableau_srv/$TAB_INT_REPO_NAME DQDashboards" - tableau_srv
 
 
 echo "#Mount filesystem - /var/opt/tableau/"
