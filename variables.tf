@@ -18,21 +18,6 @@ variable "http_protocol" {
   description = "Protocol for HTTPS traffic"
 }
 
-variable "RDP_from_port" {
-  default     = 3389
-  description = "From port for RDP traffic"
-}
-
-variable "RDP_to_port" {
-  default     = 3389
-  description = "To port for RDP traffic"
-}
-
-variable "RDP_protocol" {
-  default     = "tcp"
-  description = "Protocol for RDP traffic"
-}
-
 variable "SSH_from_port" {
   default     = 22
   description = "From port for SSH traffic"

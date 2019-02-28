@@ -35,31 +35,12 @@ class TestE2E(unittest.TestCase):
         self.result = Runner(self.snippet).result
 
 
-    @unittest.skip
-    def test_instance_ami(self):
-        self.assertEqual(self.result["root_modules"]["aws_instance.instance"]["ami"], "foo")
-
-    @unittest.skip  # @TODO
-    def test_instance_user_data(self):
-        greenplum_listen = hashlib.sha224("LISTEN_HTTP=0.0.0.0:443 CHECK_GP=foo:5432").sha1()
-        self.assertEqual(self.result["root_modules"]["aws_instance.instance"]["user_data"], greenplum_listen)
-
     def test_subnet_vpc(self):
         self.assertEqual(self.result["root_modules"]["aws_subnet.subnet"]["vpc_id"], "vpc-12345")
 
     def test_subnet_cidr(self):
         self.assertEqual(self.result["root_modules"]["aws_subnet.subnet"]["cidr_block"], "10.1.12.0/24")
 
-    @unittest.skip
-    def test_security_group_ingress(self):
-        self.assertTrue(Runner.finder(self.result["root_modules"]["aws_security_group.sgrp"], ingress, {
-            'from_port': '80',
-            'to_port': '80',
-            'from_port': '3389',
-            'to_port': '3389',
-            'Protocol': 'tcp',
-            'Cidr_blocks': '0.0.0.0/0'
-        }))
     @unittest.skip
     def test_security_group_egress(self):
         self.assertTrue(Runner.finder(self.result["root_modules"]["aws_security_group.sgrp"], egress, {
@@ -74,12 +55,6 @@ class TestE2E(unittest.TestCase):
 
     def test_security_group_tags(self):
         self.assertEqual(self.result["root_modules"]["aws_security_group.sgrp"]["tags.Name"], "sg-internal-tableau-apps-preprod-dq")
-
-    def test_ec2_tags(self):
-        self.assertEqual(self.result["root_modules"]["aws_instance.int_tableau"]["tags.Name"], "ec2-internal-tableau-apps-preprod-dq")
-
-    def test_ec2_blue_tags(self):
-        self.assertEqual(self.result["root_modules"]["aws_instance.int_tableau_blue"]["tags.Name"], "ec2-internal-tableau-v2018-03-apps-preprod-dq")
 
     def test_db_subnet_group_tags(self):
         self.assertEqual(self.result["root_modules"]["aws_db_subnet_group.rds"]["tags.Name"], "rds-subnet-group-internal-tableau-apps-preprod-dq")
