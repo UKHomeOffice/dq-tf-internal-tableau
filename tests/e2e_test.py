@@ -93,5 +93,29 @@ class TestE2E(unittest.TestCase):
     def test_rds_tags(self):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["tags.Name"], "rds-postgres-internal-tableau-apps-preprod-dq")
 
+    def test_ssm_rds_service_username(self):
+        self.assertEqual(self.result["root_modules"]["aws_ssm_parameter.rds_internal_tableau_service_username"]["name"], "rds_internal_tableau_service_username")
+
+    def test_ssm_rds_service_username_string_type(self):
+        self.assertEqual(self.result["root_modules"]["aws_ssm_parameter.rds_internal_tableau_service_username"]["type"], "SecureString")
+
+    def test_ssm_rds_service_password(self):
+        self.assertEqual(self.result["root_modules"]["aws_ssm_parameter.rds_internal_tableau_service_password"]["name"], "rds_internal_tableau_service_password")
+
+    def test_ssm_rds_service_password_string_type(self):
+        self.assertEqual(self.result["root_modules"]["aws_ssm_parameter.rds_internal_tableau_service_password"]["type"], "SecureString")
+
+    def test_ssm_rds_username(self):
+        self.assertEqual(self.result["root_modules"]["aws_ssm_parameter.rds_internal_tableau_username"]["name"], "rds_internal_tableau_username")
+
+    def test_ssm_rds_username_string_type(self):
+        self.assertEqual(self.result["root_modules"]["aws_ssm_parameter.rds_internal_tableau_username"]["type"], "SecureString")
+
+    def test_ssm_rds_password(self):
+        self.assertEqual(self.result["root_modules"]["aws_ssm_parameter.rds_internal_tableau_password"]["name"], "rds_internal_tableau_password")
+
+    def test_ssm_rds_password_string_type(self):
+        self.assertEqual(self.result["root_modules"]["aws_ssm_parameter.rds_internal_tableau_password"]["type"], "SecureString")
+
 if __name__ == '__main__':
     unittest.main()
