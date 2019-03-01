@@ -26,17 +26,27 @@ echo "#Pull values from Parameter Store and save to profile"
 touch /home/tableau_srv/env_vars.sh
 echo "
 export DATA_ARCHIVE_TAB_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_url --query 'Parameter.Value' --output text`
-export TAB_INT_REPO_URL=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_url --query 'Parameter.Value' --output text`
+export TAB_INT_REPO_PROTOCOL=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_protocol --query 'Parameter.Value' --output text`
+export TAB_INT_REPO_USER=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_user --query 'Parameter.Value' --output text`
 export TAB_INT_REPO_HOST=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_host --query 'Parameter.Value' --output text`
 export TAB_INT_REPO_PORT=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_port --query 'Parameter.Value' --output text`
+export TAB_INT_REPO_ORG=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_org --query 'Parameter.Value' --output text`
+export TAB_INT_REPO_NAME=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_name --query 'Parameter.Value' --output text`
+export TAB_INT_REPO_URL=\$TAB_INT_REPO_PROTOCOL://\$TAB_INT_REPO_USER@\$TAB_INT_REPO_HOST:\$TAB_INT_REPO_PORT/\$TAB_INT_REPO_ORG/\$TAB_INT_REPO_NAME.git
 export TAB_SRV_USER=`aws --region eu-west-2 ssm get-parameter --name tableau_server_username --query 'Parameter.Value' --output text`
 export TAB_SRV_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name tableau_server_password --query 'Parameter.Value' --output text --with-decryption`
 export TAB_ADMIN_USER=`aws --region eu-west-2 ssm get-parameter --name tableau_admin_username --query 'Parameter.Value' --output text`
 export TAB_ADMIN_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name tableau_admin_password --query 'Parameter.Value' --output text --with-decryption`
+export TAB_DB_USER=wsr
+export TAB_DB_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name gp_db_user_wsr --query 'Parameter.Value' --output text --with-decryption`
+export TAB_INT_TABSVR_REPO_USER=`aws --region eu-west-2 ssm get-parameter --name tableau_int_tableau_server_repository_username --query 'Parameter.Value' --output text`
+export TAB_INT_TABSVR_REPO_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name tableau_int_tableau_server_repository_password --query 'Parameter.Value' --output text --with-decryption`
 export TAB_PRODUCT_KEY_1=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_1 --query 'Parameter.Value' --output text --with-decryption`
 export TAB_PRODUCT_KEY_2=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_2 --query 'Parameter.Value' --output text --with-decryption`
 export TAB_PRODUCT_KEY_3=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_3 --query 'Parameter.Value' --output text --with-decryption`
 export TAB_PRODUCT_KEY_4=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_4 --query 'Parameter.Value' --output text --with-decryption`
+export DATASOURCES_TO_PUBLISH='`aws --region eu-west-2 ssm get-parameter --name tableau_int_publish_datasources --query 'Parameter.Value' --output text`'
+export WORKBOOKS_TO_PUBLISH='`aws --region eu-west-2 ssm get-parameter --name tableau_int_publish_workbooks --query 'Parameter.Value' --output text`'
 " > /home/tableau_srv/env_vars.sh
 
 echo "#Load the env vars needed for this user_data script"
@@ -72,14 +82,14 @@ echo "#Initialise TSM (finishes off Tableau Server install/config)"
 echo "#sourcing tableau server envs - because this script is run as root not tableau_srv"
 source /etc/profile.d/tableau_server.sh
 
-echo "#TSM active license (3x Product keys (4th cannot be deactivated from Windows server)) as tableau_srv"
+echo "#TSM active license as tableau_srv"
 tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
 tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
 tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
 tsm licenses activate --license-key "$TAB_PRODUCT_KEY_4" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
 
 echo "#TSM register user details"
-tsm register --file /tmp/install/tab_reg_file.json -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
+tsm register --file /tmp/install/tab_reg_file.json -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
 
 echo "#TSM settings (add default)"
 export CLIENT_ID=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_provider_client_id --query 'Parameter.Value' --output text`
@@ -125,18 +135,18 @@ echo "#TSMCMD accept EULA - only required for tableau_srv"
 su -c "tabcmd --accepteula" - tableau_srv
 
 echo "#TSMCMD - initial user"
-tabcmd initialuser --server 'localhost:80' --username $TAB_ADMIN_USER --password $TAB_ADMIN_PASSWORD
+tabcmd initialuser --server 'localhost:80' --username "$TAB_ADMIN_USER" --password "$TAB_ADMIN_PASSWORD"
 
 echo "#Get most recent Tableau backup from S3"
 export LATEST_BACKUP_NAME=`aws s3 ls $DATA_ARCHIVE_TAB_BACKUP_URL | tail -1 | awk '{print $4}'`
 aws s3 cp $DATA_ARCHIVE_TAB_BACKUP_URL$LATEST_BACKUP_NAME /var/opt/tableau/tableau_server/data/tabsvc/files/backups/$LATEST_BACKUP_NAME
 
 echo "#Restore latest backup to Tableau Server"
-tsm stop -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD && tsm maintenance restore --file $LATEST_BACKUP_NAME -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD && tsm start -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
+tsm stop -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD" && tsm maintenance restore --file $LATEST_BACKUP_NAME -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD" && tsm start -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
 
-###Publish the *required* workbook(s)/DataSource(s) - specified somehow...?
-#tabcmd login -s localhost -u $TAB_ADMIN_USER -t DQDashboards -p $TAB_ADMIN_PASSWORD
-#tabcmd publish /home/tableau_srv/tableau-dq/datasources/Accuracy/Field\ Level\ Scores\ by\ Field\ Aggregrated.tdsx -project "Accuracy" --overwrite
+echo "#Publishing required DataSources and WorkBooks"
+
+su -c "/home/tableau_srv/scripts/tableau-pub.py /home/tableau_srv/$TAB_INT_REPO_NAME DQDashboards" - tableau_srv
 
 
 echo "#Mount filesystem - /var/opt/tableau/"
@@ -254,8 +264,11 @@ echo "#Initialise TSM (finishes off Tableau Server install/config)"
 echo "#sourcing tableau server envs - because this script is run as root not tableau_srv"
 source /etc/profile.d/tableau_server.sh
 
-echo "#TSM active trial license as tableau_srv"
-tsm licenses activate --trial -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
+echo "#TSM active license as tableau_srv"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_4" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
 
 echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
