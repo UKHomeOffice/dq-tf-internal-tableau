@@ -43,6 +43,21 @@ variable "TSM_to_port" {
   description = "To port for TSM traffic"
 }
 
+variable "TAB_DB_from_port" {
+  default     = 8060
+  description = "From port for Tableau Metadata Database traffic"
+}
+
+variable "TAB_DB_to_port" {
+  default     = 8060
+  description = "To port for Tableau Metadata Database traffic"
+}
+
+variable "TAB_DB_protocol" {
+  default     = "tcp"
+  description = "Protocol for Tableau Metadata Database traffic"
+}
+
 variable "rds_from_port" {
   default     = 5432
   description = "From port for Postgres traffic"

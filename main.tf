@@ -405,6 +405,16 @@ resource "aws_security_group" "sgrp" {
   }
 
   ingress {
+    from_port = "${var.TAB_DB_to_port}"
+    to_port   = "${var.TAB_DB_to_port}"
+    protocol  = "${var.TAB_DB_protocol}"
+
+    cidr_blocks = [
+      "${var.dq_ops_ingress_cidr}",
+    ]
+  }
+
+  ingress {
     from_port = "${var.rds_from_port}"
     to_port   = "${var.rds_to_port}"
     protocol  = "${var.rds_protocol}"
