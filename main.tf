@@ -73,13 +73,13 @@ echo "#sourcing tableau server envs - because this script is run as root not tab
 source /etc/profile.d/tableau_server.sh
 
 echo "#TSM active license (3x Product keys (4th cannot be deactivated from Windows server)) as tableau_srv"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_4" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_4" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#TSM register user details"
-tsm register --file /tmp/install/tab_reg_file.json -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
+tsm register --file /tmp/install/tab_reg_file.json --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#TSM settings (add default)"
 export CLIENT_ID=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_provider_client_id --query 'Parameter.Value' --output text`
@@ -125,14 +125,14 @@ echo "#TSMCMD accept EULA - only required for tableau_srv"
 su -c "tabcmd --accepteula" - tableau_srv
 
 echo "#TSMCMD - initial user"
-tabcmd initialuser --server 'localhost:80' --username $TAB_ADMIN_USER --password $TAB_ADMIN_PASSWORD
+tabcmd initialuser --server 'localhost:80' --username "$TAB_ADMIN_USER" --password "$TAB_ADMIN_PASSWORD"
 
 echo "#Get most recent Tableau backup from S3"
 export LATEST_BACKUP_NAME=`aws s3 ls $DATA_ARCHIVE_TAB_BACKUP_URL | tail -1 | awk '{print $4}'`
 aws s3 cp $DATA_ARCHIVE_TAB_BACKUP_URL$LATEST_BACKUP_NAME /var/opt/tableau/tableau_server/data/tabsvc/files/backups/$LATEST_BACKUP_NAME
 
 echo "#Restore latest backup to Tableau Server"
-tsm stop -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD && tsm maintenance restore --file $LATEST_BACKUP_NAME -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD && tsm start -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
+tsm stop --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm maintenance restore --file $LATEST_BACKUP_NAME --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm start --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 ###Publish the *required* workbook(s)/DataSource(s) - specified somehow...?
 #tabcmd login -s localhost -u $TAB_ADMIN_USER -t DQDashboards -p $TAB_ADMIN_PASSWORD
@@ -255,10 +255,10 @@ echo "#sourcing tableau server envs - because this script is run as root not tab
 source /etc/profile.d/tableau_server.sh
 
 echo "#TSM active trial license as tableau_srv"
-tsm licenses activate --trial -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
+tsm licenses activate --trial --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#TSM register user details"
-tsm register --file /tmp/install/tab_reg_file.json -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
+tsm register --file /tmp/install/tab_reg_file.json --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#TSM settings (add default)"
 export CLIENT_ID=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_provider_client_id --query 'Parameter.Value' --output text`
@@ -311,7 +311,7 @@ export LATEST_BACKUP_NAME=`aws s3 ls $DATA_ARCHIVE_TAB_BACKUP_URL | tail -1 | aw
 aws s3 cp $DATA_ARCHIVE_TAB_BACKUP_URL$LATEST_BACKUP_NAME /var/opt/tableau/tableau_server/data/tabsvc/files/backups/$LATEST_BACKUP_NAME
 
 echo "#Restore latest backup to Tableau Server"
-tsm stop -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD" && tsm maintenance restore --file $LATEST_BACKUP_NAME -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD" && tsm start -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
+tsm stop --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm maintenance restore --file $LATEST_BACKUP_NAME --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm start --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#Publishing required DataSources and WorkBooks"
 
