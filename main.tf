@@ -83,13 +83,13 @@ echo "#sourcing tableau server envs - because this script is run as root not tab
 source /etc/profile.d/tableau_server.sh
 
 echo "#TSM active license as tableau_srv"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_4" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_4" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#TSM register user details"
-tsm register --file /tmp/install/tab_reg_file.json -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
+tsm register --file /tmp/install/tab_reg_file.json --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#TSM settings (add default)"
 export CLIENT_ID=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_provider_client_id --query 'Parameter.Value' --output text`
@@ -142,10 +142,9 @@ export LATEST_BACKUP_NAME=`aws s3 ls $DATA_ARCHIVE_TAB_BACKUP_URL | tail -1 | aw
 aws s3 cp $DATA_ARCHIVE_TAB_BACKUP_URL$LATEST_BACKUP_NAME /var/opt/tableau/tableau_server/data/tabsvc/files/backups/$LATEST_BACKUP_NAME
 
 echo "#Restore latest backup to Tableau Server"
-tsm stop -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD" && tsm maintenance restore --file $LATEST_BACKUP_NAME -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD" && tsm start -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
+tsm stop --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm maintenance restore --file $LATEST_BACKUP_NAME --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm start --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#Publishing required DataSources and WorkBooks"
-
 su -c "/home/tableau_srv/scripts/tableau-pub.py /home/tableau_srv/$TAB_INT_REPO_NAME DQDashboards" - tableau_srv
 
 
@@ -265,13 +264,13 @@ echo "#sourcing tableau server envs - because this script is run as root not tab
 source /etc/profile.d/tableau_server.sh
 
 echo "#TSM active license as tableau_srv"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_4" -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_4" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#TSM register user details"
-tsm register --file /tmp/install/tab_reg_file.json -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
+tsm register --file /tmp/install/tab_reg_file.json --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#TSM settings (add default)"
 export CLIENT_ID=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_provider_client_id --query 'Parameter.Value' --output text`
@@ -324,10 +323,9 @@ export LATEST_BACKUP_NAME=`aws s3 ls $DATA_ARCHIVE_TAB_BACKUP_URL | tail -1 | aw
 aws s3 cp $DATA_ARCHIVE_TAB_BACKUP_URL$LATEST_BACKUP_NAME /var/opt/tableau/tableau_server/data/tabsvc/files/backups/$LATEST_BACKUP_NAME
 
 echo "#Restore latest backup to Tableau Server"
-tsm stop -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD" && tsm maintenance restore --file $LATEST_BACKUP_NAME -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD" && tsm start -u "$TAB_SRV_USER" -p "$TAB_SRV_PASSWORD"
+tsm stop --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm maintenance restore --file $LATEST_BACKUP_NAME --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm start --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#Publishing required DataSources and WorkBooks"
-
 su -c "/home/tableau_srv/scripts/tableau-pub.py /home/tableau_srv/$TAB_INT_REPO_NAME DQDashboards" - tableau_srv
 
 
@@ -411,6 +409,16 @@ resource "aws_security_group" "sgrp" {
     from_port = "${var.TSM_from_port}"
     to_port   = "${var.TSM_to_port}"
     protocol  = "${var.http_protocol}"
+
+    cidr_blocks = [
+      "${var.dq_ops_ingress_cidr}",
+    ]
+  }
+
+  ingress {
+    from_port = "${var.TAB_DB_to_port}"
+    to_port   = "${var.TAB_DB_to_port}"
+    protocol  = "${var.TAB_DB_protocol}"
 
     cidr_blocks = [
       "${var.dq_ops_ingress_cidr}",
