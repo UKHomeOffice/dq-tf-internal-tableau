@@ -13,3 +13,19 @@ data "aws_ami" "int_tableau_linux" {
     "self",
   ]
 }
+
+data "aws_kms" "rds_kms_key" {
+  most_recent = true
+
+  filter {
+    name = "alias"
+
+    values = [
+      "aws/rds",
+    ]
+  }
+
+  owners = [
+    "self",
+  ]
+}
