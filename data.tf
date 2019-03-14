@@ -15,7 +15,7 @@ data "aws_ami" "int_tableau_linux" {
 }
 
 data "aws_kms_key" "rds_kms_key" {
-  key_id = "aws/rds"
+  key_id = "alias/rds"
 
   owners = [
     "self",
