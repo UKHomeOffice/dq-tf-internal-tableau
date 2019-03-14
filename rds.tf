@@ -150,8 +150,6 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
   maintenance_window                  = "mon:01:30-mon:02:30"
   monitoring_interval                 = "0"
   multi_az                            = "true"
-  option_group_name                   = "default:postgres-10"
-  parameter_group_name                = "default.postgres10"
   port                                = "5432"
   publicly_accessible                 = "false"
   skip_final_snapshot                 = true
