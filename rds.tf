@@ -111,7 +111,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   identifier                          = "dev-postgres-${local.naming_suffix}"
   instance_class                      = "db.t3.large"
   iops                                = "0"
-  kms_key_id                          = "${aws_kms_key.rds.arn}"
+  kms_key_id                          = "${data.rds_kms_key.arn}"
   license_model                       = "postgresql-license"
   maintenance_window                  = "mon:01:30-mon:02:30"
   monitoring_interval                 = "0"
