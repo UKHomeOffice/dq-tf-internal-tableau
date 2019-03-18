@@ -99,6 +99,7 @@ resource "aws_db_instance" "postgres" {
 }
 
 resource "aws_db_instance" "internal_reporting_snapshot_dev" {
+  count                               = "${var.rds_count}"
   snapshot_identifier                 = "internal-reporting-20190301-1057"
   auto_minor_version_upgrade          = "true"
   backup_retention_period             = "14"
@@ -133,6 +134,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
 }
 
 resource "aws_db_instance" "internal_reporting_snapshot_qa" {
+  count                               = "${var.rds_count}"
   snapshot_identifier                 = "internal-reporting-20190301-1057"
   auto_minor_version_upgrade          = "true"
   backup_retention_period             = "14"
@@ -200,4 +202,24 @@ resource "aws_ssm_parameter" "rds_internal_tableau_service_password" {
   name  = "rds_internal_tableau_service_password"
   type  = "SecureString"
   value = "${random_string.service_password.result}"
+}
+
+resource "aws_ssm_parameter" "rds_internal_tableau_postgres_endpoint" {
+  name  = "rds_internal_tableau_postgres_endpoint"
+  type  = "String"
+  value = "${aws_db_instance.postgres.endpoint}"
+}
+
+resource "aws_ssm_parameter" "rds_internal_tableau_dev_endpoint" {
+  count = "${var.rds_count}"
+  name  = "rds_internal_tableau_postgres_endpoint"
+  type  =  "String"
+  value = "${aws_db_instance.internal_reporting_snapshot_dev.endpoint}"
+}
+
+resource "aws_ssm_parameter" "rds_internal_tableau_qa_endpoint" {
+  count = "${var.rds_count}"
+  name  = "rds_internal_tableau_postgres_endpoint"
+  type  = "String"
+  value = "${aws_db_instance.internal_reporting_snapshot_qa.endpoint}"
 }
