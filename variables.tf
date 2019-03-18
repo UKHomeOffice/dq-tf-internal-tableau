@@ -177,3 +177,8 @@ variable "port" {
   default     = "5432"
   description = "RDS Postgres port access"
 }
+
+variable "rds_count" {
+  default     = "0"
+  description = "RDS instance count"
+}
