@@ -178,7 +178,7 @@ variable "port" {
   description = "RDS Postgres port access"
 }
 
-variable "rds_count" {
+variable "rds_count_notprod" {
   default     = "0"
-  description = "RDS instance count"
+  description = "NotProd RDS instance count"
 }
