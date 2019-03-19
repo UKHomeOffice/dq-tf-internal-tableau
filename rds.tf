@@ -100,7 +100,7 @@ resource "aws_db_instance" "postgres" {
 
 resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   count                               = "${var.rds_count_notprod}"
-  snapshot_identifier                 = "internal-reporting-20190318-1328"
+  snapshot_identifier                 = "internal-reporting-20190319-0935"
   auto_minor_version_upgrade          = "true"
   backup_retention_period             = "14"
   backup_window                       = "00:00-01:00"
