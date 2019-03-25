@@ -183,7 +183,7 @@ variable "rds_count_notprod" {
   description = "NotProd RDS instance count"
 }
 
-variable "namespace" {
-  default = "notprod"
-  description = "Namespace of the environment"
+variable "apply_immediately" {
+  default = "false"
+  description = "Instant deployment switch"
 }

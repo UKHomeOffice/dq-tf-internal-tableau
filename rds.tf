@@ -85,7 +85,7 @@ resource "aws_db_instance" "postgres" {
   storage_encrypted       = true
   multi_az                = true
   skip_final_snapshot     = true
-  apply_immediately       = "${var.namespace == "prod" ? "false" : "true"}"
+  apply_immediately       = "${var.apply_immediately}"
 
   db_subnet_group_name   = "${aws_db_subnet_group.rds.id}"
   vpc_security_group_ids = ["${aws_security_group.internal_tableau_db.id}"]
