@@ -182,3 +182,8 @@ variable "rds_count_notprod" {
   default     = "0"
   description = "NotProd RDS instance count"
 }
+
+variable "namespace" {
+  default = "notprod"
+  description = "Namespace of the environment"
+}

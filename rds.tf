@@ -85,6 +85,7 @@ resource "aws_db_instance" "postgres" {
   storage_encrypted       = true
   multi_az                = true
   skip_final_snapshot     = true
+  apply_immediately       = "${var.namespace == "prod" ? "false" : "true"}"
 
   db_subnet_group_name   = "${aws_db_subnet_group.rds.id}"
   vpc_security_group_ids = ["${aws_security_group.internal_tableau_db.id}"]
@@ -107,7 +108,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   copy_tags_to_snapshot               = "false"
   db_subnet_group_name                = "${aws_db_subnet_group.rds.id}"
   deletion_protection                 = "false"
-  enabled_cloudwatch_logs_exports     = ["postgresql","upgrade"]
+  enabled_cloudwatch_logs_exports     = ["postgresql", "upgrade"]
   iam_database_authentication_enabled = "false"
   identifier                          = "dev-postgres-${local.naming_suffix}"
   instance_class                      = "db.t3.large"
@@ -142,7 +143,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
   copy_tags_to_snapshot               = "false"
   db_subnet_group_name                = "${aws_db_subnet_group.rds.id}"
   deletion_protection                 = "false"
-  enabled_cloudwatch_logs_exports     = ["postgresql","upgrade"]
+  enabled_cloudwatch_logs_exports     = ["postgresql", "upgrade"]
   iam_database_authentication_enabled = "false"
   identifier                          = "qa-postgres-${local.naming_suffix}"
   instance_class                      = "db.t3.large"
@@ -167,7 +168,6 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
     Name = "qa-postgres-${local.naming_suffix}"
   }
 }
-
 
 resource "aws_ssm_parameter" "rds_internal_tableau_username" {
   name  = "rds_internal_tableau_username"
@@ -213,7 +213,7 @@ resource "aws_ssm_parameter" "rds_internal_tableau_postgres_endpoint" {
 resource "aws_ssm_parameter" "rds_internal_tableau_dev_endpoint" {
   count = "${var.rds_count_notprod}"
   name  = "rds_internal_tableau_dev_endpoint"
-  type  =  "String"
+  type  = "String"
   value = "${aws_db_instance.internal_reporting_snapshot_dev.endpoint}"
 }
 
