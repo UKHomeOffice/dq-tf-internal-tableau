@@ -29,7 +29,7 @@ class TestE2E(unittest.TestCase):
               s3_archive_bucket_key             = "1234567890"
               s3_archive_bucket_name            = "bucket-name"
               haproxy_private_ip                = "1.2.3.4"
-              namespace                         = "notprod"
+              namespace                         = "prod"
 
             }
 
@@ -66,6 +66,9 @@ class TestE2E(unittest.TestCase):
 
     def test_db_security_group_tags(self):
         self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau_db"]["tags.Name"], "sg-db-internal-tableau-apps-preprod-dq")
+
+    def test_rds_change_switch(self):
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["apply_immediately"], "false")
 
     def test_rds_tags(self):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["tags.Name"], "rds-postgres-internal-tableau-apps-preprod-dq")
