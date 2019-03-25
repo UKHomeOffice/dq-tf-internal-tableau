@@ -187,3 +187,8 @@ variable "apply_immediately" {
   default = "false"
   description = "Instant deployment switch"
 }
+
+variable "postgres_allocated_storage" {
+  default = "300"
+  description = "RDS allocated storage"
+}
