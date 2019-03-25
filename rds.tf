@@ -80,12 +80,13 @@ resource "aws_db_instance" "postgres" {
   name                    = "${var.database_name}"
   port                    = "${var.port}"
   backup_window           = "00:00-01:00"
-  maintenance_window      = "mon:01:30-mon:02:30"
+  maintenance_window      = "tue:01:30-tue:02:30"
   backup_retention_period = 14
   storage_encrypted       = true
   multi_az                = true
   skip_final_snapshot     = true
   apply_immediately       = "${var.apply_immediately}"
+  monitoring_interval     = 60
 
   db_subnet_group_name   = "${aws_db_subnet_group.rds.id}"
   vpc_security_group_ids = ["${aws_security_group.internal_tableau_db.id}"]
