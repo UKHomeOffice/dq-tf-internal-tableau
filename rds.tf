@@ -86,7 +86,6 @@ resource "aws_db_instance" "postgres" {
   multi_az                = true
   skip_final_snapshot     = true
   apply_immediately       = "${var.apply_immediately}"
-  monitoring_interval     = 60
 
   db_subnet_group_name   = "${aws_db_subnet_group.rds.id}"
   vpc_security_group_ids = ["${aws_security_group.internal_tableau_db.id}"]
