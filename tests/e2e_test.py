@@ -67,10 +67,10 @@ class TestE2E(unittest.TestCase):
         self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau_db"]["tags.Name"], "sg-db-internal-tableau-apps-preprod-dq")
 
     def test_rds_change_switch(self):
-        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["apply_immediately"], "true")
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["apply_immediately"], "false")
 
     def test_rds_disk_size(self):
-        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["allocated_storage"], "900")    
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["allocated_storage"], "900")
 
     def test_rds_tags(self):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["tags.Name"], "rds-postgres-internal-tableau-apps-preprod-dq")
