@@ -178,17 +178,7 @@ variable "port" {
   description = "RDS Postgres port access"
 }
 
-variable "rds_count_notprod" {
-  default     = "0"
-  description = "NotProd RDS instance count"
-}
-
-variable "apply_immediately" {
-  default = "false"
-  description = "Instant deployment switch"
-}
-
-variable "postgres_allocated_storage" {
-  default = "300"
-  description = "RDS allocated storage"
+variable "environment" {
+  default     = "notprod"
+  description = "Switch between environments"
 }

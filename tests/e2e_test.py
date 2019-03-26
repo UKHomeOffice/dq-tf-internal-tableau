@@ -29,9 +29,7 @@ class TestE2E(unittest.TestCase):
               s3_archive_bucket_key             = "1234567890"
               s3_archive_bucket_name            = "bucket-name"
               haproxy_private_ip                = "1.2.3.4"
-              apply_immediately                 = "false"
-              postgres_allocated_storage        = "300"
-
+              environment                       = "prod"
             }
 
         """
@@ -69,10 +67,10 @@ class TestE2E(unittest.TestCase):
         self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau_db"]["tags.Name"], "sg-db-internal-tableau-apps-preprod-dq")
 
     def test_rds_change_switch(self):
-        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["apply_immediately"], "false")
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["apply_immediately"], "true")
 
     def test_rds_disk_size(self):
-        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["allocated_storage"], "300")    
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["allocated_storage"], "900")    
 
     def test_rds_tags(self):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["tags.Name"], "rds-postgres-internal-tableau-apps-preprod-dq")
