@@ -68,6 +68,62 @@ resource "aws_security_group" "internal_tableau_db" {
   }
 }
 
+resource "aws_iam_role" "postgres" {
+  name = "rds-postgres-role-${local.naming_suffix}"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "monitoring.rds.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "postgres" {
+  name = "rds-postgres-policy-${local.naming_suffix}"
+  role = "${aws_iam_role.postgres.id}"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "EnableCreationAndManagementOfRDSCloudwatchLogGroups",
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:PutRetentionPolicy"
+            ],
+            "Resource": [
+                "arn:aws:logs:*:*:log-group:RDS*"
+            ]
+        },
+        {
+            "Sid": "EnableCreationAndManagementOfRDSCloudwatchLogStreams",
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:DescribeLogStreams",
+                "logs:GetLogEvents"
+            ],
+            "Resource": [
+                "arn:aws:logs:*:*:log-group:RDS*:log-stream:*"
+            ]
+        }
+    ]
+}
+EOF
+}
+
 resource "aws_db_instance" "postgres" {
   identifier                      = "postgres-${local.naming_suffix}"
   allocated_storage               = "${var.environment == "prod" ? "1500" : "300"}"
@@ -82,7 +138,10 @@ resource "aws_db_instance" "postgres" {
   port                            = "${var.port}"
   backup_window                   = "00:00-01:00"
   maintenance_window              = "tue:10:25-tue:11:00"
+  monitoring_interval             = 10
+  monitoring_role_arn             = "${aws_iam_role.postgres.arn}"
   backup_retention_period         = 14
+  deletion_protection             = true
   storage_encrypted               = true
   multi_az                        = true
   skip_final_snapshot             = true
