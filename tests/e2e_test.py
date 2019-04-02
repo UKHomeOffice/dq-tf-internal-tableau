@@ -81,8 +81,8 @@ class TestE2E(unittest.TestCase):
     def test_rds_monitoring_interval(self):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["monitoring_interval"], "10")
 
-   def test_rds_deletion_protection(self):
-       self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["deletion_protection"], "true")
+    def test_rds_deletion_protection(self):
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["deletion_protection"], "true")
 
     def test_rds_tags(self):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["tags.Name"], "rds-postgres-internal-tableau-apps-preprod-dq")
