@@ -170,8 +170,9 @@ echo '/dev/nvme1n1 /var/log xfs defaults 0 0' >> /etc/fstab
 umount /mnt/var/log/
 
 echo "
+sed -i '/DATA_ARCHIVE_TAB_BACKUP_SUB_DIRECTORY/d' /home/tableau_srv/env_vars.sh
 export DATA_ARCHIVE_TAB_BACKUP_SUB_DIRECTORY=`aws --region eu-west-2 ssm set-parameter --name data_archive_tab_int_backup_sub_directory --type "String" --value "$(curl http://169.254.169.254/latest/meta-data/instance-id)/"`
-" > /home/tableau_srv/env_vars.sh>
+" >> /home/tableau_srv/env_vars.sh
 
 reboot
 
