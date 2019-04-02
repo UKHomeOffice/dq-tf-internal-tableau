@@ -70,7 +70,7 @@ resource "aws_security_group" "internal_tableau_db" {
 
 resource "aws_db_instance" "postgres" {
   identifier                      = "postgres-${local.naming_suffix}"
-  allocated_storage               = "${var.environment == "prod" ? "900" : "300"}"
+  allocated_storage               = "${var.environment == "prod" ? "1500" : "300"}"
   storage_type                    = "gp2"
   engine                          = "postgres"
   engine_version                  = "10.6"
@@ -81,7 +81,7 @@ resource "aws_db_instance" "postgres" {
   name                            = "${var.database_name}"
   port                            = "${var.port}"
   backup_window                   = "00:00-01:00"
-  maintenance_window              = "mon:16:55-mon:18:35"
+  maintenance_window              = "tue:10:45-mon:11:45"
   backup_retention_period         = 14
   storage_encrypted               = true
   multi_az                        = true
