@@ -25,7 +25,8 @@ exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
 echo "#Pull values from Parameter Store and save to profile"
 touch /home/tableau_srv/env_vars.sh
 echo "
-export DATA_ARCHIVE_TAB_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_url --query 'Parameter.Value' --output text`$(curl http://169.254.169.254/latest/meta-data/instance-id)/
+export DATA_ARCHIVE_TAB_BACKUP_SUB_DIRECTORY=`aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_sub_directory --query 'Parameter.Value' --output text`
+export DATA_ARCHIVE_TAB_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_url --query 'Parameter.Value' --output text`$DATA_ARCHIVE_TAB_BACKUP_SUB_DIRECTORY/
 export TAB_INT_REPO_PROTOCOL=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_protocol --query 'Parameter.Value' --output text`
 export TAB_INT_REPO_USER=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_user --query 'Parameter.Value' --output text`
 export TAB_INT_REPO_HOST=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_host --query 'Parameter.Value' --output text`
@@ -167,6 +168,10 @@ rsync -a /var/log/ /mnt/var/log
 semanage fcontext -a -t var_t "/mnt/var" && semanage fcontext -a -e /var/log /mnt/var/log && restorecon -R -v /mnt/var
 echo '/dev/nvme1n1 /var/log xfs defaults 0 0' >> /etc/fstab
 umount /mnt/var/log/
+
+echo "
+export DATA_ARCHIVE_TAB_BACKUP_SUB_DIRECTORY=`aws --region eu-west-2 ssm set-parameter --name data_archive_tab_int_backup_sub_directory --type "String" --value "$(curl http://169.254.169.254/latest/meta-data/instance-id)/"`
+" > /home/tableau_srv/env_vars.sh>
 
 reboot
 
