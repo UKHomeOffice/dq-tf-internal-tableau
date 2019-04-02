@@ -72,6 +72,18 @@ class TestE2E(unittest.TestCase):
     def test_rds_disk_size(self):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["allocated_storage"], "1500")
 
+    def test_rds_iam_role_name(self):
+        self.assertEqual(self.result["root_modules"]["aws_iam_role.postgres"]["name"], "rds-postgres-role-internal-tableau-apps-preprod-dq")
+
+    def test_rds_iam_role_policy(self):
+        self.assertEqual(self.result["root_modules"]["aws_iam_role_policy.postgres"]["name"], "rds-postgres-policy-internal-tableau-apps-preprod-dq")
+
+    def test_rds_monitoring_interval(self):
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["monitoring_interval"], "10")
+
+    def test_rds_deletion_protection(self):
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["deletion_protection"], "true")
+
     def test_rds_tags(self):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["tags.Name"], "rds-postgres-internal-tableau-apps-preprod-dq")
 
