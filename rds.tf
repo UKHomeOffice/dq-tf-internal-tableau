@@ -69,8 +69,6 @@ resource "aws_security_group" "internal_tableau_db" {
 }
 
 resource "aws_iam_role" "postgres" {
-  name = "rds-postgres-role-${local.naming_suffix}"
-
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -88,7 +86,6 @@ EOF
 }
 
 resource "aws_iam_role_policy" "postgres" {
-  name = "rds-postgres-policy-${local.naming_suffix}"
   role = "${aws_iam_role.postgres.id}"
 
   policy = <<EOF
