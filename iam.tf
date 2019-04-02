@@ -60,7 +60,7 @@ resource "aws_iam_role_policy" "int_tableau" {
         "arn:aws:ssm:eu-west-2:*:parameter/tableau_int_publish_datasources",
         "arn:aws:ssm:eu-west-2:*:parameter/tableau_int_publish_workbooks"
       ]
-    }
+    },
     {
       "Effect": "Allow",
       "Action": [
