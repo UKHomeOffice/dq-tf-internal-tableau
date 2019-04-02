@@ -169,7 +169,7 @@ semanage fcontext -a -t var_t "/mnt/var" && semanage fcontext -a -e /var/log /mn
 echo '/dev/nvme1n1 /var/log xfs defaults 0 0' >> /etc/fstab
 umount /mnt/var/log/
 
-aws --region eu-west-2 ssm set-parameter --name data_archive_tab_int_backup_sub_directory --type "String" --value "$(curl http://169.254.169.254/latest/meta-data/instance-id)/"
+aws --region eu-west-2 ssm put-parameter --name data_archive_tab_int_backup_sub_directory --overwrite --type "String" --value "$(curl http://169.254.169.254/latest/meta-data/instance-id)/"
 sed -i '/DATA_ARCHIVE_TAB_BACKUP_SUB_DIRECTORY/d' /home/tableau_srv/env_vars.sh
 echo "
 export DATA_ARCHIVE_TAB_BACKUP_SUB_DIRECTORY=`aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_sub_directory --query 'Parameter.Value' --output text`

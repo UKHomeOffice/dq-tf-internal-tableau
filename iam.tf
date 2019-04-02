@@ -64,7 +64,7 @@ resource "aws_iam_role_policy" "int_tableau" {
     {
       "Effect": "Allow",
       "Action": [
-          "ssm:SetParameter"
+          "ssm:PutParameter"
       ],
       "Resource": "arn:aws:ssm:eu-west-2:*:parameter/data_archive_tab_int_backup_sub_directory"
     }
