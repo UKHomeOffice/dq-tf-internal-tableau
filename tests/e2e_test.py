@@ -105,8 +105,5 @@ class TestE2E(unittest.TestCase):
     def test_iam_role(self):
         self.assertEqual(self.result["root_modules"]["aws_iam_role.postgres"]["name"], "rds-postgres-role-internal-tableau-apps-preprod-dq")
 
-    def test_iam_policy(self):
-        self.assertEqual(self.result["root_modules"]["aws_iam_role_policy.postgres"]["name"], "rds-postgres-policy-internal-tableau-apps-preprod-dq")
-
 if __name__ == '__main__':
     unittest.main()
