@@ -101,6 +101,8 @@ resource "aws_db_instance" "postgres" {
   port                            = "${var.port}"
   backup_window                   = "00:00-01:00"
   maintenance_window              = "tue:10:25-tue:11:00"
+  monitoring_interval             = 10
+  monitoring_role_arn             = "${aws_iam_role.postgres.arn}"
   backup_retention_period         = 14
   deletion_protection             = true
   storage_encrypted               = true
