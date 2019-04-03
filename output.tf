@@ -1,7 +1,7 @@
 output "iam_roles" {
   value = [
     "${aws_iam_role.int_tableau.id}",
-    "${aws_iam_role.postgres}",
+    "${aws_iam_role.postgres.id}",
   ]
 }
 
