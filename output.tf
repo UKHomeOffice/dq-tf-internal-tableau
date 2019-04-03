@@ -1,5 +1,8 @@
 output "iam_roles" {
-  value = ["${aws_iam_role.int_tableau.id}"]
+  value = [
+    "${aws_iam_role.int_tableau.id}",
+    "${aws_iam_role.postgres}",
+  ]
 }
 
 output "rds_internal_tableau_endpoint" {
