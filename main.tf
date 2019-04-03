@@ -6,7 +6,7 @@ locals {
 resource "aws_instance" "int_tableau_linux" {
   key_name                    = "${var.key_name}"
   ami                         = "${data.aws_ami.int_tableau_linux.id}"
-  instance_type               = "m5.4xlarge"
+  instance_type               = "r5d.4xlarge"
   iam_instance_profile        = "${aws_iam_instance_profile.int_tableau.id}"
   vpc_security_group_ids      = ["${aws_security_group.sgrp.id}"]
   associate_public_ip_address = false
@@ -196,7 +196,7 @@ EOF
 resource "aws_instance" "int_tableau_linux_blue" {
   key_name                    = "${var.key_name}"
   ami                         = "${data.aws_ami.int_tableau_linux.id}"
-  instance_type               = "m5.4xlarge"
+  instance_type               = "r5d.4xlarge"
   iam_instance_profile        = "${aws_iam_instance_profile.int_tableau.id}"
   vpc_security_group_ids      = ["${aws_security_group.sgrp.id}"]
   associate_public_ip_address = false
@@ -275,11 +275,8 @@ echo "#Initialise TSM (finishes off Tableau Server install/config)"
 echo "#sourcing tableau server envs - because this script is run as root not tableau_srv"
 source /etc/profile.d/tableau_server.sh
 
-echo "#TSM active license as tableau_srv"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_4" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+echo "#TSM active trial license as tableau_srv - use ~tableau_srv/scripts/tableau-license-activate.sh to activate actual Product Keys"
+tsm licenses activate --trial --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
