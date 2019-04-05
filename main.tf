@@ -235,6 +235,7 @@ export TAB_PRODUCT_KEY_1=`aws --region eu-west-2 ssm get-parameter --name tablea
 export TAB_PRODUCT_KEY_2=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_2 --query 'Parameter.Value' --output text --with-decryption`
 export TAB_PRODUCT_KEY_3=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_3 --query 'Parameter.Value' --output text --with-decryption`
 export TAB_PRODUCT_KEY_4=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_4 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_TEMP=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_temp --query 'Parameter.Value' --output text --with-decryption`
 export DATASOURCES_TO_PUBLISH='`aws --region eu-west-2 ssm get-parameter --name tableau_int_publish_datasources --query 'Parameter.Value' --output text`'
 export WORKBOOKS_TO_PUBLISH='`aws --region eu-west-2 ssm get-parameter --name tableau_int_publish_workbooks --query 'Parameter.Value' --output text`'
 export RDS_POSTGRES=`aws --region eu-west-2 ssm get-parameter --name rds_internal_tableau_postgres_endpoint --query 'Parameter.Value' --output text`
@@ -278,7 +279,7 @@ source /etc/profile.d/tableau_server.sh
 #echo "#TSM active trial license as tableau_srv - use ~tableau_srv/scripts/tableau-license-activate.sh to activate actual Product Keys"
 #tsm licenses activate --trial --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 echo "#TSM active temp license - until Tableau sort out issue with TAB_PRODUCT_KEY_3 & TAB_PRODUCT_KEY_4"
-tsm licenses activate --license-key TSSC-D656-4610-3F61-28A7 --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_TEMP" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
