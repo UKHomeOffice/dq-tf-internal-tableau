@@ -184,5 +184,5 @@ variable "environment" {
 }
 
 variable "s3_haproxy_config_bucket" {
-  description = "Haproxy config bucket ARN"
+  description = "Haproxy config bucket ID"
 }
