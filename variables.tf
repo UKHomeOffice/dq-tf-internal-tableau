@@ -186,3 +186,7 @@ variable "environment" {
 variable "s3_haproxy_config_bucket" {
   description = "Haproxy config bucket ID"
 }
+
+variable "s3_haproxy_config_bucket_key" {
+  description = "Haproxy config bucket KMS Key ARN"
+}

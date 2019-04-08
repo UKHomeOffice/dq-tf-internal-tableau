@@ -87,7 +87,10 @@ resource "aws_iam_role_policy" "int_tableau_s3" {
     {
       "Effect": "Allow",
       "Action": ["s3:ListBucket"],
-      "Resource": "${var.s3_archive_bucket}"
+      "Resource": [
+        "${var.s3_archive_bucket}",
+        "${var.s3_haproxy_config_bucket}"
+        ]
     },
     {
       "Effect": "Allow",
@@ -100,13 +103,24 @@ resource "aws_iam_role_policy" "int_tableau_s3" {
     {
       "Effect": "Allow",
       "Action": [
+        "s3:PutObject",
+        "s3:GetObject"
+      ],
+      "Resource": "${var.s3_haproxy_config_bucket}/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
         "kms:Encrypt",
         "kms:Decrypt",
         "kms:ReEncrypt*",
         "kms:GenerateDataKey*",
         "kms:DescribeKey"
         ],
-      "Resource": "${var.s3_archive_bucket_key}"
+      "Resource": [
+        "${var.s3_archive_bucket_key}",
+        "${var.s3_haproxy_config_bucket_key}"
+        ]
     }
   ]
 }
