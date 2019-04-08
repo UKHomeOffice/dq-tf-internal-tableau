@@ -106,7 +106,7 @@ resource "aws_iam_role_policy" "int_tableau_s3" {
         "s3:PutObject",
         "s3:GetObject"
       ],
-      "Resource": "${var.s3_haproxy_config_bucket}/*"
+      "Resource": "arn:aws:s3:::${var.s3_haproxy_config_bucket}/*"
     },
     {
       "Effect": "Allow",
