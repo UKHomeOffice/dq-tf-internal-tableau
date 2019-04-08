@@ -89,7 +89,7 @@ resource "aws_iam_role_policy" "int_tableau_s3" {
       "Action": ["s3:ListBucket"],
       "Resource": [
         "${var.s3_archive_bucket}",
-        "${var.s3_haproxy_config_bucket}"
+        "arn:aws:s3:::${var.s3_haproxy_config_bucket}"
         ]
     },
     {
