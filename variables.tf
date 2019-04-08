@@ -182,3 +182,7 @@ variable "environment" {
   default     = "notprod"
   description = "Switch between environments"
 }
+
+variable "s3_haproxy_config_bucket" {
+  description = "Haproxy config bucket ARN"
+}
