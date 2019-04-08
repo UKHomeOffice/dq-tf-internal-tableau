@@ -25,7 +25,7 @@ exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
 echo "#Pull values from Parameter Store and save to profile"
 touch /home/tableau_srv/env_vars.sh
 echo "
-export NAMING_SUFFIX=${var.s3_haproxy_config_bucket}
+export S3_HAPROXY_CONFIG_BUCKET=${var.s3_haproxy_config_bucket}
 export DATA_ARCHIVE_TAB_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_url --query 'Parameter.Value' --output text``aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_sub_directory --query 'Parameter.Value' --output text`/
 export TAB_INT_REPO_PROTOCOL=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_protocol --query 'Parameter.Value' --output text`
 export TAB_INT_REPO_USER=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_user --query 'Parameter.Value' --output text`
