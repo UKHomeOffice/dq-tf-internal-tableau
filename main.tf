@@ -26,7 +26,6 @@ echo "#Pull values from Parameter Store and save to profile"
 touch /home/tableau_srv/env_vars.sh
 echo "
 export S3_HAPROXY_CONFIG_BUCKET=${var.s3_haproxy_config_bucket}
-export DATA_ARCHIVE_TAB_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_url --query 'Parameter.Value' --output text``aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_sub_directory --query 'Parameter.Value' --output text`/
 export TAB_INT_REPO_PROTOCOL=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_protocol --query 'Parameter.Value' --output text`
 export TAB_INT_REPO_USER=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_user --query 'Parameter.Value' --output text`
 export TAB_INT_REPO_HOST=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_host --query 'Parameter.Value' --output text`
@@ -141,8 +140,24 @@ su -c "tabcmd --accepteula" - tableau_srv
 echo "#TSMCMD - initial user"
 tabcmd initialuser --server 'localhost:80' --username "$TAB_ADMIN_USER" --password "$TAB_ADMIN_PASSWORD"
 
+# Lookup Green/Blue from S3
+export IP=$(aws s3 cp s3://$S3_HAPROXY_CONFIG_BUCKET/haproxy.cfg - | grep "server tableau_ext" | awk '{ print $3 }' | awk -F : '{ print $1 }')
+export CURRENT_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
+export DATE=$(aws s3 ls s3://s3-dq-data-archive-bucket-notprod/tableau-int/blue/ | tail -1 | awk '{ print $2 }' | awk -F / '{ print $1 }'
+
+if [ IP == CURRENT_IP ]; then
+  echo "== Set destination as Green instance"
+  export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL"green/$DATE/
+elif [ IP != CURRENT_IP ]; then
+  echo "== Set destination as Blue instance"
+  export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL"blue/$DATE/
+else
+  echo "== FAILED: Failed to set Green/Blue instace..."
+  exit
+fi
+
 echo "#Get most recent Tableau backup from S3"
-export LATEST_BACKUP_NAME=`aws s3 ls $DATA_ARCHIVE_TAB_BACKUP_URL | tail -1 | awk '{print $4}'`
+export LATEST_BACKUP_NAME=`aws s3 ls $BACKUP_LOCATION | tail -1 | awk '{print $4}'`
 aws s3 cp $DATA_ARCHIVE_TAB_BACKUP_URL$LATEST_BACKUP_NAME /var/opt/tableau/tableau_server/data/tabsvc/files/backups/$LATEST_BACKUP_NAME
 
 echo "#Restore latest backup to Tableau Server"
@@ -168,12 +183,6 @@ rsync -a /var/log/ /mnt/var/log
 semanage fcontext -a -t var_t "/mnt/var" && semanage fcontext -a -e /var/log /mnt/var/log && restorecon -R -v /mnt/var
 echo '/dev/nvme1n1 /var/log xfs defaults 0 0' >> /etc/fstab
 umount /mnt/var/log/
-
-aws --region eu-west-2 ssm put-parameter --name data_archive_tab_int_backup_sub_directory --overwrite --type "String" --value "$(curl http://169.254.169.254/latest/meta-data/instance-id)"
-sed -i '/DATA_ARCHIVE_TAB_BACKUP_URL/d' /home/tableau_srv/env_vars.sh
-echo "
-export DATA_ARCHIVE_TAB_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_url --query 'Parameter.Value' --output text``aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_sub_directory --query 'Parameter.Value' --output text`/
-" >> /home/tableau_srv/env_vars.sh
 
 reboot
 
@@ -216,7 +225,7 @@ exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
 echo "#Pull values from Parameter Store and save to profile"
 touch /home/tableau_srv/env_vars.sh
 echo "
-export DATA_ARCHIVE_TAB_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_url --query 'Parameter.Value' --output text``aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_sub_directory --query 'Parameter.Value' --output text`/
+export S3_HAPROXY_CONFIG_BUCKET=${var.s3_haproxy_config_bucket}
 export TAB_INT_REPO_PROTOCOL=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_protocol --query 'Parameter.Value' --output text`
 export TAB_INT_REPO_USER=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_user --query 'Parameter.Value' --output text`
 export TAB_INT_REPO_HOST=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_host --query 'Parameter.Value' --output text`
@@ -332,8 +341,24 @@ su -c "tabcmd --accepteula" - tableau_srv
 echo "#TSMCMD - initial user"
 tabcmd initialuser --server 'localhost:80' --username "$TAB_ADMIN_USER" --password "$TAB_ADMIN_PASSWORD"
 
+# Lookup Green/Blue from S3
+export IP=$(aws s3 cp s3://$S3_HAPROXY_CONFIG_BUCKET/haproxy.cfg - | grep "server tableau_ext" | awk '{ print $3 }' | awk -F : '{ print $1 }')
+export CURRENT_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
+export DATE=$(aws s3 ls s3://s3-dq-data-archive-bucket-notprod/tableau-int/blue/ | tail -1 | awk '{ print $2 }' | awk -F / '{ print $1 }'
+
+if [ IP == CURRENT_IP ]; then
+  echo "== Set destination as Green instance"
+  export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL"green/$DATE/
+elif [ IP != CURRENT_IP ]; then
+  echo "== Set destination as Blue instance"
+  export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL"blue/$DATE/
+else
+  echo "== FAILED: Failed to set Green/Blue instace..."
+  exit
+fi
+
 echo "#Get most recent Tableau backup from S3"
-export LATEST_BACKUP_NAME=`aws s3 ls $DATA_ARCHIVE_TAB_BACKUP_URL | tail -1 | awk '{print $4}'`
+export LATEST_BACKUP_NAME=`aws s3 ls $BACKUP_LOCATION | tail -1 | awk '{print $4}'`
 aws s3 cp $DATA_ARCHIVE_TAB_BACKUP_URL$LATEST_BACKUP_NAME /var/opt/tableau/tableau_server/data/tabsvc/files/backups/$LATEST_BACKUP_NAME
 
 echo "#Restore latest backup to Tableau Server"
@@ -359,12 +384,6 @@ rsync -a /var/log/ /mnt/var/log
 semanage fcontext -a -t var_t "/mnt/var" && semanage fcontext -a -e /var/log /mnt/var/log && restorecon -R -v /mnt/var
 echo '/dev/nvme1n1 /var/log xfs defaults 0 0' >> /etc/fstab
 umount /mnt/var/log/
-
-aws --region eu-west-2 ssm put-parameter --name data_archive_tab_int_backup_sub_directory --overwrite --type "String" --value "$(curl http://169.254.169.254/latest/meta-data/instance-id)"
-sed -i '/DATA_ARCHIVE_TAB_BACKUP_URL/d' /home/tableau_srv/env_vars.sh
-echo "
-export DATA_ARCHIVE_TAB_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_url --query 'Parameter.Value' --output text``aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_sub_directory --query 'Parameter.Value' --output text`/
-" >> /home/tableau_srv/env_vars.sh
 
 reboot
 
