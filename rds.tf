@@ -120,6 +120,12 @@ resource "aws_db_instance" "postgres" {
   }
 }
 
+module "cloudwatch_alarms_postgres" {
+  source         = "github.com/UKHomeOffice/dq-tf-cloudwatch-rds"
+  naming_suffix  = "${local.naming_suffix}"
+  db_instance_id = "${aws_db_instance.postgres.id}"
+}
+
 resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   count                               = "${var.environment == "prod" ? "0" : "1"}"
   snapshot_identifier                 = "internal-reporting-20190320-1133"
