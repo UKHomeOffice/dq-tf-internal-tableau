@@ -86,11 +86,8 @@ echo "#Initialise TSM (finishes off Tableau Server install/config)"
 echo "#sourcing tableau server envs - because this script is run as root not tableau_srv"
 source /etc/profile.d/tableau_server.sh
 
-echo "#TSM active license as tableau_srv"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_4" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+echo "#TSM active TRIAL license as tableau_srv"
+tsm licenses activate --trial -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
 
 echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
@@ -280,10 +277,8 @@ echo "#Initialise TSM (finishes off Tableau Server install/config)"
 echo "#sourcing tableau server envs - because this script is run as root not tableau_srv"
 source /etc/profile.d/tableau_server.sh
 
-#echo "#TSM active trial license as tableau_srv - use ~tableau_srv/scripts/tableau-license-activate.sh to activate actual Product Keys"
-#tsm licenses activate --trial --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
-echo "#TSM active temp license - until Tableau sort out issue with TAB_PRODUCT_KEY_3 & TAB_PRODUCT_KEY_4"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_TEMP" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+echo "#TSM active TRIAL license as tableau_srv"
+tsm licenses activate --trial -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
 
 echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
