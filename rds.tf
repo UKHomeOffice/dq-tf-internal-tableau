@@ -198,7 +198,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
 
 resource "aws_db_instance" "internal_reporting_snapshot_test" {
   count                               = "${var.environment == "prod" ? "1" : "0"}"
-  snapshot_identifier                 = "rds:postgres-internal-tableau-apps-prod-dq-2019-04-06-00-08"
+  snapshot_identifier                 = "rds:postgres-internal-tableau-apps-prod-dq-2019-04-16-00-08"
   auto_minor_version_upgrade          = "true"
   backup_retention_period             = "14"
   backup_window                       = "00:00-01:00"
