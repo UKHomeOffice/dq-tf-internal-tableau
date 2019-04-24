@@ -28,7 +28,7 @@ echo "
 export S3_HAPROXY_CONFIG_BUCKET=${var.s3_haproxy_config_bucket}
 export DATA_ARCHIVE_TAB_BACKUP_URL=$(aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_url --query 'Parameter.Value' --output text)
 export TAB_INT_REPO_PROTOCOL=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_protocol --query 'Parameter.Value' --output text`
-export TAB_INT_REPO_USER=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_user --query 'Parameter.Value' --output text`
+export TAB_INT_REPO_USERS=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_user --query 'Parameter.Value' --output text`
 export TAB_INT_REPO_HOST=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_host --query 'Parameter.Value' --output text`
 export TAB_INT_REPO_PORT=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_port --query 'Parameter.Value' --output text`
 export TAB_INT_REPO_ORG=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_org --query 'Parameter.Value' --output text`
@@ -141,25 +141,12 @@ su -c "tabcmd --accepteula" - tableau_srv
 echo "#TSMCMD - initial user"
 tabcmd initialuser --server 'localhost:80' --username "$TAB_ADMIN_USER" --password "$TAB_ADMIN_PASSWORD"
 
-# Lookup Green/Blue from S3
-export IP=$(aws s3 cp s3://$S3_HAPROXY_CONFIG_BUCKET/haproxy.cfg - | grep "server tableau_ext" | awk '{ print $3 }' | awk -F : '{ print $1 }')
-export CURRENT_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
-export DATE=$(aws s3 ls s3://s3-dq-data-archive-bucket-notprod/tableau-int/blue/ | tail -1 | awk '{ print $2 }' | awk -F / '{ print $1 }'
-
-if [ IP == CURRENT_IP ]; then
-  echo "== Set destination as Green instance"
-  export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL"green/$DATE/
-elif [ IP != CURRENT_IP ]; then
-  echo "== Set destination as Blue instance"
-  export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL"blue/$DATE/
-else
-  echo "== FAILED: Failed to set Green/Blue instace..."
-  exit
-fi
+# Always restore from green
+export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/green/"
 
 echo "#Get most recent Tableau backup from S3"
 export LATEST_BACKUP_NAME=`aws s3 ls $BACKUP_LOCATION | tail -1 | awk '{print $4}'`
-aws s3 cp $DATA_ARCHIVE_TAB_BACKUP_URL$LATEST_BACKUP_NAME /var/opt/tableau/tableau_server/data/tabsvc/files/backups/$LATEST_BACKUP_NAME
+aws s3 cp $BACKUP_LOCATION$LATEST_BACKUP_NAME /var/opt/tableau/tableau_server/data/tabsvc/files/backups/$LATEST_BACKUP_NAME
 
 echo "#Restore latest backup to Tableau Server"
 tsm stop --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm maintenance restore --file $LATEST_BACKUP_NAME --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm start --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
