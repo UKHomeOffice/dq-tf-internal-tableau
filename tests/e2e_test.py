@@ -28,8 +28,8 @@ class TestE2E(unittest.TestCase):
               s3_archive_bucket                 = "bucket-name"
               s3_archive_bucket_key             = "1234567890"
               s3_archive_bucket_name            = "bucket-name"
-              s3_haproxy_config_bucket          = "s3-bucket-name"
-              s3_haproxy_config_bucket_key      = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+              s3_httpd_config_bucket            = "s3-bucket-name"
+              s3_httpd_config_bucket_key        = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
               haproxy_private_ip                = "1.2.3.4"
               environment                       = "prod"
 
