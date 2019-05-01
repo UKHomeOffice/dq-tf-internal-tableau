@@ -89,7 +89,7 @@ resource "aws_iam_role_policy" "int_tableau_s3" {
       "Action": ["s3:ListBucket"],
       "Resource": [
         "${var.s3_archive_bucket}",
-        "arn:aws:s3:::${var.s3_haproxy_config_bucket}"
+        "arn:aws:s3:::${var.s3_httpd_config_bucket}"
         ]
     },
     {
@@ -106,7 +106,7 @@ resource "aws_iam_role_policy" "int_tableau_s3" {
         "s3:PutObject",
         "s3:GetObject"
       ],
-      "Resource": "arn:aws:s3:::${var.s3_haproxy_config_bucket}/*"
+      "Resource": "arn:aws:s3:::${var.s3_httpd_config_bucket}/*"
     },
     {
       "Effect": "Allow",
@@ -119,7 +119,7 @@ resource "aws_iam_role_policy" "int_tableau_s3" {
         ],
       "Resource": [
         "${var.s3_archive_bucket_key}",
-        "${var.s3_haproxy_config_bucket_key}"
+        "${var.s3_httpd_config_bucket_key}"
         ]
     }
   ]
