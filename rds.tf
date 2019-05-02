@@ -208,7 +208,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_prod_test" {
   enabled_cloudwatch_logs_exports     = ["postgresql", "upgrade"]
   iam_database_authentication_enabled = "false"
   identifier                          = "prod-test-postgres-${local.naming_suffix}"
-  instance_class                      = "db.t3.large"
+  instance_class                      = "db.m5.4xlarge"
   iops                                = "0"
   kms_key_id                          = "${data.aws_kms_key.rds_kms_key.arn}"
   license_model                       = "postgresql-license"
