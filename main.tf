@@ -146,6 +146,14 @@ tabcmd initialuser --server 'localhost:80' --username "$TAB_ADMIN_USER" --passwo
 # Always restore from green
 export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/green/"
 
+echo "#Mount filesystem - /var/opt/tableau/"
+mkfs.xfs /dev/nvme2n1
+mkdir -p /mnt/var/opt/tableau/
+mount /dev/nvme2n1 /mnt/var/opt/tableau
+rsync -a /var/opt/tableau/ /mnt/var/opt/tableau
+echo '/dev/nvme2n1 /var/opt/tableau xfs defaults 0 0' >> /etc/fstab
+umount /mnt/var/opt/tableau/
+
 echo "#Get most recent Tableau backup from S3"
 export LATEST_BACKUP_NAME=`aws s3 ls $BACKUP_LOCATION | tail -1 | awk '{print $4}'`
 aws s3 cp $BACKUP_LOCATION$LATEST_BACKUP_NAME /var/opt/tableau/tableau_server/data/tabsvc/files/backups/$LATEST_BACKUP_NAME
@@ -155,15 +163,6 @@ tsm stop --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm mainte
 
 echo "#Publishing required DataSources and WorkBooks"
 su -c "/home/tableau_srv/scripts/tableau-pub.py /home/tableau_srv/$TAB_INT_REPO_NAME DQDashboards" - tableau_srv
-
-
-echo "#Mount filesystem - /var/opt/tableau/"
-mkfs.xfs /dev/nvme2n1
-mkdir -p /mnt/var/opt/tableau/
-mount /dev/nvme2n1 /mnt/var/opt/tableau
-rsync -a /var/opt/tableau/ /mnt/var/opt/tableau
-echo '/dev/nvme2n1 /var/opt/tableau xfs defaults 0 0' >> /etc/fstab
-umount /mnt/var/opt/tableau/
 
 echo "#Mount filesystem - /var/log/"
 mkfs.xfs /dev/nvme1n1
