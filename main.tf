@@ -195,7 +195,6 @@ EOF
 
 # Remove blue (below) and use standard with count (above) next time...
 resource "aws_instance" "int_tableau_linux_blue" {
-  count                       = 1
   key_name                    = "${var.key_name}"
   ami                         = "${data.aws_ami.int_tableau_linux.id}"
   instance_type               = "r5d.4xlarge"
