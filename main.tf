@@ -23,6 +23,13 @@ set -e
 #log output from this user_data script
 exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
 
+echo "#Mount filesystem - /var/opt/tableau/"
+mkfs.xfs /dev/nvme2n1
+mkdir -p /var/opt/tableau/
+mount /dev/nvme2n1 /var/opt/tableau
+echo '/dev/nvme2n1 /var/opt/tableau xfs defaults 0 0' >> /etc/fstab
+
+
 echo "#Pull values from Parameter Store and save to profile"
 touch /home/tableau_srv/env_vars.sh
 echo "
@@ -145,14 +152,6 @@ tabcmd initialuser --server 'localhost:80' --username "$TAB_ADMIN_USER" --passwo
 
 # Always restore from green
 export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/green/"
-
-echo "#Mount filesystem - /var/opt/tableau/"
-mkfs.xfs /dev/nvme2n1
-mkdir -p /mnt/var/opt/tableau/
-mount /dev/nvme2n1 /mnt/var/opt/tableau
-rsync -a /var/opt/tableau/ /mnt/var/opt/tableau
-echo '/dev/nvme2n1 /var/opt/tableau xfs defaults 0 0' >> /etc/fstab
-umount /mnt/var/opt/tableau/
 
 echo "#Get most recent Tableau backup from S3"
 export LATEST_BACKUP_NAME=`aws s3 ls $BACKUP_LOCATION | tail -1 | awk '{print $4}'`
