@@ -89,7 +89,7 @@ EOF
 
 resource "aws_db_instance" "postgres" {
   identifier                      = "postgres-${local.naming_suffix}"
-  allocated_storage               = "${var.environment == "prod" ? "1500" : "300"}"
+  allocated_storage               = "${var.environment == "prod" ? "2000" : "300"}"
   storage_type                    = "gp2"
   engine                          = "postgres"
   engine_version                  = "10.6"
@@ -100,7 +100,7 @@ resource "aws_db_instance" "postgres" {
   name                            = "${var.database_name}"
   port                            = "${var.port}"
   backup_window                   = "00:00-01:00"
-  maintenance_window              = "tue:10:25-tue:11:00"
+  maintenance_window              = "thu:20:00-thu:22:00"
   backup_retention_period         = 14
   deletion_protection             = true
   storage_encrypted               = true
@@ -119,12 +119,6 @@ resource "aws_db_instance" "postgres" {
     Name = "rds-postgres-${local.naming_suffix}"
   }
 }
-
-# module "cloudwatch_alarms_postgres" {
-#   source         = "github.com/UKHomeOffice/dq-tf-cloudwatch-rds"
-#   naming_suffix  = "${local.naming_suffix}"
-#   db_instance_id = "${aws_db_instance.postgres.id}"
-# }
 
 resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   count                               = "${var.environment == "prod" ? "0" : "1"}"
