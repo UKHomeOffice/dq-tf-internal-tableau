@@ -120,6 +120,18 @@ resource "aws_db_instance" "postgres" {
   }
 }
 
+module "rds_alarms" {
+  source = "github.com/UKHomeOffice/dq-tf-cloudwatch-rds"
+
+  naming_suffix                = "${local.naming_suffix}"
+  environment                  = "${var.naming_suffix}"
+  pipeline_name                = "internal-tableau"
+  db_instance_id               = "${aws_db_instance.postgres.id}"
+  free_storage_space_threshold = 250000000000                          # 250GB free space
+  read_latency_threshold       = 0.05                                  # 50 milliseconds
+  write_latency_threshold      = 1                                     # 1 second
+}
+
 resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   count                               = "${var.environment == "prod" ? "0" : "1"}"
   snapshot_identifier                 = "internal-reporting-20190320-1133"
