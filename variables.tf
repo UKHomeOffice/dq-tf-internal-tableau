@@ -176,3 +176,8 @@ variable "s3_httpd_config_bucket" {
 variable "s3_httpd_config_bucket_key" {
   description = "HTTPD config bucket KMS Key ARN"
 }
+
+variable "dq_internal_staging_dashboard_instance_ip" {
+  description = "IP for staging instance"
+  default = "10.1.12.115"
+}

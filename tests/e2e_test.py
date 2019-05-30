@@ -108,5 +108,8 @@ class TestE2E(unittest.TestCase):
     def test_iam_role(self):
         self.assertEqual(self.result["root_modules"]["aws_iam_role.postgres"]["name"], "rds-postgres-role-internal-tableau-apps-preprod-dq")
 
+    def test_staging_instance_tag(self):
+        self.assertEqual(self.result["root_modules"]["aws_instance.int_tableau_linux_staging"]["tags.Name"], "ec2-staging-internal-tableau-apps-preprod-dq")
+
 if __name__ == '__main__':
     unittest.main()
