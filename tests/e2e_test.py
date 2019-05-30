@@ -31,7 +31,7 @@ class TestE2E(unittest.TestCase):
               s3_httpd_config_bucket            = "s3-bucket-name"
               s3_httpd_config_bucket_key        = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
               haproxy_private_ip                = "1.2.3.4"
-              environment                       = "notprod"
+              environment                       = "prod"
 
             }
 
@@ -70,10 +70,10 @@ class TestE2E(unittest.TestCase):
         self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau_db"]["tags.Name"], "sg-db-internal-tableau-apps-preprod-dq")
 
     def test_rds_change_switch(self):
-        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["apply_immediately"], "true")
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["apply_immediately"], "false")
 
     def test_rds_disk_size(self):
-        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["allocated_storage"], "300")
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["allocated_storage"], "2000")
 
     def test_rds_deletion_protection(self):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["deletion_protection"], "true")
