@@ -389,7 +389,7 @@ resource "aws_instance" "int_tableau_linux_staging" {
   vpc_security_group_ids      = ["${aws_security_group.sgrp.id}"]
   associate_public_ip_address = false
   subnet_id                   = "${aws_subnet.subnet.id}"
-  private_ip                  = "${element(var.dq_internal_dashboard_instance_ip, count.index)}"
+  private_ip                  = "${var.dq_internal_staging_dashboard_instance_ip}"
   monitoring                  = true
 
   user_data = <<EOF
@@ -554,7 +554,7 @@ reboot
 EOF
 
   tags = {
-    Name = "ec2-staging-${local.naming_suffix_linux}"
+    Name = "ec2-staging-${local.naming_suffix}"
   }
 
   lifecycle {
