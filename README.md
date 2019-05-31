@@ -1,14 +1,17 @@
 # dq-tf-internal-tableau
 
-This Terraform module has one subnet and deploys an EC2 instance representing a web server with postgress to a greenplum database. Allowing inbound HTTPS TCP traffic on port 443, and inbound RDP TCP traffic on port 3389 .
+This Terraform module has two subnet and deploys an EC2 instance representing a web server and an RDS instance. Allowing inbound HTTPS TCP traffic on port 80, 22, 8850, 8060 and 5432.
 
 
 ## Connectivity
 
-| In/Out        | Type           | Protocol | FromPort| To Port | TLS |
+| In/Out        | Type           | Protocol | FromPort| To Port | Description |
 | ------------- |:-------------:| -----:| -----:|-----:| -----:|
-|INBOUND | RDP | TCP |3389 | 3389| TLS to Internal Tableau ELB |
-|INBOUND | HTTPS | TCP | 443 | 443 | TLS to Internal Tableau ELB |
+|INBOUND | SSH | TCP | 22 | 22 | Allow SSH login to EC2 |
+|INBOUND | HTTP | TCP | 80 | 80 | Allow HTTP to Tableau software |
+|INBOUND | TCP | TCP | 8850 | 8850 | Allow custom TCP for Tableau software |
+|INBOUND | TCP | TCP | 8060 | 8060 | Allow custom TCP for Tableau software |
+|INBOUND | TCP | TCP | 5432 | 5432 | Allow default TCP to PostgreSQL |
 
 ## Content overview
 
@@ -20,7 +23,7 @@ It consists of the following core elements:
 
 This file has the basic components for EC2 instances.
 - Private subnet and route table association
-- An EC2 instance using the connectivity tester module
+- EC2 instances
 - Security group for the EC2 instance
 
 ### variables.tf
@@ -30,6 +33,10 @@ Input data for resources within this repo.
 ### tests/e2e_test.py
 
 Code and resource tester with mock data. It can be expanded by adding further definitions to the unit.
+
+### rds.tf
+
+Deploys an RDS instance as the Tableau Internal backend instance.
 
 ## User guide
 
