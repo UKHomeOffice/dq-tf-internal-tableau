@@ -179,5 +179,5 @@ variable "s3_httpd_config_bucket_key" {
 
 variable "dq_internal_staging_dashboard_instance_ip" {
   description = "IP for staging instance"
-  default = "10.1.12.115"
+  default     = "10.1.12.115"
 }
