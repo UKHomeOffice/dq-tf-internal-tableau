@@ -7,7 +7,7 @@ module "dq-lambda-run-command-ec2" {
   count_tag          = "${var.environment == "prod" ? "0" : "1"}"                       # Used as 'count', as count is not supported in modules
   source             = "github.com/UKHomeOffice/dq-lambda-run-command-ec2"
   namespace          = "${var.environment}"
-  instance_id        = "${data.aws_instance.int_tableau_linux.id}"
+  instance_id        = "${aws_instance.int_tableau_linux.id}"
   ip_address         = ""
   ssh_user           = "centos"
   command            = "hostname"
