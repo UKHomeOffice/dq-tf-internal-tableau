@@ -3,6 +3,20 @@ locals {
   naming_suffix_linux = "internal-tableau-linux-${var.naming_suffix}"
 }
 
+module "dq-lambda-run-command-ec2" {
+  count_tag          = "${var.environment == "prod" ? "0" : "1"}"                       # Used as 'count', as count is not supported in modules
+  source             = "github.com/UKHomeOffice/dq-lambda-run-command-ec2"
+  namespace          = "${var.environment}"
+  instance_id        = "${data.aws_instance.int_tableau_linux.id}"
+  ip_address         = ""
+  ssh_user           = "centos"
+  command            = "hostname"
+  naming_suffix      = "${var.naming_suffix}"
+  lambda_subnet      = "${var.lambda_subnet}"
+  lambda_subnet_az2  = "${var.lambda_subnet_az2}"
+  security_group_ids = "${var.security_group_ids}"
+}
+
 resource "aws_instance" "int_tableau_linux" {
   count                       = "${var.environment == "prod" ? "1" : "1"}"                       # Allow different instance count in prod and notprod
   key_name                    = "${var.key_name}"

@@ -17,3 +17,6 @@ data "aws_ami" "int_tableau_linux" {
 data "aws_kms_key" "rds_kms_key" {
   key_id = "alias/aws/rds"
 }
+
+data "aws_instance" "int_tableau_linux" {
+}
