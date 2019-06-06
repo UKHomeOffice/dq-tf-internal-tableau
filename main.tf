@@ -4,8 +4,8 @@ locals {
 }
 
 module "dq-lambda-run-command-ec2" {
-  count_tag          = "${var.environment == "prod" ? "0" : "1"}"                       # Used as 'count', as count is not supported in modules
   source             = "github.com/UKHomeOffice/dq-lambda-run-command-ec2"
+  count_tag          = "${var.environment == "prod" ? "0" : "1"}"                       # Used as 'count', as count is not supported in modules  
   namespace          = "${var.environment}"
   instance_id        = "${aws_instance.int_tableau_linux.id}"
   ip_address         = ""
