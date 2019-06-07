@@ -12,8 +12,8 @@ module "dq-lambda-run-command-ec2" {
   ssh_user           = "centos"
   command            = "hostname"
   naming_suffix      = "${var.naming_suffix}"
-  lambda_subnet      = "${var.dq_lambda_subnet_cidr}"
-  lambda_subnet_az2  = "${var.dq_lambda_subnet_cidr_az2}"
+  lambda_subnet      = "${var.lambda_subnet}"
+  lambda_subnet_az2  = "${var.lambda_subnet_az2}"
   security_group_ids = "${var.security_group_ids}"
 }
 

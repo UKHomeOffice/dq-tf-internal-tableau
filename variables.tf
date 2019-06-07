@@ -185,3 +185,11 @@ variable "dq_internal_staging_dashboard_instance_ip" {
 variable "security_group_ids" {
   description = "Lambda security group ID"
 }
+
+variable "lambda_subnet" {
+  description = "Lambda subnet ID"
+}
+
+variable "lambda_subnet_az2" {
+  description = "Lambda subnet ID"
+}
