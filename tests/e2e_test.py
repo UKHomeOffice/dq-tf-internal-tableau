@@ -33,6 +33,8 @@ class TestE2E(unittest.TestCase):
               haproxy_private_ip                = "1.2.3.4"
               environment                       = "prod"
               security_group_ids                = "sg-1234567890"
+              lambda_subnet                     = "subnet-1234567890"
+              lambda_subnet_az2                 = "subnet-1234567890"
             }
 
         """
