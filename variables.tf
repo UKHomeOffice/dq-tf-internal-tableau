@@ -182,14 +182,6 @@ variable "dq_internal_staging_dashboard_instance_ip" {
   default     = "10.1.12.115"
 }
 
-variable "lambda_subnet" {
-  description = "Lamdda subnet ID"
-}
-
-variable "lambda_subnet_az2" {
-  description = "Lamdda subnet ID"
-}
-
 variable "security_group_ids" {
   description = "Lambda security group ID"
 }
