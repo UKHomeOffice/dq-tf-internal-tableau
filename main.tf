@@ -116,10 +116,6 @@ echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#TSM settings (add default)"
-export CLIENT_ID=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_provider_client_id --query 'Parameter.Value' --output text`
-export CLIENT_SECRET=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_client_secret --query 'Parameter.Value' --output text --with-decryption`
-export CONFIG_URL=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_provider_config_url --query 'Parameter.Value' --output text`
-export EXTERNAL_URL=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_tableau_server_external_url --query 'Parameter.Value' --output text`
 export CLIENT_ID=`aws --region eu-west-2 ssm get-parameter --name tableau_int_staging_openid_provider_client_id --query 'Parameter.Value' --output text`
 export CLIENT_SECRET=`aws --region eu-west-2 ssm get-parameter --name tableau_int_staging_openid_client_secret --query 'Parameter.Value' --output text --with-decryption`
 export CONFIG_URL=`aws --region eu-west-2 ssm get-parameter --name tableau_int_staging_openid_provider_config_url --query 'Parameter.Value' --output text`
