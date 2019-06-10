@@ -116,10 +116,10 @@ echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#TSM settings (add default)"
-export CLIENT_ID=`aws --region eu-west-2 ssm get-parameter --name tableau_int_staging_openid_provider_client_id --query 'Parameter.Value' --output text`
-export CLIENT_SECRET=`aws --region eu-west-2 ssm get-parameter --name tableau_int_staging_openid_client_secret --query 'Parameter.Value' --output text --with-decryption`
-export CONFIG_URL=`aws --region eu-west-2 ssm get-parameter --name tableau_int_staging_openid_provider_config_url --query 'Parameter.Value' --output text`
-export EXTERNAL_URL=`aws --region eu-west-2 ssm get-parameter --name tableau_int_staging_openid_tableau_server_external_url --query 'Parameter.Value' --output text`
+export CLIENT_ID=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_provider_client_id --query 'Parameter.Value' --output text`
+export CLIENT_SECRET=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_client_secret --query 'Parameter.Value' --output text --with-decryption`
+export CONFIG_URL=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_provider_config_url --query 'Parameter.Value' --output text`
+export EXTERNAL_URL=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_tableau_server_external_url --query 'Parameter.Value' --output text`
 export TAB_VERSION_NUMBER=`echo $PATH | awk -F customer '{print $2}' | cut -d \. -f2- | awk -F : '{print $1}'`
 cat >/opt/tableau/tableau_server/packages/scripts.$TAB_VERSION_NUMBER/config-openid.json <<EOL
 {
@@ -206,7 +206,7 @@ EOF
 }
 
 resource "aws_instance" "int_tableau_linux_staging" {
-  count                       = "${var.environment == "prod" ? "1" : "0"}"         # Allow different instance count in prod and notprod
+  count                       = "${var.environment == "prod" ? "1" : "1"}"         # Allow different instance count in prod and notprod
   key_name                    = "${var.key_name}"
   ami                         = "${data.aws_ami.int_tableau_linux.id}"
   instance_type               = "c5.4xlarge"
@@ -304,10 +304,10 @@ echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#TSM settings (add default)"
-export CLIENT_ID=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_provider_client_id --query 'Parameter.Value' --output text`
-export CLIENT_SECRET=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_client_secret --query 'Parameter.Value' --output text --with-decryption`
-export CONFIG_URL=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_provider_config_url --query 'Parameter.Value' --output text`
-export EXTERNAL_URL=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_tableau_server_external_url --query 'Parameter.Value' --output text`
+export CLIENT_ID=`aws --region eu-west-2 ssm get-parameter --name tableau_int_staging_openid_provider_client_id --query 'Parameter.Value' --output text`
+export CLIENT_SECRET=`aws --region eu-west-2 ssm get-parameter --name tableau_int_staging_openid_client_secret --query 'Parameter.Value' --output text --with-decryption`
+export CONFIG_URL=`aws --region eu-west-2 ssm get-parameter --name tableau_int_staging_openid_provider_config_url --query 'Parameter.Value' --output text`
+export EXTERNAL_URL=`aws --region eu-west-2 ssm get-parameter --name tableau_int_staging_openid_tableau_server_external_url --query 'Parameter.Value' --output text`
 export TAB_VERSION_NUMBER=`echo $PATH | awk -F customer '{print $2}' | cut -d \. -f2- | awk -F : '{print $1}'`
 cat >/opt/tableau/tableau_server/packages/scripts.$TAB_VERSION_NUMBER/config-openid.json <<EOL
 {
