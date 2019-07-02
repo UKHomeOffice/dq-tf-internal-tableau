@@ -1,3 +1,9 @@
+locals {
+  internal_reporting_dev_count = "${var.environment == "prod" ? "0" : "1"}"
+  internal_reporting_qa_count  = "${var.environment == "prod" ? "0" : "1"}"
+  internal_reporting_stg_count = "${var.environment == "prod" ? "1" : "0"}"
+}
+
 resource "aws_db_subnet_group" "rds" {
   name = "internal_tableau_rds_group"
 
@@ -133,7 +139,7 @@ module "rds_alarms" {
 }
 
 resource "aws_db_instance" "internal_reporting_snapshot_dev" {
-  count                               = "${var.internal_reporting_dev_count}"
+  count                               = "${local.internal_reporting_dev_count}"
   snapshot_identifier                 = "internal-reporting-20190320-1133"
   auto_minor_version_upgrade          = "true"
   backup_retention_period             = "14"
@@ -168,7 +174,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
 }
 
 resource "aws_db_instance" "internal_reporting_snapshot_qa" {
-  count                               = "${var.internal_reporting_qa_count}"
+  count                               = "${local.internal_reporting_qa_count}"
   snapshot_identifier                 = "internal-reporting-20190318-1328"
   auto_minor_version_upgrade          = "true"
   backup_retention_period             = "14"
@@ -203,7 +209,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
 }
 
 resource "aws_db_instance" "internal_reporting_snapshot_stg" {
-  count                               = "${var.internal_reporting_stg_count}"
+  count                               = "${local.internal_reporting_stg_count}"
   snapshot_identifier                 = "rds:postgres-internal-tableau-apps-prod-dq-2019-07-01-00-07"
   auto_minor_version_upgrade          = "true"
   backup_retention_period             = "14"
@@ -279,21 +285,21 @@ resource "aws_ssm_parameter" "rds_internal_tableau_postgres_endpoint" {
 }
 
 resource "aws_ssm_parameter" "rds_internal_tableau_dev_endpoint" {
-  count = "${var.internal_reporting_dev_count}"
+  count = "${local.internal_reporting_dev_count}"
   name  = "rds_internal_tableau_dev_endpoint"
   type  = "String"
   value = "${aws_db_instance.internal_reporting_snapshot_dev.endpoint}"
 }
 
 resource "aws_ssm_parameter" "rds_internal_tableau_qa_endpoint" {
-  count = "${var.internal_reporting_qa_count}"
+  count = "${local.internal_reporting_qa_count}"
   name  = "rds_internal_tableau_qa_endpoint"
   type  = "String"
   value = "${aws_db_instance.internal_reporting_snapshot_qa.endpoint}"
 }
 
 resource "aws_ssm_parameter" "rds_internal_tableau_stg_endpoint" {
-  count = "${var.internal_reporting_stg_count}"
+  count = "${local.internal_reporting_stg_count}"
   name  = "rds_internal_tableau_stg_endpoint"
   type  = "String"
   value = "${aws_db_instance.internal_reporting_snapshot_stg.endpoint}"
