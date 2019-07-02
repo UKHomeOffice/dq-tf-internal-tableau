@@ -114,7 +114,7 @@ class TestE2E(unittest.TestCase):
         self.assertEqual(self.result["root_modules"]["aws_instance.int_tableau_linux_staging"]["tags.Name"], "ec2-staging-internal-tableau-apps-preprod-dq")
 
     def test_rds_staging_tags(self):
-        self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting_snapshot_prod_staging"]["tags.Name"], "prod-staging-postgres-internal-tableau-apps-preprod-dq")
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting_snapshot_stg"]["tags.Name"], "prod-staging-postgres-internal-tableau-apps-preprod-dq")
 
 if __name__ == '__main__':
     unittest.main()
