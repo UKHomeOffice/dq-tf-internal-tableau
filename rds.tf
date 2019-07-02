@@ -93,7 +93,7 @@ resource "aws_iam_role" "postgres" {
 EOF
 }
 
-resource "aws_db_instance" "internal_reporting" {
+resource "aws_db_instance" "postgres" {
   identifier                      = "postgres-${local.naming_suffix}"
   allocated_storage               = "${var.environment == "prod" ? "2000" : "300"}"
   storage_type                    = "gp2"
@@ -132,7 +132,7 @@ module "rds_alarms" {
   naming_suffix                = "${local.naming_suffix}"
   environment                  = "${var.naming_suffix}"
   pipeline_name                = "internal-tableau"
-  db_instance_id               = "${aws_db_instance.internal_reporting.id}"
+  db_instance_id               = "${aws_db_instance.postgres.id}"
   free_storage_space_threshold = 250000000000                     # 250GB free space
   read_latency_threshold       = 0.05                             # 50 milliseconds
   write_latency_threshold      = 1                                # 1 second
@@ -281,7 +281,7 @@ resource "aws_ssm_parameter" "rds_internal_tableau_service_password" {
 resource "aws_ssm_parameter" "rds_internal_tableau_postgres_endpoint" {
   name  = "rds_internal_tableau_postgres_endpoint"
   type  = "String"
-  value = "${aws_db_instance.internal_reporting.endpoint}"
+  value = "${aws_db_instance.postgres.endpoint}"
 }
 
 resource "aws_ssm_parameter" "rds_internal_tableau_dev_endpoint" {
