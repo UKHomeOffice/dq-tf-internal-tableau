@@ -14,5 +14,5 @@ output "rds_internal_tableau_address" {
 }
 
 output "rds_internal_tableau_staging_endpoint" {
-  value = ["${aws_db_instance.internal_reporting_snapshot_stg.endpoint}"]
+  value = ["${aws_db_instance.internal_reporting_snapshot_stg.*.endpoint}"]
 }
