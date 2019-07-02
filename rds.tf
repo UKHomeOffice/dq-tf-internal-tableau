@@ -87,7 +87,7 @@ resource "aws_iam_role" "postgres" {
 EOF
 }
 
-resource "aws_db_instance" "postgres" {
+resource "aws_db_instance" "internal_reporting" {
   identifier                      = "postgres-${local.naming_suffix}"
   allocated_storage               = "${var.environment == "prod" ? "2000" : "300"}"
   storage_type                    = "gp2"
@@ -126,14 +126,14 @@ module "rds_alarms" {
   naming_suffix                = "${local.naming_suffix}"
   environment                  = "${var.naming_suffix}"
   pipeline_name                = "internal-tableau"
-  db_instance_id               = "${aws_db_instance.postgres.id}"
+  db_instance_id               = "${aws_db_instance.internal_reporting.id}"
   free_storage_space_threshold = 250000000000                     # 250GB free space
   read_latency_threshold       = 0.05                             # 50 milliseconds
   write_latency_threshold      = 1                                # 1 second
 }
 
 resource "aws_db_instance" "internal_reporting_snapshot_dev" {
-  count                               = "${var.environment == "prod" ? "0" : "1"}"
+  count                               = "${var.internal_reporting_dev_count}"
   snapshot_identifier                 = "internal-reporting-20190320-1133"
   auto_minor_version_upgrade          = "true"
   backup_retention_period             = "14"
@@ -168,7 +168,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
 }
 
 resource "aws_db_instance" "internal_reporting_snapshot_qa" {
-  count                               = "${var.environment == "prod" ? "0" : "1"}"
+  count                               = "${var.internal_reporting_qa_count}"
   snapshot_identifier                 = "internal-reporting-20190318-1328"
   auto_minor_version_upgrade          = "true"
   backup_retention_period             = "14"
@@ -202,8 +202,8 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
   }
 }
 
-resource "aws_db_instance" "internal_reporting_snapshot_prod_staging" {
-  count                               = "${var.environment == "prod" ? "1" : "0"}"
+resource "aws_db_instance" "internal_reporting_snapshot_stg" {
+  count                               = "${var.internal_reporting_stg_count}"
   snapshot_identifier                 = "rds:postgres-internal-tableau-apps-prod-dq-2019-07-01-00-07"
   auto_minor_version_upgrade          = "true"
   backup_retention_period             = "14"
@@ -275,19 +275,26 @@ resource "aws_ssm_parameter" "rds_internal_tableau_service_password" {
 resource "aws_ssm_parameter" "rds_internal_tableau_postgres_endpoint" {
   name  = "rds_internal_tableau_postgres_endpoint"
   type  = "String"
-  value = "${aws_db_instance.postgres.endpoint}"
+  value = "${aws_db_instance.internal_reporting.endpoint}"
 }
 
 resource "aws_ssm_parameter" "rds_internal_tableau_dev_endpoint" {
-  count = "${var.environment == "prod" ? "0" : "1"}"
+  count = "${var.internal_reporting_dev_count}"
   name  = "rds_internal_tableau_dev_endpoint"
   type  = "String"
   value = "${aws_db_instance.internal_reporting_snapshot_dev.endpoint}"
 }
 
 resource "aws_ssm_parameter" "rds_internal_tableau_qa_endpoint" {
-  count = "${var.environment == "prod" ? "0" : "1"}"
+  count = "${var.internal_reporting_qa_count}"
   name  = "rds_internal_tableau_qa_endpoint"
   type  = "String"
   value = "${aws_db_instance.internal_reporting_snapshot_qa.endpoint}"
+}
+
+resource "aws_ssm_parameter" "rds_internal_tableau_stg_endpoint" {
+  count = "${var.internal_reporting_stg_count}"
+  name  = "rds_internal_tableau_stg_endpoint"
+  type  = "String"
+  value = "${aws_db_instance.internal_reporting_snapshot_stg.endpoint}"
 }

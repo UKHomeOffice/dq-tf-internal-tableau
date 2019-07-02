@@ -169,6 +169,21 @@ variable "environment" {
   description = "Switch between environments"
 }
 
+variable "internal_reporting_dev_count" {
+  default     = "${var.environment == "prod" ? "0" : "1"}"
+  description = "How many Internal Reporting RDS Dev snapshots to run in Prod and NotProd"
+}
+
+variable "internal_reporting_qa_count" {
+  default     = "${var.environment == "prod" ? "0" : "1"}"
+  description = "How many Internal Reporting RDS QA snapshots to run in Prod and NotProd"
+}
+
+variable "internal_reporting_stg_count" {
+  default     = "${var.environment == "prod" ? "1" : "0"}"
+  description = "How many Internal Reporting RDS Staging snapshots to run in Prod and NotProd"
+}
+
 variable "s3_httpd_config_bucket" {
   description = "HTTPD config bucket ID"
 }
