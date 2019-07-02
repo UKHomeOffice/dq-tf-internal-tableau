@@ -72,16 +72,16 @@ class TestE2E(unittest.TestCase):
         self.assertEqual(self.result["root_modules"]["aws_security_group.internal_tableau_db"]["tags.Name"], "sg-db-internal-tableau-apps-preprod-dq")
 
     def test_rds_change_switch(self):
-        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["apply_immediately"], "false")
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting"]["apply_immediately"], "false")
 
     def test_rds_disk_size(self):
-        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["allocated_storage"], "2000")
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting"]["allocated_storage"], "2000")
 
     def test_rds_deletion_protection(self):
-        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["deletion_protection"], "true")
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting"]["deletion_protection"], "true")
 
     def test_rds_tags(self):
-        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["tags.Name"], "rds-postgres-internal-tableau-apps-preprod-dq")
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting"]["tags.Name"], "rds-postgres-internal-tableau-apps-preprod-dq")
 
     def test_ssm_rds_service_username(self):
         self.assertEqual(self.result["root_modules"]["aws_ssm_parameter.rds_internal_tableau_service_username"]["name"], "rds_internal_tableau_service_username")
