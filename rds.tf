@@ -253,7 +253,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_staging" {
   deletion_protection                 = "false"
   enabled_cloudwatch_logs_exports     = ["postgresql", "upgrade"]
   iam_database_authentication_enabled = "false"
-  identifier                          = "staging-postgres-${local.naming_suffix}"
+  identifier                          = "stg-postgres-${local.naming_suffix}"
   instance_class                      = "db.m5.4xlarge"
   iops                                = "0"
   kms_key_id                          = "${data.aws_kms_key.rds_kms_key.arn}"
