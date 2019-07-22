@@ -14,5 +14,5 @@ output "rds_internal_tableau_address" {
 }
 
 output "rds_internal_tableau_staging_endpoint" {
-  value = "${var.environment == "prod" ? '["${aws_db_instance.internal_reporting_snapshot_stg.*.endpoint}"]' : "0"}"
+  value = ["${var.environment == "prod" ? "${aws_db_instance.internal_reporting_snapshot_stg.*.endpoint}" : "0"}"]
 }
