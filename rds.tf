@@ -243,6 +243,41 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   }
 }
 
+resource "aws_db_instance" "internal_reporting_yel-2226" {
+  count                               = "${local.internal_reporting_stg_count}"
+  snapshot_identifier                 = "rds:postgres-internal-tableau-apps-prod-dq-2019-09-02-00-07"
+  auto_minor_version_upgrade          = "true"
+  backup_retention_period             = "14"
+  backup_window                       = "00:00-01:00"
+  copy_tags_to_snapshot               = "false"
+  db_subnet_group_name                = "${aws_db_subnet_group.rds.id}"
+  deletion_protection                 = "false"
+  enabled_cloudwatch_logs_exports     = ["postgresql", "upgrade"]
+  iam_database_authentication_enabled = "false"
+  identifier                          = "yel-2226-test-${local.naming_suffix}"
+  instance_class                      = "db.t3.large"
+  iops                                = "0"
+  kms_key_id                          = "${data.aws_kms_key.rds_kms_key.arn}"
+  license_model                       = "postgresql-license"
+  maintenance_window                  = "mon:01:30-mon:02:30"
+  monitoring_interval                 = "0"
+  multi_az                            = "true"
+  port                                = "5432"
+  publicly_accessible                 = "false"
+  skip_final_snapshot                 = true
+  storage_encrypted                   = true
+  storage_type                        = "gp2"
+  vpc_security_group_ids              = ["${aws_security_group.internal_tableau_db.id}"]
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  tags {
+    Name = "yel-2226-test-${local.naming_suffix}"
+  }
+}
+
 resource "aws_ssm_parameter" "rds_internal_tableau_username" {
   name  = "rds_internal_tableau_username"
   type  = "SecureString"
