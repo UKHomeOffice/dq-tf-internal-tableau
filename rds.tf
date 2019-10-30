@@ -114,6 +114,9 @@ resource "aws_db_instance" "postgres" {
   skip_final_snapshot             = true
   apply_immediately               = "${var.environment == "prod" ? "false" : "true"}"
 
+  monitoring_interval  = "60"
+   monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
+
   db_subnet_group_name   = "${aws_db_subnet_group.rds.id}"
   vpc_security_group_ids = ["${aws_security_group.internal_tableau_db.id}"]
 

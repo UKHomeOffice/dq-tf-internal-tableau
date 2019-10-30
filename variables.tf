@@ -193,3 +193,7 @@ variable "lambda_subnet" {
 variable "lambda_subnet_az2" {
   description = "Lambda subnet ID"
 }
+
+variable "rds_enhanced_monitoring_role" {
+  description = "ARN of the RDS enhanced monitoring role"
+}
