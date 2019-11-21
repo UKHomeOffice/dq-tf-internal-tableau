@@ -133,9 +133,9 @@ module "rds_alarms" {
   environment                  = "${var.naming_suffix}"
   pipeline_name                = "internal-tableau"
   db_instance_id               = "${aws_db_instance.postgres.id}"
-  free_storage_space_threshold = 250000000000                     # 250GB free space
-  read_latency_threshold       = 0.05                             # 50 milliseconds
-  write_latency_threshold      = 1                                # 1 second
+  free_storage_space_threshold = 250000000000 # 250GB free space
+  read_latency_threshold       = 0.05         # 50 milliseconds
+  write_latency_threshold      = 1            # 1 second
 }
 
 resource "aws_db_instance" "internal_reporting_snapshot_dev" {
@@ -154,7 +154,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   iops                                = "0"
   kms_key_id                          = "${data.aws_kms_key.rds_kms_key.arn}"
   license_model                       = "postgresql-license"
-  maintenance_window                  = "mon:01:30-mon:02:30"
+  maintenance_window                  = "mon:14:30-mon:15:30"
   monitoring_interval                 = "0"
   multi_az                            = "true"
   port                                = "5432"
@@ -163,6 +163,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   storage_encrypted                   = true
   storage_type                        = "gp2"
   vpc_security_group_ids              = ["${aws_security_group.internal_tableau_db.id}"]
+  ca_cert_identifier                  = "rds-ca-2019"
 
   lifecycle {
     prevent_destroy = true
