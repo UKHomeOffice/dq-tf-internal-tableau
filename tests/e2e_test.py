@@ -35,6 +35,7 @@ class TestE2E(unittest.TestCase):
               security_group_ids                = "sg-1234567890"
               lambda_subnet                     = "subnet-1234567890"
               lambda_subnet_az2                 = "subnet-1234567890"
+              rds_enhanced_monitoring_role      = "arn:aws:iam::123456789:role/rds-enhanced-monitoring-role"
             }
 
         """
@@ -75,7 +76,7 @@ class TestE2E(unittest.TestCase):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["apply_immediately"], "false")
 
     def test_rds_disk_size(self):
-        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["allocated_storage"], "3000")
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["allocated_storage"], "3300")
 
     def test_rds_deletion_protection(self):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["deletion_protection"], "true")

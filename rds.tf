@@ -95,7 +95,7 @@ EOF
 
 resource "aws_db_instance" "postgres" {
   identifier                      = "postgres-${local.naming_suffix}"
-  allocated_storage               = "${var.environment == "prod" ? "3000" : "300"}"
+  allocated_storage               = "${var.environment == "prod" ? "3300" : "300"}"
   storage_type                    = "gp2"
   engine                          = "postgres"
   engine_version                  = "10.6"
@@ -113,6 +113,9 @@ resource "aws_db_instance" "postgres" {
   multi_az                        = true
   skip_final_snapshot             = true
   apply_immediately               = "${var.environment == "prod" ? "false" : "true"}"
+
+  monitoring_interval  = "60"
+  monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
 
   db_subnet_group_name   = "${aws_db_subnet_group.rds.id}"
   vpc_security_group_ids = ["${aws_security_group.internal_tableau_db.id}"]
@@ -165,6 +168,9 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   vpc_security_group_ids              = ["${aws_security_group.internal_tableau_db.id}"]
   ca_cert_identifier                  = "rds-ca-2019"
 
+  monitoring_interval  = "60"
+  monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
+
   lifecycle {
     prevent_destroy = true
   }
@@ -200,6 +206,9 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
   storage_type                        = "gp2"
   vpc_security_group_ids              = ["${aws_security_group.internal_tableau_db.id}"]
 
+  monitoring_interval  = "60"
+  monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
+
   lifecycle {
     prevent_destroy = true
   }
@@ -234,6 +243,9 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   storage_encrypted                   = true
   storage_type                        = "gp2"
   vpc_security_group_ids              = ["${aws_security_group.internal_tableau_db.id}"]
+
+  monitoring_interval  = "60"
+  monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
 
   lifecycle {
     prevent_destroy = true
