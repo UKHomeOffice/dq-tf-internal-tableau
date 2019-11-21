@@ -157,7 +157,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   iops                                = "0"
   kms_key_id                          = "${data.aws_kms_key.rds_kms_key.arn}"
   license_model                       = "postgresql-license"
-  maintenance_window                  = "mon:01:30-mon:02:30"
+  maintenance_window                  = "thur:14:45-thur:15:45"
   monitoring_interval                 = "0"
   multi_az                            = "true"
   port                                = "5432"
@@ -166,6 +166,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   storage_encrypted                   = true
   storage_type                        = "gp2"
   vpc_security_group_ids              = ["${aws_security_group.internal_tableau_db.id}"]
+  ca_cert_identifier                  = "rds-ca-2019"
 
   monitoring_interval  = "60"
   monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
