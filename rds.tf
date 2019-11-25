@@ -158,7 +158,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   iops                                = "0"
   kms_key_id                          = "${data.aws_kms_key.rds_kms_key.arn}"
   license_model                       = "postgresql-license"
-  maintenance_window                  = "mon:13:00-thu:14:00"
+  maintenance_window                  = "mon:13:00-mon:14:00"
   monitoring_interval                 = "0"
   multi_az                            = "true"
   port                                = "5432"
