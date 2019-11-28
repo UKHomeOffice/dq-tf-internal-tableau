@@ -106,14 +106,14 @@ resource "aws_db_instance" "postgres" {
   name                            = "${var.database_name}"
   port                            = "${var.port}"
   backup_window                   = "00:00-01:00"
-  maintenance_window              = "mon:13:00-mon:14:00"
+  maintenance_window              = "mon:20:00-mon:22:00"
   backup_retention_period         = 14
   deletion_protection             = true
   storage_encrypted               = true
   multi_az                        = true
   skip_final_snapshot             = true
   apply_immediately               = "${var.environment == "prod" ? "false" : "true"}"
-  ca_cert_identifier              = "${var.environment == "prod" ? "rds-ca-2015" : "rds-ca-2019"}"
+  ca_cert_identifier              = "rds-ca-2019"
 
   monitoring_interval  = "60"
   monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
@@ -158,7 +158,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   iops                                = "0"
   kms_key_id                          = "${data.aws_kms_key.rds_kms_key.arn}"
   license_model                       = "postgresql-license"
-  maintenance_window                  = "mon:13:00-mon:14:00"
+  maintenance_window                  = "mon:01:00-mon:02:00"
   monitoring_interval                 = "0"
   multi_az                            = "true"
   port                                = "5432"
@@ -197,7 +197,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
   iops                                = "0"
   kms_key_id                          = "${data.aws_kms_key.rds_kms_key.arn}"
   license_model                       = "postgresql-license"
-  maintenance_window                  = "mon:13:00-mon:14:00"
+  maintenance_window                  = "mon:01:00-mon:02:00"
   monitoring_interval                 = "0"
   multi_az                            = "true"
   port                                = "5432"
@@ -236,7 +236,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   iops                                = "0"
   kms_key_id                          = "${data.aws_kms_key.rds_kms_key.arn}"
   license_model                       = "postgresql-license"
-  maintenance_window                  = "mon:13:00-mon:14:00"
+  maintenance_window                  = "mon:01:00-mon:02:00"
   monitoring_interval                 = "0"
   multi_az                            = "true"
   port                                = "5432"
