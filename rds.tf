@@ -113,7 +113,7 @@ resource "aws_db_instance" "postgres" {
   multi_az                        = true
   skip_final_snapshot             = true
   apply_immediately               = "${var.environment == "prod" ? "false" : "true"}"
-  ca_cert_identifier              = "rds-ca-2019"
+  ca_cert_identifier              = "${var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"}"
 
   monitoring_interval  = "60"
   monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
@@ -167,7 +167,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   storage_encrypted                   = true
   storage_type                        = "gp2"
   vpc_security_group_ids              = ["${aws_security_group.internal_tableau_db.id}"]
-  ca_cert_identifier                  = "rds-ca-2019"
+  ca_cert_identifier                  = "${var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"}"
 
   monitoring_interval  = "60"
   monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
@@ -206,7 +206,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
   storage_encrypted                   = true
   storage_type                        = "gp2"
   vpc_security_group_ids              = ["${aws_security_group.internal_tableau_db.id}"]
-  ca_cert_identifier                  = "rds-ca-2019"
+  ca_cert_identifier                  = "${var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"}"
 
   monitoring_interval  = "60"
   monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
@@ -245,7 +245,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   storage_encrypted                   = true
   storage_type                        = "gp2"
   vpc_security_group_ids              = ["${aws_security_group.internal_tableau_db.id}"]
-  ca_cert_identifier                  = "rds-ca-2019"
+  ca_cert_identifier                  = "${var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"}"
 
   monitoring_interval  = "60"
   monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
