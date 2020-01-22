@@ -105,8 +105,8 @@ resource "aws_db_instance" "postgres" {
   password                        = "${random_string.password.result}"
   name                            = "${var.database_name}"
   port                            = "${var.port}"
-  backup_window                   = "00:00-01:00"
-  maintenance_window              = "mon:20:00-mon:22:00"
+  backup_window                   = "${var.environment == "prod" ? "00:00-01:00" : "07:00-08:00"}"
+  maintenance_window              = "${var.environment == "prod" ? "mon:20:00-mon:22:00" : "mon:08:00-mon:09:00"}"
   backup_retention_period         = 14
   deletion_protection             = true
   storage_encrypted               = true
@@ -115,7 +115,7 @@ resource "aws_db_instance" "postgres" {
   apply_immediately               = "${var.environment == "prod" ? "false" : "true"}"
   ca_cert_identifier              = "${var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"}"
 
-  monitoring_interval  = "60"
+  monitoring_interval = "60"
   monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
 
   db_subnet_group_name   = "${aws_db_subnet_group.rds.id}"
@@ -137,9 +137,9 @@ module "rds_alarms" {
   environment                  = "${var.naming_suffix}"
   pipeline_name                = "internal-tableau"
   db_instance_id               = "${aws_db_instance.postgres.id}"
-  free_storage_space_threshold = 250000000000                     # 250GB free space
-  read_latency_threshold       = 0.05                             # 50 milliseconds
-  write_latency_threshold      = 1                                # 1 second
+  free_storage_space_threshold = 250000000000 # 250GB free space
+  read_latency_threshold       = 0.05         # 50 milliseconds
+  write_latency_threshold      = 1            # 1 second
 }
 
 resource "aws_db_instance" "internal_reporting_snapshot_dev" {
@@ -147,7 +147,6 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   snapshot_identifier                 = "internal-reporting-20190320-1133"
   auto_minor_version_upgrade          = "true"
   backup_retention_period             = "14"
-  backup_window                       = "00:00-01:00"
   copy_tags_to_snapshot               = "false"
   db_subnet_group_name                = "${aws_db_subnet_group.rds.id}"
   deletion_protection                 = "false"
@@ -158,8 +157,8 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   iops                                = "0"
   kms_key_id                          = "${data.aws_kms_key.rds_kms_key.arn}"
   license_model                       = "postgresql-license"
-  maintenance_window                  = "mon:01:00-mon:02:00"
-  monitoring_interval                 = "0"
+  backup_window                       = "${var.environment == "prod" ? "00:00-01:00" : "07:00-08:00"}"
+  maintenance_window                  = "${var.environment == "prod" ? "mon:01:00-mon:02:00" : "mon:08:00-mon:09:00"}"
   multi_az                            = "true"
   port                                = "5432"
   publicly_accessible                 = "false"
@@ -169,7 +168,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   vpc_security_group_ids              = ["${aws_security_group.internal_tableau_db.id}"]
   ca_cert_identifier                  = "${var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"}"
 
-  monitoring_interval  = "60"
+  monitoring_interval = "60"
   monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
 
   lifecycle {
@@ -186,7 +185,6 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
   snapshot_identifier                 = "internal-reporting-20190318-1328"
   auto_minor_version_upgrade          = "true"
   backup_retention_period             = "14"
-  backup_window                       = "00:00-01:00"
   copy_tags_to_snapshot               = "false"
   db_subnet_group_name                = "${aws_db_subnet_group.rds.id}"
   deletion_protection                 = "false"
@@ -197,8 +195,8 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
   iops                                = "0"
   kms_key_id                          = "${data.aws_kms_key.rds_kms_key.arn}"
   license_model                       = "postgresql-license"
-  maintenance_window                  = "mon:01:00-mon:02:00"
-  monitoring_interval                 = "0"
+  backup_window                       = "${var.environment == "prod" ? "00:00-01:00" : "07:00-08:00"}"
+  maintenance_window                  = "${var.environment == "prod" ? "mon:01:00-mon:02:00" : "mon:08:00-mon:09:00"}"
   multi_az                            = "true"
   port                                = "5432"
   publicly_accessible                 = "false"
@@ -208,7 +206,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
   vpc_security_group_ids              = ["${aws_security_group.internal_tableau_db.id}"]
   ca_cert_identifier                  = "${var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"}"
 
-  monitoring_interval  = "60"
+  monitoring_interval = "60"
   monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
 
   lifecycle {
@@ -225,7 +223,6 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   snapshot_identifier                 = "rds:postgres-internal-tableau-apps-prod-dq-2019-09-26-00-07"
   auto_minor_version_upgrade          = "true"
   backup_retention_period             = "14"
-  backup_window                       = "00:00-01:00"
   copy_tags_to_snapshot               = "false"
   db_subnet_group_name                = "${aws_db_subnet_group.rds.id}"
   deletion_protection                 = "false"
@@ -236,8 +233,8 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   iops                                = "0"
   kms_key_id                          = "${data.aws_kms_key.rds_kms_key.arn}"
   license_model                       = "postgresql-license"
-  maintenance_window                  = "mon:01:00-mon:02:00"
-  monitoring_interval                 = "0"
+  backup_window                       = "${var.environment == "prod" ? "00:00-01:00" : "07:00-08:00"}"
+  maintenance_window                  = "${var.environment == "prod" ? "mon:01:00-mon:02:00" : "mon:08:00-mon:09:00"}"
   multi_az                            = "true"
   port                                = "5432"
   publicly_accessible                 = "false"
@@ -247,7 +244,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   vpc_security_group_ids              = ["${aws_security_group.internal_tableau_db.id}"]
   ca_cert_identifier                  = "${var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"}"
 
-  monitoring_interval  = "60"
+  monitoring_interval = "60"
   monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
 
   lifecycle {

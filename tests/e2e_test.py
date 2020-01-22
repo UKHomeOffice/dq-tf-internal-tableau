@@ -117,5 +117,17 @@ class TestE2E(unittest.TestCase):
     def test_rds_staging_tags(self):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting_snapshot_stg"]["tags.Name"], "stg-postgres-internal-tableau-apps-preprod-dq")
 
+    def test_rds_postgres_backup_window(self):
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["backup_window"], "00:00-01:00")
+
+    def test_rds_postgres_stg_backup_window(self):
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting_snapshot_stg"]["backup_window"], "00:00-01:00")
+
+    def test_rds_postgres_maintenance_window(self):
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["maintenance_window"], "mon:20:00-mon:22:00")
+
+    def test_rds_postgres_stg_maintenance_window(self):
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting_snapshot_stg"]["maintenance_window"], "mon:01:00-mon:02:00")
+
 if __name__ == '__main__':
     unittest.main()
