@@ -282,6 +282,8 @@ resource "aws_db_instance" "internal_reporting_snapshot_upgrade" {
   storage_type                        = "gp2"
   vpc_security_group_ids              = ["${aws_security_group.internal_tableau_db.id}"]
   ca_cert_identifier                  = "${var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"}"
+  engine_version                      = 10.10
+  apply_immediately                   = "${var.environment == "prod" ? "false" : "true"}"
 
   lifecycle {
     prevent_destroy = true
