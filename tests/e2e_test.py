@@ -124,10 +124,13 @@ class TestE2E(unittest.TestCase):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting_snapshot_stg"]["backup_window"], "00:00-01:00")
 
     def test_rds_postgres_maintenance_window(self):
-        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["maintenance_window"], "mon:20:00-mon:22:00")
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["maintenance_window"], "mon:01:00-mon:02:00")
 
     def test_rds_postgres_stg_maintenance_window(self):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting_snapshot_stg"]["maintenance_window"], "mon:01:00-mon:02:00")
+
+    def test_rds_postgres_postgres_engine_version(self):
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["engine_version"], "10.6")
 
 if __name__ == '__main__':
     unittest.main()

@@ -99,7 +99,7 @@ resource "aws_db_instance" "postgres" {
   allocated_storage               = "${var.environment == "prod" ? "3300" : "300"}"
   storage_type                    = "gp2"
   engine                          = "postgres"
-  engine_version                  = "10.6"
+  engine_version                  = "${var.environment == "prod" ? "10.6" : "10.10"}"
   instance_class                  = "${var.environment == "prod" ? "db.m5.4xlarge" : "db.m5.2xlarge"}"
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
   username                        = "${random_string.username.result}"
@@ -107,7 +107,7 @@ resource "aws_db_instance" "postgres" {
   name                            = "${var.database_name}"
   port                            = "${var.port}"
   backup_window                   = "${var.environment == "prod" ? "00:00-01:00" : "07:00-08:00"}"
-  maintenance_window              = "${var.environment == "prod" ? "mon:20:00-mon:22:00" : "mon:08:00-mon:09:00"}"
+  maintenance_window              = "${var.environment == "prod" ? "mon:01:00-mon:02:00" : "mon:08:00-mon:09:00"}"
   backup_retention_period         = 14
   deletion_protection             = true
   storage_encrypted               = true
