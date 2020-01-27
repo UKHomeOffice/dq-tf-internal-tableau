@@ -239,7 +239,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   kms_key_id                          = "${data.aws_kms_key.rds_kms_key.arn}"
   license_model                       = "postgresql-license"
   backup_window                       = "${var.environment == "prod" ? "00:00-01:00" : "07:00-08:00"}"
-  maintenance_window                  = "${var.environment == "prod" ? "mon:01:00-mon:02:00" : "mon:08:00-mon:09:00"}"
+  maintenance_window                  = "${var.environment == "prod" ? "tue:01:00-tue:02:00" : "mon:08:00-mon:09:00"}"
   multi_az                            = "true"
   port                                = "5432"
   publicly_accessible                 = "false"
@@ -248,9 +248,10 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   storage_type                        = "gp2"
   vpc_security_group_ids              = ["${aws_security_group.internal_tableau_db.id}"]
   ca_cert_identifier                  = "${var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"}"
-
-  monitoring_interval = "60"
-  monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
+  monitoring_interval                 = "60"
+  monitoring_role_arn                 = "${var.rds_enhanced_monitoring_role}"
+  engine_version                      = "${var.environment == "prod" ? "10.10" : "10.10"}"
+  apply_immediately                   = "${var.environment == "prod" ? "false" : "true"}"
 
   lifecycle {
     prevent_destroy = true
