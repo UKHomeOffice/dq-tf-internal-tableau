@@ -182,6 +182,11 @@ variable "dq_internal_staging_dashboard_instance_ip" {
   default     = "10.1.12.115"
 }
 
+variable "dq_tableau_wip_dashboard_instance_ip" {
+  description = "IP for wip instance"
+  default     = "10.1.12.116"
+}
+
 variable "security_group_ids" {
   description = "Lambda security group ID"
 }
