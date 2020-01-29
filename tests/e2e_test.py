@@ -118,7 +118,7 @@ class TestE2E(unittest.TestCase):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting_snapshot_stg"]["tags.Name"], "stg-postgres-internal-tableau-apps-preprod-dq")
 
     def test_wip_instance_tag(self):
-        self.assertEqual(self.result["root_modules"]["aws_instance.tableau_linux_wip"]["tags.Name"], "ec2-wip-tableau-apps-preprod-dq")
+        self.assertEqual(self.result["root_modules"]["aws_instance.tableau_linux_wip"]["tags.Name"], "ec2-wip-tableau-linux-apps-preprod-dq")
 
     def test_rds_staging_tags(self):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting_snapshot_stg"]["tags.Name"], "stg-postgres-internal-tableau-apps-preprod-dq")
