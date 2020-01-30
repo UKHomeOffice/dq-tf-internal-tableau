@@ -298,7 +298,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_wip" {
   }
 
   tags {
-    Name = "wip-postgres-${local.naming_suffix_wip}"
+    Name = "wip-postgres-${local.naming_suffix_wip_pos}"
   }
 }
 
