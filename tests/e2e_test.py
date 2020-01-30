@@ -145,7 +145,7 @@ class TestE2E(unittest.TestCase):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting_snapshot_stg"]["engine_version"], "10.10")
 
     def test_rds_postgres_wip_engine_version(self):
-        self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting_snapshot_wip"]["engine_version"], "10.10")
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting_snapshot_wip"]["engine_version"], "10.6")
 
     def test_rds_postgres_stg_apply_immediately(self):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting_snapshot_stg"]["apply_immediately"], "false")
