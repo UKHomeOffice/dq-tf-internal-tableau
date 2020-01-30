@@ -14,11 +14,9 @@ class TestE2E(unittest.TestCase):
               skip_credentials_validation = true
               skip_get_ec2_platforms = true
             }
-
             module "root_modules" {
               source = "./mymodule"
               providers = {aws = "aws"}
-
               acp_prod_ingress_cidr             = "10.5.0.0/16"
               dq_ops_ingress_cidr               = "10.2.0.0/16"
               dq_internal_dashboard_subnet_cidr = "10.1.12.0/24"
@@ -37,7 +35,6 @@ class TestE2E(unittest.TestCase):
               lambda_subnet_az2                 = "subnet-1234567890"
               rds_enhanced_monitoring_role      = "arn:aws:iam::123456789:role/rds-enhanced-monitoring-role"
             }
-
         """
         self.result = Runner(self.snippet).result
 
@@ -120,14 +117,17 @@ class TestE2E(unittest.TestCase):
     def test_wip_instance_tag(self):
         self.assertEqual(self.result["root_modules"]["aws_instance.tableau_linux_wip"]["tags.Name"], "ec2-wip-tableau-linux-apps-preprod-dq")
 
-    def test_rds_wip_tags(self):
-        self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting_snapshot_wip"]["tags.Name"], "wip-postgres-internal-tableau-apps-preprod-dq")
+    def test_rds_staging_tags(self):
+        self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting_snapshot_stg"]["tags.Name"], "stg-postgres-internal-tableau-apps-preprod-dq")
 
     def test_rds_postgres_backup_window(self):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["backup_window"], "00:00-01:00")
 
     def test_rds_postgres_stg_backup_window(self):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting_snapshot_stg"]["backup_window"], "00:00-01:00")
+
+    # def test_rds_postgres_wip_backup_window_bla(self):
+    #     self.assertEqual(self.result["root_modules"]["aws_db_instance.internal_reporting_snapshot_wip"]["backup_window"], "00:00-01:00")
 
     def test_rds_postgres_maintenance_window(self):
         self.assertEqual(self.result["root_modules"]["aws_db_instance.postgres"]["maintenance_window"], "mon:01:00-mon:02:00")
