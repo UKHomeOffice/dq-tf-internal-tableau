@@ -1,8 +1,7 @@
 locals {
-  naming_suffix         = "internal-tableau-${var.naming_suffix}"
-  naming_suffix_linux   = "internal-tableau-linux-${var.naming_suffix}"
-  naming_suffix_wip     = "tableau-linux-${var.naming_suffix}"
-  naming_suffix_wip_pos = "tableau-${var.naming_suffix}"
+  naming_suffix       = "internal-tableau-${var.naming_suffix}"
+  naming_suffix_linux = "internal-tableau-linux-${var.naming_suffix}"
+  naming_suffix_wip   = "tableau-linux-${var.naming_suffix}"
 }
 
 #module "dq-lambda-run-command-ec2" {
