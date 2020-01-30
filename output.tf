@@ -18,3 +18,9 @@ output "rds_internal_tableau_staging_endpoint" {
     "${join("", aws_db_instance.internal_reporting_snapshot_stg.*.address)}"
   ]
 }
+
+output "rds_tableau_wip_endpoint" {
+  value = [
+    "${join("", aws_db_instance.internal_reporting_snapshot_wip.*.address)}"
+  ]
+}
