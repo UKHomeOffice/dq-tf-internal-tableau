@@ -298,7 +298,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_wip" {
   }
 
   tags {
-    Name = "wip-postgres-${local.naming_suffix}"
+    Name = "wip-postgres-${local.naming_suffix_wip_pos}"
   }
 }
 
@@ -399,4 +399,11 @@ resource "aws_ssm_parameter" "rds_internal_tableau_stg_endpoint" {
   name  = "rds_internal_tableau_stg_endpoint"
   type  = "String"
   value = "${aws_db_instance.internal_reporting_snapshot_stg.endpoint}"
+}
+
+resource "aws_ssm_parameter" "rds_tableau_wip_endpoint" {
+  count = "${local.internal_reporting_wip_count}"
+  name  = "rds_tableau_wip_endpoint"
+  type  = "String"
+  value = "${aws_db_instance.internal_reporting_snapshot_wip.endpoint}"
 }
