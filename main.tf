@@ -400,7 +400,7 @@ EOF
 }
 
 resource "aws_instance" "tableau_linux_wip" {
-  count                       = "${var.environment == "prod" ? "1" : "1"}" # Allow different instance count in prod and notprod
+  count                       = "${var.environment == "prod" ? "0" : "1"}" # Allow different instance count in prod and notprod
   key_name                    = "${var.key_name}"
   ami                         = "${data.aws_ami.int_tableau_linux.id}"
   instance_type               = "c5.4xlarge"

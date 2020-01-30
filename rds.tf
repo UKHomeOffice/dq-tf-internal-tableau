@@ -2,6 +2,7 @@ locals {
   internal_reporting_dev_count     = "${var.environment == "prod" ? "0" : "1"}"
   internal_reporting_qa_count      = "${var.environment == "prod" ? "0" : "1"}"
   internal_reporting_stg_count     = "${var.environment == "prod" ? "1" : "0"}"
+  internal_reporting_snapshot_wip  = "${var.environment == "prod" ? "0" : "1"}"
   internal_reporting_upgrade_count = "${var.environment == "prod" ? "0" : "1"}"
 }
 
@@ -259,6 +260,45 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
 
   tags {
     Name = "stg-postgres-${local.naming_suffix}"
+  }
+}
+
+resource "aws_db_instance" "internal_reporting_snapshot_wip" {
+  count                               = "${local.internal_reporting_stg_count}"
+  snapshot_identifier                 = "rds:postgres-internal-tableau-apps-prod-dq-2020-01-30-00-07"
+  auto_minor_version_upgrade          = "true"
+  backup_retention_period             = "14"
+  copy_tags_to_snapshot               = "false"
+  db_subnet_group_name                = "${aws_db_subnet_group.rds.id}"
+  deletion_protection                 = "false"
+  enabled_cloudwatch_logs_exports     = ["postgresql", "upgrade"]
+  iam_database_authentication_enabled = "false"
+  identifier                          = "stg-postgres-${local.naming_suffix}"
+  instance_class                      = "db.m5.4xlarge"
+  iops                                = "0"
+  kms_key_id                          = "${data.aws_kms_key.rds_kms_key.arn}"
+  license_model                       = "postgresql-license"
+  backup_window                       = "${var.environment == "prod" ? "00:00-01:00" : "07:00-08:00"}"
+  maintenance_window                  = "${var.environment == "prod" ? "tue:01:00-tue:02:00" : "mon:08:00-mon:09:00"}"
+  multi_az                            = "true"
+  port                                = "5432"
+  publicly_accessible                 = "false"
+  skip_final_snapshot                 = true
+  storage_encrypted                   = true
+  storage_type                        = "gp2"
+  vpc_security_group_ids              = ["${aws_security_group.internal_tableau_db.id}"]
+  ca_cert_identifier                  = "${var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"}"
+  monitoring_interval                 = "60"
+  monitoring_role_arn                 = "${var.rds_enhanced_monitoring_role}"
+  engine_version                      = "${var.environment == "prod" ? "10.10" : "10.10"}"
+  apply_immediately                   = "${var.environment == "prod" ? "false" : "true"}"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  tags {
+    Name = "wip-postgres-${local.naming_suffix_wip}"
   }
 }
 
