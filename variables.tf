@@ -101,7 +101,7 @@ variable "dq_internal_dashboard_subnet_cidr_az2" {
 variable "dq_internal_dashboard_instance_ip" {
   description = "IP address of EC2 instance"
   type        = "list"
-  default     = ["10.1.12.111", "10.1.12.112", "10.1.12.113", "10.1.12.114"]
+  default     = ["10.1.12.112", "10.1.12.111", "10.1.12.113", "10.1.12.114"]
 }
 
 variable "dq_lambda_subnet_cidr" {
