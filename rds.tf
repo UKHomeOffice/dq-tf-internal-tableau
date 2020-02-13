@@ -1,7 +1,7 @@
 locals {
   internal_reporting_dev_count     = "${var.environment == "prod" ? "0" : "1"}"
   internal_reporting_qa_count      = "${var.environment == "prod" ? "0" : "1"}"
-  internal_reporting_stg_count     = "${var.environment == "prod" ? "1" : "0"}"
+  internal_reporting_stg_count     = "${var.environment == "prod" ? "1" : "1"}"
   internal_reporting_wip_count     = "${var.environment == "prod" ? "1" : "1"}"
   internal_reporting_upgrade_count = "${var.environment == "prod" ? "0" : "1"}"
 }
@@ -139,9 +139,9 @@ module "rds_alarms" {
   environment                  = "${var.naming_suffix}"
   pipeline_name                = "internal-tableau"
   db_instance_id               = "${aws_db_instance.postgres.id}"
-  free_storage_space_threshold = 250000000000 # 250GB free space
-  read_latency_threshold       = 0.05         # 50 milliseconds
-  write_latency_threshold      = 1            # 1 second
+  free_storage_space_threshold = 250000000000                     # 250GB free space
+  read_latency_threshold       = 0.05                             # 50 milliseconds
+  write_latency_threshold      = 1                                # 1 second
 }
 
 resource "aws_db_instance" "internal_reporting_snapshot_dev" {
@@ -226,7 +226,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
 
 resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   count                               = "${local.internal_reporting_stg_count}"
-  snapshot_identifier                 = "rds:postgres-internal-tableau-apps-prod-dq-2020-02-10-00-07"
+  snapshot_identifier                 = "${var.environment == "prod" ? "rds:postgres-internal-tableau-apps-prod-dq-2020-02-10-00-07" : "rds:postgres-internal-tableau-apps-notprod-dq-2020-02-13-07-07" }"
   auto_minor_version_upgrade          = "true"
   backup_retention_period             = "14"
   copy_tags_to_snapshot               = "false"
@@ -235,7 +235,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   enabled_cloudwatch_logs_exports     = ["postgresql", "upgrade"]
   iam_database_authentication_enabled = "false"
   identifier                          = "stg-postgres-${local.naming_suffix}"
-  instance_class                      = "db.m5.4xlarge"
+  instance_class                      = "${var.environment == "prod" ? "db.m5.4xlarge" : "db.m5.2xlarge"}"
   iops                                = "0"
   kms_key_id                          = "${data.aws_kms_key.rds_kms_key.arn}"
   license_model                       = "postgresql-license"
