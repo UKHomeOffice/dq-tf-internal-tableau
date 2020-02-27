@@ -215,7 +215,7 @@ EOF
 resource "aws_instance" "int_tableau_linux_staging" {
   count                       = "${var.environment == "prod" ? "1" : "0"}" # Allow different instance count in prod and notprod
   key_name                    = "${var.key_name}"
-  ami                         = "${data.aws_ami.int_tableau_linux.id}"
+  ami                         = "${data.aws_ami.int_tableau_linux_staging.id}"
   instance_type               = "c5.4xlarge"
   iam_instance_profile        = "${aws_iam_instance_profile.int_tableau.id}"
   vpc_security_group_ids      = ["${aws_security_group.sgrp.id}"]
