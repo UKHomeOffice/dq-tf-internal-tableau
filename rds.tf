@@ -61,6 +61,7 @@ resource "aws_security_group" "internal_tableau_db" {
       "${var.dq_internal_dashboard_subnet_cidr_az2}",
       "${var.dq_lambda_subnet_cidr}",
       "${var.dq_lambda_subnet_cidr_az2}",
+      "${var.dq_external_dashboard_subnet_cidr}",
     ]
   }
 
