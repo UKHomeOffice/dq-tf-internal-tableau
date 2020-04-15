@@ -1,4 +1,4 @@
-# dq-tf-internal-tableau.
+# dq-tf-internal-tableau
 
 This Terraform module has two subnet and deploys an EC2 instance representing a web server and an RDS instance. Allowing inbound HTTPS TCP traffic on port 80, 22, 8850, 8060 and 5432.
 
