@@ -98,7 +98,7 @@ EOF
 
 resource "aws_db_instance" "postgres" {
   identifier                      = "postgres-${local.naming_suffix}"
-  allocated_storage               = "${var.environment == "prod" ? "3300" : "300"}"
+  allocated_storage               = "${var.environment == "prod" ? "3300" : "350"}"
   storage_type                    = "gp2"
   engine                          = "postgres"
   engine_version                  = "${var.environment == "prod" ? "10.10" : "10.10"}"
@@ -140,9 +140,9 @@ module "rds_alarms" {
   environment                  = "${var.naming_suffix}"
   pipeline_name                = "internal-tableau"
   db_instance_id               = "${aws_db_instance.postgres.id}"
-  free_storage_space_threshold = 250000000000                     # 250GB free space
-  read_latency_threshold       = 0.05                             # 50 milliseconds
-  write_latency_threshold      = 1                                # 1 second
+  free_storage_space_threshold = 250000000000 # 250GB free space
+  read_latency_threshold       = 0.05         # 50 milliseconds
+  write_latency_threshold      = 1            # 1 second
 }
 
 resource "aws_db_instance" "internal_reporting_snapshot_dev" {
@@ -227,7 +227,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
 
 resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   count                               = "${local.internal_reporting_stg_count}"
-  snapshot_identifier                 = "${var.environment == "prod" ? "rds:postgres-internal-tableau-apps-prod-dq-2020-03-23-00-07" : "rds:postgres-internal-tableau-apps-notprod-dq-2020-03-23-07-07" }"
+  snapshot_identifier                 = "${var.environment == "prod" ? "rds:postgres-internal-tableau-apps-prod-dq-2020-03-23-00-07" : "rds:postgres-internal-tableau-apps-notprod-dq-2020-03-23-07-07"}"
   auto_minor_version_upgrade          = "true"
   backup_retention_period             = "14"
   copy_tags_to_snapshot               = "false"
