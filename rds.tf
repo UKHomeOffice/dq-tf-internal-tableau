@@ -118,6 +118,9 @@ resource "aws_db_instance" "postgres" {
   apply_immediately               = "${var.environment == "prod" ? "false" : "true"}"
   ca_cert_identifier              = "${var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"}"
 
+  performance_insights_enabled          = true
+  performance_insights_retention_period = "7"
+
   monitoring_interval = "60"
   monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
 
@@ -173,6 +176,9 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   engine_version                      = "${var.environment == "prod" ? "10.6" : "10.10"}"
   apply_immediately                   = "${var.environment == "prod" ? "false" : "true"}"
 
+  performance_insights_enabled          = true
+  performance_insights_retention_period = "7"
+
   monitoring_interval = "60"
   monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
 
@@ -212,6 +218,9 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
   ca_cert_identifier                  = "${var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"}"
   engine_version                      = "${var.environment == "prod" ? "10.6" : "10.10"}"
   apply_immediately                   = "${var.environment == "prod" ? "false" : "true"}"
+
+  performance_insights_enabled          = true
+  performance_insights_retention_period = "7"
 
   monitoring_interval = "60"
   monitoring_role_arn = "${var.rds_enhanced_monitoring_role}"
@@ -255,6 +264,9 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   engine_version                      = "${var.environment == "prod" ? "10.10" : "10.10"}"
   apply_immediately                   = "${var.environment == "prod" ? "false" : "true"}"
 
+  performance_insights_enabled          = true
+  performance_insights_retention_period = "7"
+
   lifecycle {
     prevent_destroy = true
   }
@@ -294,6 +306,9 @@ resource "aws_db_instance" "internal_reporting_snapshot_wip" {
   monitoring_role_arn                 = "${var.rds_enhanced_monitoring_role}"
   engine_version                      = "${var.environment == "prod" ? "10.6" : "10.10"}"
   apply_immediately                   = "${var.environment == "prod" ? "false" : "true"}"
+
+  performance_insights_enabled          = true
+  performance_insights_retention_period = "7"
 
   lifecycle {
     prevent_destroy = true
