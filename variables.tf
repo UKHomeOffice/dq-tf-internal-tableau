@@ -105,7 +105,7 @@ variable "dq_external_dashboard_subnet_cidr" {
 
 variable "dq_internal_dashboard_instance_ip" {
   description = "IP address of EC2 instance"
-  type        = "list"
+  type        = list(string)
   default     = ["10.1.12.111", "10.1.12.112", "10.1.12.113", "10.1.12.114"]
 }
 
@@ -202,3 +202,4 @@ variable "lambda_subnet_az2" {
 variable "rds_enhanced_monitoring_role" {
   description = "ARN of the RDS enhanced monitoring role"
 }
+
