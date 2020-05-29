@@ -137,7 +137,7 @@ resource "aws_db_instance" "postgres" {
 }
 
 module "rds_alarms" {
-  source = "github.com/UKHomeOffice/dq-tf-cloudwatch-rds"
+  source = "git::https://github.com/ukhomeoffice/dq-tf-cloudwatch-rds.git?ref=TF12-upgrade"
 
   naming_suffix                = local.naming_suffix
   environment                  = var.naming_suffix
@@ -337,4 +337,3 @@ resource "aws_ssm_parameter" "rds_internal_tableau_stg_endpoint" {
   type  = "String"
   value = aws_db_instance.internal_reporting_snapshot_stg[0].endpoint
 }
-
