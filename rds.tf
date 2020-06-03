@@ -98,7 +98,7 @@ EOF
 
 resource "aws_db_instance" "postgres" {
   identifier                      = "postgres-${local.naming_suffix}"
-  allocated_storage               = var.environment == "prod" ? "3300" : "450"
+  allocated_storage               = var.environment == "prod" ? "3300" : "550"
   storage_type                    = "gp2"
   engine                          = "postgres"
   engine_version                  = var.environment == "prod" ? "10.10" : "10.10"
