@@ -6,18 +6,20 @@ resource "aws_iam_role" "int_tableau" {
     {
       "Effect": "Allow",
       "Principal": {
-        "Service": "ec2.amazonaws.com",
-        "Service": "s3.amazonaws.com"
-      },
+        "Service": [
+                    "ec2.amazonaws.com",
+                    "s3.amazonaws.com"
+        ]
       "Action": "sts:AssumeRole"
     }
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy" "int_tableau" {
-  role = "${aws_iam_role.int_tableau.id}"
+  role = aws_iam_role.int_tableau.id
 
   policy = <<EOF
 {
@@ -83,10 +85,11 @@ resource "aws_iam_role_policy" "int_tableau" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy" "int_tableau_s3" {
-  role = "${aws_iam_role.int_tableau.id}"
+  role = aws_iam_role.int_tableau.id
 
   policy = <<EOF
 {
@@ -133,8 +136,9 @@ resource "aws_iam_role_policy" "int_tableau_s3" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_instance_profile" "int_tableau" {
-  role = "${aws_iam_role.int_tableau.name}"
+  role = aws_iam_role.int_tableau.name
 }
