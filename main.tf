@@ -18,15 +18,15 @@ locals {
 #}
 
 resource "aws_instance" "int_tableau_linux" {
-  count                       = "${var.environment == "prod" ? "2" : "1"}" # Allow different instance count in prod and notprod
-  key_name                    = "${var.key_name}"
-  ami                         = "${data.aws_ami.int_tableau_linux.id}"
+  count                       = var.environment == "prod" ? "2" : "1" # Allow different instance count in prod and notprod
+  key_name                    = var.key_name
+  ami                         = data.aws_ami.int_tableau_linux.id
   instance_type               = "r5d.4xlarge"
-  iam_instance_profile        = "${aws_iam_instance_profile.int_tableau.id}"
-  vpc_security_group_ids      = ["${aws_security_group.sgrp.id}"]
+  iam_instance_profile        = aws_iam_instance_profile.int_tableau.id
+  vpc_security_group_ids      = [aws_security_group.sgrp.id]
   associate_public_ip_address = false
-  subnet_id                   = "${aws_subnet.subnet.id}"
-  private_ip                  = "${element(var.dq_internal_dashboard_instance_ip, count.index)}"
+  subnet_id                   = aws_subnet.subnet.id
+  private_ip                  = element(var.dq_internal_dashboard_instance_ip, count.index)
   monitoring                  = true
 
   user_data = <<EOF
@@ -193,6 +193,7 @@ reboot
 
 EOF
 
+
   tags = {
     Name = "ec2-${local.naming_suffix_linux}"
   }
@@ -201,23 +202,23 @@ EOF
     prevent_destroy = true
 
     ignore_changes = [
-      "user_data",
-      "ami",
-      "instance_type",
+      user_data,
+      ami,
+      instance_type,
     ]
   }
 }
 
 resource "aws_instance" "int_tableau_linux_staging" {
-  count                       = "${var.environment == "prod" ? "1" : "0"}" # Allow different instance count in prod and notprod
-  key_name                    = "${var.key_name}"
-  ami                         = "${data.aws_ami.int_tableau_linux_upgrade.id}"
+  count                       = var.environment == "prod" ? "1" : "0" # Allow different instance count in prod and notprod
+  key_name                    = var.key_name
+  ami                         = data.aws_ami.int_tableau_linux_upgrade.id
   instance_type               = "c5.4xlarge"
-  iam_instance_profile        = "${aws_iam_instance_profile.int_tableau.id}"
-  vpc_security_group_ids      = ["${aws_security_group.sgrp.id}"]
+  iam_instance_profile        = aws_iam_instance_profile.int_tableau.id
+  vpc_security_group_ids      = [aws_security_group.sgrp.id]
   associate_public_ip_address = false
-  subnet_id                   = "${aws_subnet.subnet.id}"
-  private_ip                  = "${var.dq_internal_staging_dashboard_instance_ip}"
+  subnet_id                   = aws_subnet.subnet.id
+  private_ip                  = var.dq_internal_staging_dashboard_instance_ip
   monitoring                  = true
 
   user_data = <<EOF
@@ -385,6 +386,7 @@ reboot
 
 EOF
 
+
   tags = {
     Name = "ec2-staging-${local.naming_suffix}"
   }
@@ -393,92 +395,92 @@ EOF
     prevent_destroy = true
 
     ignore_changes = [
-      "user_data",
-      "ami",
-      "instance_type",
+      user_data,
+      ami,
+      instance_type,
     ]
   }
 }
 
 resource "aws_subnet" "subnet" {
-  vpc_id            = "${var.apps_vpc_id}"
-  cidr_block        = "${var.dq_internal_dashboard_subnet_cidr}"
-  availability_zone = "${var.az}"
+  vpc_id            = var.apps_vpc_id
+  cidr_block        = var.dq_internal_dashboard_subnet_cidr
+  availability_zone = var.az
 
-  tags {
+  tags = {
     Name = "subnet-${local.naming_suffix}"
   }
 }
 
 resource "aws_route_table_association" "internal_tableau_rt_association" {
-  subnet_id      = "${aws_subnet.subnet.id}"
-  route_table_id = "${var.route_table_id}"
+  subnet_id      = aws_subnet.subnet.id
+  route_table_id = var.route_table_id
 }
 
 resource "aws_security_group" "sgrp" {
-  vpc_id = "${var.apps_vpc_id}"
+  vpc_id = var.apps_vpc_id
 
   ingress {
-    from_port = "${var.http_from_port}"
-    to_port   = "${var.http_to_port}"
-    protocol  = "${var.http_protocol}"
+    from_port = var.http_from_port
+    to_port   = var.http_to_port
+    protocol  = var.http_protocol
 
     cidr_blocks = [
-      "${var.dq_ops_ingress_cidr}",
-      "${var.acp_prod_ingress_cidr}",
-      "${var.peering_cidr_block}",
+      var.dq_ops_ingress_cidr,
+      var.acp_prod_ingress_cidr,
+      var.peering_cidr_block,
     ]
   }
 
   ingress {
-    from_port = "${var.SSH_from_port}"
-    to_port   = "${var.SSH_to_port}"
-    protocol  = "${var.SSH_protocol}"
+    from_port = var.SSH_from_port
+    to_port   = var.SSH_to_port
+    protocol  = var.SSH_protocol
 
     cidr_blocks = [
-      "${var.dq_ops_ingress_cidr}",
+      var.dq_ops_ingress_cidr,
     ]
   }
 
   ingress {
-    from_port = "${var.TSM_from_port}"
-    to_port   = "${var.TSM_to_port}"
-    protocol  = "${var.http_protocol}"
+    from_port = var.TSM_from_port
+    to_port   = var.TSM_to_port
+    protocol  = var.http_protocol
 
     cidr_blocks = [
-      "${var.dq_ops_ingress_cidr}",
+      var.dq_ops_ingress_cidr,
     ]
   }
 
   ingress {
-    from_port = "${var.TAB_DB_to_port}"
-    to_port   = "${var.TAB_DB_to_port}"
-    protocol  = "${var.TAB_DB_protocol}"
+    from_port = var.TAB_DB_to_port
+    to_port   = var.TAB_DB_to_port
+    protocol  = var.TAB_DB_protocol
 
     cidr_blocks = [
-      "${var.dq_ops_ingress_cidr}",
+      var.dq_ops_ingress_cidr,
     ]
   }
 
   ingress {
-    from_port = "${var.rds_from_port}"
-    to_port   = "${var.rds_to_port}"
-    protocol  = "${var.rds_protocol}"
+    from_port = var.rds_from_port
+    to_port   = var.rds_to_port
+    protocol  = var.rds_protocol
 
     cidr_blocks = [
-      "${var.dq_lambda_subnet_cidr}",
-      "${var.dq_lambda_subnet_cidr_az2}",
+      var.dq_lambda_subnet_cidr,
+      var.dq_lambda_subnet_cidr_az2,
     ]
   }
 
   ingress {
-    from_port = "${var.SSH_from_port}"
-    to_port   = "${var.SSH_to_port}"
-    protocol  = "${var.SSH_protocol}"
+    from_port = var.SSH_from_port
+    to_port   = var.SSH_to_port
+    protocol  = var.SSH_protocol
 
     cidr_blocks = [
-      "${var.dq_lambda_subnet_cidr}",
-      "${var.dq_lambda_subnet_cidr_az2}",
+      var.dq_lambda_subnet_cidr,
+      var.dq_lambda_subnet_cidr_az2,
     ]
   }
 
@@ -489,7 +491,8 @@ resource "aws_security_group" "sgrp" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags {
+  tags = {
     Name = "sg-${local.naming_suffix}"
   }
 }
+
