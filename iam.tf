@@ -10,6 +10,7 @@ resource "aws_iam_role" "int_tableau" {
                     "ec2.amazonaws.com",
                     "s3.amazonaws.com"
         ]
+      },
       "Action": "sts:AssumeRole"
     }
   ]
