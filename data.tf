@@ -5,7 +5,7 @@ data "aws_ami" "int_tableau_linux" {
     name = "name"
 
     values = [
-      "dq-tableau-linux-207*",
+      "dq-tableau-linux-208*",
     ]
   }
 
@@ -21,7 +21,7 @@ data "aws_ami" "int_tableau_linux_upgrade" {
     name = "name"
 
     values = [
-      "dq-tableau-linux-207*",
+      "dq-tableau-linux-208*",
     ]
   }
 
@@ -33,4 +33,3 @@ data "aws_ami" "int_tableau_linux_upgrade" {
 data "aws_kms_key" "rds_kms_key" {
   key_id = "alias/aws/rds"
 }
-
