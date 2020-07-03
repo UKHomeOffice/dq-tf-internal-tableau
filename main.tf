@@ -210,7 +210,7 @@ EOF
 }
 
 resource "aws_instance" "int_tableau_linux_staging" {
-  count                       = var.environment == "prod" ? "1" : "0" # Allow different instance count in prod and notprod
+  count                       = var.environment == "prod" ? "1" : "1" # Allow different instance count in prod and notprod
   key_name                    = var.key_name
   ami                         = data.aws_ami.int_tableau_linux_upgrade.id
   instance_type               = "c5.4xlarge"
@@ -495,4 +495,3 @@ resource "aws_security_group" "sgrp" {
     Name = "sg-${local.naming_suffix}"
   }
 }
-
