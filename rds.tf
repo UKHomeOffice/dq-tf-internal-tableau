@@ -263,6 +263,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   monitoring_role_arn                 = var.rds_enhanced_monitoring_role
   engine_version                      = var.environment == "prod" ? "11.7" : "10.10"
   apply_immediately                   = var.environment == "prod" ? "true" : "true"
+  allow_major_version_upgrade         = true
 
   performance_insights_enabled          = true
   performance_insights_retention_period = "7"
