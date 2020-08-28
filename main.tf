@@ -280,6 +280,15 @@ echo "
 source /home/tableau_srv/env_vars.sh
 " >> /home/tableau_srv/.bashrc
 
+echo "#Create the cronjob for the Tab backup"
+if [ ${var.environment} == "prod" ]; then
+  echo "0 19 * * * /bin/bash /home/tableau_srv/scripts/tableau-backup.sh" > /tmp/backupcron
+  crontab -u tableau_srv /tmp/backupcron
+else
+  echo "0 17 * * * /bin/bash /home/tableau_srv/scripts/tableau-backup.sh" > /tmp/backupcron
+  crontab -u tableau_srv /tmp/backupcron
+fi
+
 echo "#Set password for tableau_srv"
 echo $TAB_SRV_PASSWORD | passwd tableau_srv --stdin
 

@@ -130,7 +130,7 @@ class TestE2E(unittest.TestCase):
         self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.internal_reporting_snapshot_stg[0]", "maintenance_window"), "tue:01:00-tue:02:00")
 
     def test_rds_postgres_stg_engine_version(self):
-        self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.internal_reporting_snapshot_stg[0]", "engine_version"), "10.10")
+        self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.internal_reporting_snapshot_stg[0]", "engine_version"), "11.7")
 
     def test_rds_postgres_stg_apply_immediately(self):
         self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.internal_reporting_snapshot_stg[0]", "apply_immediately"), True)
