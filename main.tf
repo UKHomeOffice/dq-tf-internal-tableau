@@ -152,8 +152,8 @@ tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config.jso
 tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-openid.json
 tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-trusted-auth.json
 
-echo "#TSM increase extract timeout - to 6 hours (=21600 seconds)"
-tsm configuration set -k backgrounder.querylimit -v 21600
+echo "#TSM increase extract timeout - to 8 hours (=28,800 seconds)"
+tsm configuration set -k backgrounder.querylimit -v 28800
 
 echo "#TSM apply pending changes"
 tsm pending-changes apply
@@ -213,7 +213,7 @@ resource "aws_instance" "int_tableau_linux_staging" {
   count                       = var.environment == "prod" ? "1" : "1" # Allow different instance count in prod and notprod
   key_name                    = var.key_name
   ami                         = data.aws_ami.int_tableau_linux_upgrade.id
-  instance_type               = "c5.4xlarge"
+  instance_type               = "r5d.4xlarge" # "c5.4xlarge"
   iam_instance_profile        = aws_iam_instance_profile.int_tableau.id
   vpc_security_group_ids      = [aws_security_group.sgrp.id]
   associate_public_ip_address = false
@@ -354,8 +354,8 @@ tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config.jso
 tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-openid.json
 tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-trusted-auth.json
 
-echo "#TSM increase extract timeout - to 6 hours (=21600 seconds)"
-tsm configuration set -k backgrounder.querylimit -v 21600
+echo "#TSM increase extract timeout - to 8 hours (=28,800 seconds)"
+tsm configuration set -k backgrounder.querylimit -v 28800
 
 echo "#TSM apply pending changes"
 tsm pending-changes apply
