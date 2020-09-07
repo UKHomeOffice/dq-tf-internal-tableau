@@ -138,5 +138,8 @@ class TestE2E(unittest.TestCase):
     def test_rds_postgres_postgres_engine_version(self):
         self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.postgres", "engine_version"), "10.10")
 
+    def test_alarm_tabInt0_tags(self):
+        self.assertEqual(self.runner.get_value("module.root_modules.aws_cloudwatch_metric_alarm.status_check_failed_instance_alarm_Tab_Int0", "alarm_name"), "EC2-High-Status-Check-Failed-Instance-Tab-Int0")
+
 if __name__ == '__main__':
     unittest.main()
