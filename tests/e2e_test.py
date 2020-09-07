@@ -141,5 +141,11 @@ class TestE2E(unittest.TestCase):
     def test_alarm_tabInt0_tags(self):
         self.assertEqual(self.runner.get_value("module.root_modules.aws_cloudwatch_metric_alarm.status_check_failed_instance_alarm_Tab_Int0", "alarm_name"), "EC2-High-Status-Check-Failed-Instance-Tab-Int0")
 
+    def test_alarm_tabInt0_tags(self):
+        self.assertEqual(self.runner.get_value("module.root_modules.aws_cloudwatch_metric_alarm.status_check_failed_instance_alarm_Tab_Int1", "alarm_name"), "EC2-High-Status-Check-Failed-Instance-Tab-Int1")
+
+    def test_alarm_tabInt0_tags(self):
+        self.assertEqual(self.runner.get_value("module.root_modules.aws_cloudwatch_metric_alarm.status_check_failed_instance_alarm_Tab_Int_Stg", "alarm_name"), "EC2-High-Status-Check-Failed-Instance-Tab-Int-Stg")
+
 if __name__ == '__main__':
     unittest.main()
