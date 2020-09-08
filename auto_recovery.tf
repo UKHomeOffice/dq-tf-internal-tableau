@@ -54,6 +54,6 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_Tab_I
   alarm_actions             = ["arn:aws:automate:${data.aws_region.current.name}:ec2:reboot"]
 
   dimensions = {
-    InstanceId = aws_instance.int_tableau_linux[0].id
+    InstanceId = aws_instance.int_tableau_linux_staging[0].id
   }
 }
