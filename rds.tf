@@ -241,7 +241,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   backup_retention_period             = "14"
   copy_tags_to_snapshot               = "false"
   db_subnet_group_name                = aws_db_subnet_group.rds.id
-  deletion_protection                 = "false"
+  deletion_protection                 = "true"
   enabled_cloudwatch_logs_exports     = ["postgresql", "upgrade"]
   iam_database_authentication_enabled = "false"
   identifier                          = "stg-postgres-${local.naming_suffix}"
