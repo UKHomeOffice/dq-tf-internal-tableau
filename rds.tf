@@ -113,7 +113,7 @@ resource "aws_db_instance" "postgres" {
   backup_retention_period         = 14
   deletion_protection             = true
   storage_encrypted               = true
-  multi_az                        = true
+  multi_az                        = var.environment == "prod" ? "true" : "false"
   skip_final_snapshot             = true
   apply_immediately               = var.environment == "prod" ? "false" : "true"
   ca_cert_identifier              = var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"
@@ -165,7 +165,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   license_model                       = "postgresql-license"
   backup_window                       = var.environment == "prod" ? "00:00-01:00" : "07:00-08:00"
   maintenance_window                  = var.environment == "prod" ? "mon:01:00-mon:02:00" : "mon:08:00-mon:09:00"
-  multi_az                            = "true"
+  multi_az                            = var.environment == "prod" ? "true" : "false"
   port                                = "5432"
   publicly_accessible                 = "false"
   skip_final_snapshot                 = true
@@ -208,7 +208,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
   license_model                       = "postgresql-license"
   backup_window                       = var.environment == "prod" ? "00:00-01:00" : "07:00-08:00"
   maintenance_window                  = var.environment == "prod" ? "mon:01:00-mon:02:00" : "mon:08:00-mon:09:00"
-  multi_az                            = "true"
+  multi_az                            = var.environment == "prod" ? "true" : "false"
   port                                = "5432"
   publicly_accessible                 = "false"
   skip_final_snapshot                 = true
@@ -251,7 +251,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   license_model                       = "postgresql-license"
   backup_window                       = var.environment == "prod" ? "00:00-01:00" : "07:00-08:00"
   maintenance_window                  = var.environment == "prod" ? "tue:01:00-tue:02:00" : "mon:08:00-mon:09:00"
-  multi_az                            = "true"
+  multi_az                            = var.environment == "prod" ? "true" : "false"
   port                                = "5432"
   publicly_accessible                 = "false"
   skip_final_snapshot                 = true
