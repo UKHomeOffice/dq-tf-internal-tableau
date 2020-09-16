@@ -98,6 +98,15 @@ chmod 0400 /home/tableau_srv/.ssh/id_rsa
 chmod 0444 /home/tableau_srv/.ssh/id_rsa.pub
 chmod 0644 /home/tableau_srv/env_vars.sh
 
+echo "#Create the cronjob for the Tab backup"
+if [ ${var.environment} == "prod" ]; then
+  echo "0 19 * * * /bin/bash /home/tableau_srv/scripts/tableau-backup.sh" > /tmp/backupcron
+  crontab -u tableau_srv /tmp/backupcron
+else
+  echo "0 17 * * * /bin/bash /home/tableau_srv/scripts/tableau-backup.sh" > /tmp/backupcron
+  crontab -u tableau_srv /tmp/backupcron
+fi
+
 echo "#Get latest code from git"
 su -c "git clone $TAB_INT_REPO_URL" - tableau_srv
 
