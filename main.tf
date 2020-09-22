@@ -21,7 +21,7 @@ resource "aws_instance" "int_tableau_linux" {
   count                       = var.environment == "prod" ? "2" : "1" # Allow different instance count in prod and notprod
   key_name                    = var.key_name
   ami                         = data.aws_ami.int_tableau_linux.id
-  instance_type               = "r5d.4xlarge"
+  instance_type               = var.environment == "prod" ? "r5d.4xlarge" : "r5d.2xlarge"
   iam_instance_profile        = aws_iam_instance_profile.int_tableau.id
   vpc_security_group_ids      = [aws_security_group.sgrp.id]
   associate_public_ip_address = false
@@ -97,6 +97,15 @@ chown -R tableau_srv:tableau_srv /home/tableau_srv/
 chmod 0400 /home/tableau_srv/.ssh/id_rsa
 chmod 0444 /home/tableau_srv/.ssh/id_rsa.pub
 chmod 0644 /home/tableau_srv/env_vars.sh
+
+echo "#Create the cronjob for the Tab backup"
+if [ ${var.environment} == "prod" ]; then
+  echo "0 19 * * * /bin/bash /home/tableau_srv/scripts/tableau-backup.sh" > /tmp/backupcron
+  crontab -u tableau_srv /tmp/backupcron
+else
+  echo "0 17 * * * /bin/bash /home/tableau_srv/scripts/tableau-backup.sh" > /tmp/backupcron
+  crontab -u tableau_srv /tmp/backupcron
+fi
 
 echo "#Get latest code from git"
 su -c "git clone $TAB_INT_REPO_URL" - tableau_srv
@@ -210,7 +219,7 @@ EOF
 }
 
 resource "aws_instance" "int_tableau_linux_staging" {
-  count                       = var.environment == "prod" ? "1" : "1" # Allow different instance count in prod and notprod
+  count                       = var.environment == "prod" ? "1" : "0" # Allow different instance count in prod and notprod
   key_name                    = var.key_name
   ami                         = data.aws_ami.int_tableau_linux_upgrade.id
   instance_type               = "r5d.4xlarge" # "c5.4xlarge"
