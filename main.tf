@@ -98,15 +98,6 @@ chmod 0400 /home/tableau_srv/.ssh/id_rsa
 chmod 0444 /home/tableau_srv/.ssh/id_rsa.pub
 chmod 0644 /home/tableau_srv/env_vars.sh
 
-echo "#Create the cronjob for the Tab backup"
-if [ ${var.environment} == "prod" ]; then
-  echo "0 19 * * * /bin/bash /home/tableau_srv/scripts/tableau-backup.sh" > /tmp/backupcron
-  crontab -u tableau_srv /tmp/backupcron
-else
-  echo "0 17 * * * /bin/bash /home/tableau_srv/scripts/tableau-backup.sh" > /tmp/backupcron
-  crontab -u tableau_srv /tmp/backupcron
-fi
-
 echo "#Get latest code from git"
 su -c "git clone $TAB_INT_REPO_URL" - tableau_srv
 
@@ -175,6 +166,18 @@ su -c "tabcmd --accepteula" - tableau_srv
 
 echo "#TSMCMD - initial user"
 tabcmd initialuser --server 'localhost:80' --username "$TAB_ADMIN_USER" --password "$TAB_ADMIN_PASSWORD"
+
+echo "#Checking environment: if notprod then move Tableau-Backup cron to daytime"
+crontab -l > /tmp/crontabbefore
+if [ ${var.environment} == "notprod" ]; then
+  echo "#Notprod Env: Moving Tableau-backup cronjob to daytime in notprod"
+  echo "0 17 * * * source $HOME/.bashrc; /home/tableau_srv/scripts/tableau-backup.sh" > /tmp/backupcron
+  crontab -u tableau_srv /tmp/backupcron
+else
+  echo "#Tableau-Backup cronjob remains at 7pm"
+  echo "The environment is ${var.environment}"
+fi
+crontab -l > /tmp/crontabafter
 
 # Always restore from green
 export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/green/"
