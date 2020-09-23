@@ -173,8 +173,7 @@ if [ ${var.environment} == "notprod" ]; then
   echo "0 17 * * * source /home/tableau_srv/.bashrc; /home/tableau_srv/scripts/tableau-backup.sh" > /tmp/backupcron
   crontab -u tableau_srv /tmp/backupcron
 else
-  echo "#Tableau-Backup cronjob remains at 7pm"
-  echo "The environment is ${var.environment}"
+  echo "#Tableau-Backup cronjob remains at 7pm for environment ${var.environment}"
 fi
 
 # Always restore from green
@@ -385,8 +384,7 @@ if [ ${var.environment} == "notprod" ]; then
   echo "0 17 * * * source /home/tableau_srv/.bashrc; /home/tableau_srv/scripts/tableau-backup.sh" > /tmp/backupcron
   crontab -u tableau_srv /tmp/backupcron
 else
-  echo "#Tableau-Backup cronjob remains at 7pm"
-  echo "The environment is ${var.environment}"
+  echo "#Tableau-Backup cronjob remains at 7pm for environment ${var.environment}"
 fi
 
 # Always restore from green
