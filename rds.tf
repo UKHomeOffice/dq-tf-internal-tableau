@@ -236,7 +236,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
 
 resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   count                               = local.internal_reporting_stg_count
-  snapshot_identifier                 = var.environment == "prod" ? "rds:postgres-internal-tableau-apps-prod-dq-2020-08-28-00-08" : "rds:postgres-internal-tableau-apps-notprod-dq-2020-03-23-07-07"
+  snapshot_identifier                 = var.environment == "prod" ? "rds:postgres-internal-tableau-apps-prod-dq-2020-09-24-00-07" : "rds:postgres-internal-tableau-apps-notprod-dq-2020-03-23-07-07"
   auto_minor_version_upgrade          = "true"
   backup_retention_period             = "14"
   copy_tags_to_snapshot               = "false"
@@ -245,13 +245,13 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   enabled_cloudwatch_logs_exports     = ["postgresql", "upgrade"]
   iam_database_authentication_enabled = "false"
   identifier                          = "stg-postgres-${local.naming_suffix}"
-  instance_class                      = var.environment == "prod" ? "db.m5.4xlarge" : "db.m5.2xlarge"
+  instance_class                      = var.environment == "prod" ? "db.m5.2xlarge" : "db.m5.2xlarge"
   iops                                = "0"
   kms_key_id                          = data.aws_kms_key.rds_kms_key.arn
   license_model                       = "postgresql-license"
   backup_window                       = var.environment == "prod" ? "00:00-01:00" : "07:00-08:00"
   maintenance_window                  = var.environment == "prod" ? "tue:01:00-tue:02:00" : "mon:08:00-mon:09:00"
-  multi_az                            = var.environment == "prod" ? "true" : "false"
+  multi_az                            = var.environment == "prod" ? "false" : "false"
   port                                = "5432"
   publicly_accessible                 = "false"
   skip_final_snapshot                 = true
