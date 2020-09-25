@@ -120,20 +120,20 @@ class TestE2E(unittest.TestCase):
     def test_rds_postgres_backup_window(self):
         self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.postgres", "backup_window"), "00:00-01:00")
 
-    def test_rds_postgres_stg_backup_window(self):
-        self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.internal_reporting_snapshot_stg[0]", "backup_window"), "00:00-01:00")
-
-    def test_rds_postgres_maintenance_window(self):
-        self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.postgres", "maintenance_window"), "mon:01:00-mon:02:00")
-
-    def test_rds_postgres_stg_maintenance_window(self):
-        self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.internal_reporting_snapshot_stg[0]", "maintenance_window"), "tue:01:00-tue:02:00")
-
-    def test_rds_postgres_stg_engine_version(self):
-        self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.internal_reporting_snapshot_stg[0]", "engine_version"), "10.10")
-
-    def test_rds_postgres_stg_apply_immediately(self):
-        self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.internal_reporting_snapshot_stg[0]", "apply_immediately"), True)
+    # def test_rds_postgres_stg_backup_window(self):
+    #     self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.internal_reporting_snapshot_stg[0]", "backup_window"), "00:00-01:00")
+    #
+    # def test_rds_postgres_maintenance_window(self):
+    #     self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.postgres", "maintenance_window"), "mon:01:00-mon:02:00")
+    #
+    # def test_rds_postgres_stg_maintenance_window(self):
+    #     self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.internal_reporting_snapshot_stg[0]", "maintenance_window"), "tue:01:00-tue:02:00")
+    #
+    # def test_rds_postgres_stg_engine_version(self):
+    #     self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.internal_reporting_snapshot_stg[0]", "engine_version"), "10.10")
+    #
+    # def test_rds_postgres_stg_apply_immediately(self):
+    #     self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.internal_reporting_snapshot_stg[0]", "apply_immediately"), True)
 
     def test_rds_postgres_postgres_engine_version(self):
         self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.postgres", "engine_version"), "10.10")
