@@ -267,9 +267,11 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   performance_insights_enabled          = true
   performance_insights_retention_period = "7"
 
-  # lifecycle {
-  #   prevent_destroy = true
-  # }
+  lifecycle {
+    ignore_changes = [
+      engine_version,
+    ]
+  }
 
   tags = {
     Name = "stg-postgres-${local.naming_suffix}"
