@@ -101,7 +101,7 @@ resource "aws_db_instance" "postgres" {
   allocated_storage               = var.environment == "prod" ? "3300" : "750"
   storage_type                    = "gp2"
   engine                          = "postgres"
-  engine_version                  = var.environment == "prod" ? "10.10" : "10.10"
+  engine_version                  = var.environment == "prod" ? "10.13" : "10.13"
   instance_class                  = var.environment == "prod" ? "db.m5.4xlarge" : "db.m5.2xlarge"
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
   username                        = random_string.username.result
