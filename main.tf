@@ -153,6 +153,10 @@ tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-tru
 echo "#TSM increase extract timeout - to 8 hours (=28,800 seconds)"
 tsm configuration set -k backgrounder.querylimit -v 28800
 
+echo "#TSM configure access to peering proxies"
+tsm configuration set -k wgserver.systeminfo.allow_referrer_ips -v 10.3.0.11
+tsm configuration set -k wgserver.systeminfo.allow_referrer_ips -v 10.3.0.12
+
 echo "#TSM apply pending changes"
 tsm pending-changes apply
 
