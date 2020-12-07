@@ -73,7 +73,7 @@ class TestE2E(unittest.TestCase):
         self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.postgres", "apply_immediately"), False)
 
     def test_rds_disk_size(self):
-        self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.postgres", "allocated_storage"), 3300)
+        self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.postgres", "allocated_storage"), 3630)
 
     def test_rds_deletion_protection(self):
         self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.postgres", "deletion_protection"), True)
