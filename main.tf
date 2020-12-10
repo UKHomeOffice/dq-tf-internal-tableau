@@ -269,7 +269,6 @@ export TAB_TABSVR_REPO_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name
 export TAB_PRODUCT_KEY_1=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_1 --query 'Parameter.Value' --output text --with-decryption`
 export TAB_PRODUCT_KEY_2=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_2 --query 'Parameter.Value' --output text --with-decryption`
 export TAB_PRODUCT_KEY_3=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_3 --query 'Parameter.Value' --output text --with-decryption`
-export TAB_PRODUCT_KEY_4=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key_4 --query 'Parameter.Value' --output text --with-decryption`
 export DATASOURCES_TO_PUBLISH='`aws --region eu-west-2 ssm get-parameter --name tableau_int_publish_datasources --query 'Parameter.Value' --output text`'
 export WORKBOOKS_TO_PUBLISH='`aws --region eu-west-2 ssm get-parameter --name tableau_int_publish_workbooks --query 'Parameter.Value' --output text`'
 export RDS_POSTGRES_ENDPOINT=`aws --region eu-west-2 ssm get-parameter --name rds_internal_tableau_postgres_endpoint --query 'Parameter.Value' --output text`
@@ -326,7 +325,12 @@ echo "#sourcing tableau server envs - because this script is run as root not tab
 source /etc/profile.d/tableau_server.sh
 
 echo "#TSM active TRIAL license as tableau_srv"
-tsm licenses activate --trial -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
+#tsm licenses activate --trial -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
+
+echo "#TSM active actual licenses as tableau_srv"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
