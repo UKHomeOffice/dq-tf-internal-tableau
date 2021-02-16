@@ -34,7 +34,6 @@ class TestE2E(unittest.TestCase):
               lambda_subnet                     = "subnet-1234567890"
               lambda_subnet_az2                 = "subnet-1234567890"
               rds_enhanced_monitoring_role      = "arn:aws:iam::123456789:role/rds-enhanced-monitoring-role"
-              environment                       = "notprod"
               pipeline_name                     = "pipeline-name"
               db_instance_id                    = "db-id"
               free_storage_space_threshold      = "250000000000"
