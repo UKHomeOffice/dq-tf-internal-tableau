@@ -5,15 +5,13 @@ pipeline:
     environment:
       - DOCKER_HOST=tcp://172.17.0.1:2375
     commands:
-      - echo $${AWS_ACCESS_KEY_ID}
       - docker run --rm -v $(pwd):/data -w /data hashicorp/terraform fmt --diff --check
     when:
       event: push
 
   run-testrunner-tests:
     image: quay.io/ukhomeofficedigital/tf-testrunner:32
-    commands:
-      - echo $${AWS_ACCESS_KEY_ID}
+    commands: python -m unittest tests/*_test.py
     secrets:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
