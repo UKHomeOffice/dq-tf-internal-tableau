@@ -34,6 +34,12 @@ class TestE2E(unittest.TestCase):
               lambda_subnet                     = "subnet-1234567890"
               lambda_subnet_az2                 = "subnet-1234567890"
               rds_enhanced_monitoring_role      = "arn:aws:iam::123456789:role/rds-enhanced-monitoring-role"
+              environment                       = "notprod"
+              pipeline_name                     = "pipeline-name"
+              db_instance_id                    = "db-id"
+              free_storage_space_threshold      = "250000000000"
+              read_latency_threshold            = "0.05"
+              write_latency_threshold           = "1"
             }
         """
         self.runner = Runner(self.snippet)
@@ -137,9 +143,6 @@ class TestE2E(unittest.TestCase):
 
     def test_rds_postgres_postgres_engine_version(self):
         self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.postgres", "engine_version"), "10.13")
-
-    def test_rds_alarms(self):
-        self.assertEqual(self.runner.get_value("module.root_modules.aws_cloudwatch_metric_alarm.cpu_utilization_too_high", "statistic"), "Average")
 
 if __name__ == '__main__':
     unittest.main()
