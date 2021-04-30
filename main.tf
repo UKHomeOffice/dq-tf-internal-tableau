@@ -22,7 +22,7 @@ module "ec2_alarms_int_tableau" {
   naming_suffix   = local.naming_suffix
   environment     = var.environment
   pipeline_name   = "int_tableau"
-  ec2_instance_id = aws_instance.int_tableau_linux.id
+  ec2_instance_id = aws_instance.int_tableau_linux[0].id
 }
 
 resource "aws_instance" "int_tableau_linux" {
