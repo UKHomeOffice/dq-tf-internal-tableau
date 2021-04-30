@@ -37,6 +37,9 @@ set -e
 #log output from this user_data script
 exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
 
+# start the cloud watch agent
+/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -s -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json
+
 echo "#Mount filesystem - /var/opt/tableau/"
 mkfs.xfs /dev/nvme2n1
 mkdir -p /var/opt/tableau/
