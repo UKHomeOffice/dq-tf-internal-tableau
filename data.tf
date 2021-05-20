@@ -5,7 +5,7 @@ data "aws_ami" "int_tableau_linux" {
     name = "name"
 
     values = [
-      "dq-tableau-linux-231*",
+      "dq-tableau-linux-232*",
     ]
   }
 
@@ -21,7 +21,7 @@ data "aws_ami" "int_tableau_linux_upgrade" {
     name = "name"
 
     values = [
-      "dq-tableau-linux-231*",
+      "dq-tableau-linux-232*",
     ]
   }
 
