@@ -17,13 +17,13 @@ locals {
 #  security_group_ids = "${var.security_group_ids}"
 #}
 
-module "ec2_alarms_int_tableau" {
-  source          = "github.com/UKHomeOffice/dq-tf-cloudwatch-ec2"
-  naming_suffix   = local.naming_suffix
-  environment     = var.environment
-  pipeline_name   = "int_tableau"
-  ec2_instance_id = aws_instance.int_tableau_linux[0].id
-}
+# module "ec2_alarms_int_tableau" {
+#   source          = "github.com/UKHomeOffice/dq-tf-cloudwatch-ec2"
+#   naming_suffix   = local.naming_suffix
+#   environment     = var.environment
+#   pipeline_name   = "int_tableau"
+#   ec2_instance_id = aws_instance.int_tableau_linux[0].id
+# }
 
 resource "aws_instance" "int_tableau_linux" {
   count                       = var.environment == "prod" ? "2" : "1" # Allow different instance count in prod and notprod
