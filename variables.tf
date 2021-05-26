@@ -222,3 +222,15 @@ variable "monitor_name" {
 variable "path_module" {
   default = "unset"
 }
+
+variable "region" {
+  default = "eu-west-2"
+}
+
+variable "account_id" {
+  type = map(string)
+  default = {
+    "notprod" = "483846886818"
+    "prod"    = "337779336338"
+  }
+}
