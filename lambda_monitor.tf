@@ -1,5 +1,10 @@
+locals {
+  naming_suffix = "${var.monitor_name}-${var.naming_suffix}"
+  path_module   = var.path_module != "unset" ? var.path_module : path.module
+}
+
 resource "aws_iam_role" "lambda_monitor" {
-  name = "${var.monitor_name}-${var.namespace}-lambda"
+  name = "${var.monitor_name}-${var.environment}-lambda"
 
   assume_role_policy = <<EOF
 {
@@ -23,7 +28,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "lambda_monitor_policy" {
-  name = "${var.monitor_name}-${var.namespace}-lambda-policy"
+  name = "${var.monitor_name}-${var.environment}-lambda-policy"
   role = aws_iam_role.lambda_monitor.id
 
   policy = <<EOF
@@ -37,8 +42,8 @@ resource "aws_iam_role_policy" "lambda_monitor_policy" {
       ],
       "Effect": "Allow",
       "Resource": [
-        "arn:aws:s3:::${var.input_bucket}-${var.namespace}",
-        "arn:aws:s3:::${var.input_bucket}-${var.namespace}/*"]
+        "arn:aws:s3:::${var.input_bucket}-${var.environment}",
+        "arn:aws:s3:::${var.input_bucket}-${var.environment}/*"]
     },
     {
       "Action": [
@@ -48,7 +53,7 @@ resource "aws_iam_role_policy" "lambda_monitor_policy" {
         "kms:DescribeKey"
       ],
       "Effect": "Allow",
-      "Resource": "${var.kms_key_s3[var.namespace]}"
+      "Resource": "${var.kms_key_s3[var.environment]}"
     },
     {
       "Action": [
@@ -56,7 +61,7 @@ resource "aws_iam_role_policy" "lambda_monitor_policy" {
         "ssm:GetParameters"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:ssm:${var.region}:${var.account_id[var.namespace]}:parameter/slack_notification_webhook"
+      "Resource": "arn:aws:ssm:${var.region}:${var.account_id[var.environment]}:parameter/slack_notification_webhook"
     }
   ]
 }
@@ -71,7 +76,7 @@ data "archive_file" "lambda_monitor_zip" {
 
 resource "aws_lambda_function" "lambda_monitor" {
   filename         = "${path.module}/lambda/monitor/package/lambda_monitor.zip"
-  function_name    = "${var.monitor_name}-${var.namespace}-lambda"
+  function_name    = "${var.monitor_name}-${var.environment}-lambda"
   role             = aws_iam_role.lambda_monitor.arn
   handler          = "monitor.lambda_handler"
   source_code_hash = data.archive_file.lambda_monitor_zip.output_base64sha256
@@ -81,7 +86,7 @@ resource "aws_lambda_function" "lambda_monitor" {
 
   environment {
     variables = {
-      bucket_name    = "${var.input_bucket}-${var.namespace}"
+      bucket_name    = "${var.input_bucket}-${var.environment}"
       path_          = "${var.backup_path}"
       threashold_min = "${var.monitor_lambda_run}"
     }
@@ -102,7 +107,7 @@ resource "aws_cloudwatch_log_group" "lambda_monitor" {
 }
 
 resource "aws_iam_policy" "lambda_monitor_logging" {
-  name        = "${var.monitor_name}-${var.namespace}-lambda-logging"
+  name        = "${var.monitor_name}-${var.environment}-lambda-logging"
   path        = "/"
   description = "IAM policy for monitor lambda"
 
@@ -123,7 +128,7 @@ resource "aws_iam_policy" "lambda_monitor_logging" {
     },
     {
        "Action": "logs:CreateLogGroup",
-       "Resource": "arn:aws:logs:${var.region}:${var.account_id[var.namespace]}:*",
+       "Resource": "arn:aws:logs:${var.region}:${var.account_id[var.environment]}:*",
        "Effect": "Allow"
     }
   ]
@@ -136,22 +141,22 @@ resource "aws_iam_role_policy_attachment" "lambda_monitor_logs" {
   policy_arn = aws_iam_policy.lambda_monitor_logging.arn
 }
 
-resource "aws_cloudwatch_event_rule" "monitor_cdlz" {
-  name                = "${var.monitor_name}-${var.namespace}-cw-event-rule"
-  description         = "Fires every fifteen minutes"
+resource "aws_cloudwatch_event_rule" "monitor_backup" {
+  name                = "${var.monitor_name}-${var.environment}-cw-event-rule"
+  description         = "Fires 9AM Mon - Fri)"
   schedule_expression = "cron(9 0 ? * MON-FRI *)"
-  is_enabled          = var.namespace == "prod" ? "true" : "true"
+  is_enabled          = var.environment == "prod" ? "true" : "true"
 }
 
-resource "aws_cloudwatch_event_target" "monitor_cdlz" {
-  rule = aws_cloudwatch_event_rule.monitor_cdlz.name
+resource "aws_cloudwatch_event_target" "monitor_backup" {
+  rule = aws_cloudwatch_event_rule.monitor_backup.name
   arn  = aws_lambda_function.lambda_monitor.arn
 }
 
-resource "aws_lambda_permission" "monitor_cdlz_cw_permission" {
+resource "aws_lambda_permission" "monitor_backup_cw_permission" {
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.lambda_monitor.function_name
   principal     = "events.amazonaws.com"
-  source_arn    = aws_cloudwatch_event_rule.monitor_cdlz.arn
+  source_arn    = aws_cloudwatch_event_rule.monitor_backup.arn
 }

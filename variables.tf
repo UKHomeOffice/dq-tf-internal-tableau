@@ -210,3 +210,15 @@ variable "input_bucket" {
 variable "backup_path" {
   default = "tableau-int/green/"
 }
+
+variable "monitor_lambda_run" {
+  default = "900"
+}
+
+variable "monitor_name" {
+  default = "int_tableau_backup_monitor"
+}
+
+variable "path_module" {
+  default = "unset"
+}
