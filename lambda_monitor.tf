@@ -1,6 +1,6 @@
-locals {
-  path_module = var.path_module != "unset" ? var.path_module : path.module
-}
+# locals {
+#   path_module = var.path_module != "unset" ? var.path_module : path.module
+# }
 
 resource "aws_iam_role" "lambda_monitor" {
   name = "${var.monitor_name}-${var.environment}-lambda"
@@ -69,12 +69,12 @@ EOF
 
 data "archive_file" "lambda_monitor_zip" {
   type        = "zip"
-  source_dir  = "${local.path_module}/lambda/monitor/code"
-  output_path = "${local.path_module}/lambda/monitor/package/lambda_monitor.zip"
+  source_dir  = "/lambda/monitor/code"
+  output_path = "/lambda/monitor/package/lambda_monitor.zip"
 }
 
 resource "aws_lambda_function" "lambda_monitor" {
-  filename         = "${path.module}/lambda/monitor/package/lambda_monitor.zip"
+  filename         = "/lambda/monitor/package/lambda_monitor.zip"
   function_name    = "${var.monitor_name}-${var.environment}-lambda"
   role             = aws_iam_role.lambda_monitor.arn
   handler          = "monitor.lambda_handler"
