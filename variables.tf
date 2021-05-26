@@ -234,3 +234,12 @@ variable "account_id" {
     "prod"    = "337779336338"
   }
 }
+
+variable "kms_key_s3" {
+  type        = map(string)
+  description = "The ARN of the KMS key that is used to encrypt S3 buckets"
+  default = {
+    notprod = "arn:aws:kms:eu-west-2:483846886818:key/24b0cd4f-3117-4e9b-ada8-fa46e7fd6d70"
+    prod    = "arn:aws:kms:eu-west-2:337779336338:key/ae75113d-f4f6-49c6-a15e-e8493fda0453"
+  }
+}
