@@ -239,11 +239,3 @@ variable "kms_key_s3" {
     prod    = "arn:aws:kms:eu-west-2:337779336338:key/ae75113d-f4f6-49c6-a15e-e8493fda0453"
   }
 }
-
-# locals {
-#   path_module = path.module
-# }
-
-# variable "path_module" {
-#   default = "./"
-# }
