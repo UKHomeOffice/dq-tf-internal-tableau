@@ -1,6 +1,5 @@
 locals {
-  naming_suffix = "${var.monitor_name}-${var.naming_suffix}"
-  path_module   = var.path_module != "unset" ? var.path_module : path.module
+  path_module = var.path_module != "unset" ? var.path_module : path.module
 }
 
 resource "aws_iam_role" "lambda_monitor" {
@@ -23,7 +22,7 @@ resource "aws_iam_role" "lambda_monitor" {
 EOF
 
   tags = {
-    Name = "iam-${var.monitor_name}-lambda-${local.naming_suffix}"
+    Name = "iam-${var.monitor_name}-lambda-${var.naming_suffix}"
   }
 }
 
@@ -93,7 +92,7 @@ resource "aws_lambda_function" "lambda_monitor" {
   }
 
   tags = {
-    Name = "lambda-${var.monitor_name}-${local.naming_suffix}"
+    Name = "lambda-${var.monitor_name}-${var.naming_suffix}"
   }
 }
 
@@ -102,7 +101,7 @@ resource "aws_cloudwatch_log_group" "lambda_monitor" {
   retention_in_days = 90
 
   tags = {
-    Name = "log-lambda-${local.naming_suffix}"
+    Name = "log-lambda-${var.monitor_name}-${var.naming_suffix}"
   }
 }
 
