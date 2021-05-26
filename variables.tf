@@ -219,9 +219,9 @@ variable "monitor_name" {
   default = "int_tableau_backup_monitor"
 }
 
-variable "path_module" {
-  default = "unset"
-}
+# variable "path_module" {
+#   default = "unset"
+# }
 
 variable "region" {
   default = "eu-west-2"
