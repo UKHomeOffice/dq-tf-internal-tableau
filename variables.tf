@@ -203,3 +203,10 @@ variable "rds_enhanced_monitoring_role" {
   description = "ARN of the RDS enhanced monitoring role"
 }
 
+variable "input_bucket" {
+  default = "s3-dq-data-archive-bucket"
+}
+
+variable "backup_path" {
+  default = "tableau-int/green/"
+}
