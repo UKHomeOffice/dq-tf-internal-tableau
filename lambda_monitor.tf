@@ -1,5 +1,11 @@
+data "aws_caller_identity" "current" {
+}
+
+data "aws_region" "current" {
+}
+
 resource "aws_iam_role" "int_tableau_backup_monitor" {
-  name = "${var.monitor_name}-${var.namespace}-lambda"
+  name = "${var.monitor_name}-${var.environment}-lambda"
 
   assume_role_policy = <<EOF
 {
@@ -24,7 +30,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "int_tableau_backup_monitor_policy" {
-  name = "${var.monitor_name}-${var.namespace}-lambda-policy"
+  name = "${var.monitor_name}-${var.environment}-lambda-policy"
   role = aws_iam_role.int_tableau_backup_monitor.id
 
   policy = <<EOF
@@ -38,8 +44,8 @@ resource "aws_iam_role_policy" "int_tableau_backup_monitor_policy" {
       ],
       "Effect": "Allow",
       "Resource": [
-        "arn:aws:s3:::${var.input_bucket}-${var.namespace}",
-        "arn:aws:s3:::${var.input_bucket}-${var.namespace}/*"]
+        "arn:aws:s3:::${var.input_bucket}-${var.environment}",
+        "arn:aws:s3:::${var.input_bucket}-${var.environment}/*"]
     },
     {
       "Action": [
@@ -73,7 +79,7 @@ data "archive_file" "int_tableau_backup_monitor_zip" {
 
 resource "aws_lambda_function" "int_tableau_backup_monitor" {
   filename         = "${path.module}/lambda/monitor/package/lambda.zip"
-  function_name    = "${var.monitor_name}-${var.namespace}-lambda"
+  function_name    = "${var.monitor_name}-${var.environment}-lambda"
   role             = aws_iam_role.int_tableau_backup_monitor.arn
   handler          = "function.lambda_handler"
   source_code_hash = data.archive_file.int_tableau_backup_monitor_zip.output_base64sha256
@@ -83,7 +89,7 @@ resource "aws_lambda_function" "int_tableau_backup_monitor" {
 
   environment {
     variables = {
-      bucket_name    = "${var.input_bucket}-${var.namespace}"
+      bucket_name    = "${var.input_bucket}-${var.environment}"
       path_          = "${var.backup_path}"
       threashold_min = var.monitor_lambda_run
     }
@@ -113,7 +119,7 @@ resource "aws_cloudwatch_log_group" "int_tableau_backup_monitor" {
 }
 
 resource "aws_iam_policy" "int_tableau_backup_monitor_logging" {
-  name        = "${var.monitor_name}-${var.namespace}-lambda-logging"
+  name        = "${var.monitor_name}-${var.environment}-lambda-logging"
   path        = "/"
   description = "IAM policy for monitor lambda"
 
@@ -149,10 +155,10 @@ resource "aws_iam_role_policy_attachment" "int_tableau_backup_monitor_logs" {
 }
 
 resource "aws_cloudwatch_event_rule" "int_tableau_backup_monitor" {
-  name                = "${var.monitor_name}-${var.namespace}-cw-event-rule"
+  name                = "${var.monitor_name}-${var.environment}-cw-event-rule"
   description         = "Fires every hour"
   schedule_expression = "rate(${var.monitor_lambda_run_schedule} minutes)"
-  is_enabled          = var.namespace == "prod" ? "true" : "true"
+  is_enabled          = var.environment == "prod" ? "true" : "true"
 }
 
 resource "aws_cloudwatch_event_target" "int_tableau_backup_monitor" {
