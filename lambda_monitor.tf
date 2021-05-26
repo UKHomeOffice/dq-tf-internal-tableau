@@ -93,7 +93,6 @@ resource "aws_lambda_function" "lambda_monitor" {
 }
 
 resource "aws_cloudwatch_log_group" "lambda_monitor" {
-  provider          = aws.ENV_ACCT
   name              = "/aws/lambda/${aws_lambda_function.lambda_monitor.function_name}"
   retention_in_days = 90
 
