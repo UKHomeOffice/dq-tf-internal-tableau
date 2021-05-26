@@ -1,7 +1,3 @@
-# locals {
-#   path_module = var.path_module != "unset" ? var.path_module : path.module
-# }
-
 resource "aws_iam_role" "lambda_monitor" {
   name = "${var.monitor_name}-${var.environment}-lambda"
 
