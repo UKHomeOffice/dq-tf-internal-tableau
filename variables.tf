@@ -245,5 +245,5 @@ locals {
 }
 
 variable "path_module" {
-  default = path.module
+  default = "path.module"
 }
