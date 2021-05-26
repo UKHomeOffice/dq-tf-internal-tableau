@@ -156,9 +156,9 @@ resource "aws_iam_role_policy_attachment" "int_tableau_backup_monitor_logs" {
 
 resource "aws_cloudwatch_event_rule" "int_tableau_backup_monitor" {
   name                = "${var.monitor_name}-${var.environment}-cw-event-rule"
-  description         = "Fires every hour"
-  schedule_expression = "rate(${var.monitor_lambda_run_schedule} minutes)"
-  is_enabled          = var.environment == "prod" ? "true" : "true"
+  description         = "Fires 9am Mon - Fri"
+  schedule_expression = "cron(9 0 ? * MON-FRI *)"
+  is_enabled          = "true"
 }
 
 resource "aws_cloudwatch_event_target" "int_tableau_backup_monitor" {
