@@ -240,10 +240,10 @@ variable "kms_key_s3" {
   }
 }
 
-locals {
-  path_module = path.module
-}
+# locals {
+#   path_module = path.module
+# }
 
-variable "path_module" {
-  default = "./"
-}
+# variable "path_module" {
+#   default = "./"
+# }

@@ -65,8 +65,8 @@ EOF
 
 data "archive_file" "lambda_monitor_zip" {
   type        = "zip"
-  source_dir  = "${local.path_module}/lambda/monitor/code"
-  output_path = "${local.path_module}/lambda/monitor/package/lambda_monitor.zip"
+  source_dir  = "${path.module}/lambda/monitor/code"
+  output_path = "${path.module}/lambda/monitor/package/lambda_monitor.zip"
 }
 
 resource "aws_lambda_function" "lambda_monitor" {
