@@ -1,6 +1,5 @@
 resource "aws_iam_role" "lambda_monitor" {
-  provider = aws.ENV_ACCT
-  name     = "${var.monitor_name}-${var.namespace}-lambda"
+  name = "${var.monitor_name}-${var.namespace}-lambda"
 
   assume_role_policy = <<EOF
 {
@@ -24,9 +23,8 @@ EOF
 }
 
 resource "aws_iam_role_policy" "lambda_monitor_policy" {
-  provider = aws.ENV_ACCT
-  name     = "${var.monitor_name}-${var.namespace}-lambda-policy"
-  role     = aws_iam_role.lambda_monitor.id
+  name = "${var.monitor_name}-${var.namespace}-lambda-policy"
+  role = aws_iam_role.lambda_monitor.id
 
   policy = <<EOF
 {
@@ -72,7 +70,6 @@ data "archive_file" "lambda_monitor_zip" {
 }
 
 resource "aws_lambda_function" "lambda_monitor" {
-  provider         = aws.ENV_ACCT
   filename         = "${path.module}/lambda/monitor/package/lambda_monitor.zip"
   function_name    = "${var.monitor_name}-${var.namespace}-lambda"
   role             = aws_iam_role.lambda_monitor.arn
@@ -106,7 +103,6 @@ resource "aws_cloudwatch_log_group" "lambda_monitor" {
 }
 
 resource "aws_iam_policy" "lambda_monitor_logging" {
-  provider    = aws.ENV_ACCT
   name        = "${var.monitor_name}-${var.namespace}-lambda-logging"
   path        = "/"
   description = "IAM policy for monitor lambda"
@@ -137,13 +133,11 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_monitor_logs" {
-  provider   = aws.ENV_ACCT
   role       = aws_iam_role.lambda_monitor.name
   policy_arn = aws_iam_policy.lambda_monitor_logging.arn
 }
 
 resource "aws_cloudwatch_event_rule" "monitor_cdlz" {
-  provider            = aws.ENV_ACCT
   name                = "${var.monitor_name}-${var.namespace}-cw-event-rule"
   description         = "Fires every fifteen minutes"
   schedule_expression = "cron(9 0 ? * MON-FRI *)"
@@ -151,13 +145,11 @@ resource "aws_cloudwatch_event_rule" "monitor_cdlz" {
 }
 
 resource "aws_cloudwatch_event_target" "monitor_cdlz" {
-  provider = aws.ENV_ACCT
-  rule     = aws_cloudwatch_event_rule.monitor_cdlz.name
-  arn      = aws_lambda_function.lambda_monitor.arn
+  rule = aws_cloudwatch_event_rule.monitor_cdlz.name
+  arn  = aws_lambda_function.lambda_monitor.arn
 }
 
 resource "aws_lambda_permission" "monitor_cdlz_cw_permission" {
-  provider      = aws.ENV_ACCT
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.lambda_monitor.function_name
