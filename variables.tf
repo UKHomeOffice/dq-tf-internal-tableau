@@ -1,5 +1,5 @@
 variable "naming_suffix" {
-  default     = false
+  default     = apps-test-dq
   description = "Naming suffix for tags, value passed from dq-tf-apps"
 }
 
@@ -203,47 +203,31 @@ variable "rds_enhanced_monitoring_role" {
   description = "ARN of the RDS enhanced monitoring role"
 }
 
-# variable "input_bucket" {
-#   default = "s3-dq-data-archive-bucket"
-# }
-#
-# variable "backup_path" {
-#   default = "tableau-int/green/"
-# }
-#
-# variable "monitor_lambda_run" {
-#   default = "900"
-# }
-#
-# variable "monitor_name" {
-#   default = "int_tableau_backup_monitor"
-# }
-#
-# variable "region" {
-#   default = "eu-west-2"
-# }
-#
-# variable "account_id" {
-#   type = map(string)
-#   default = {
-#     "notprod" = "483846886818"
-#     "prod"    = "337779336338"
-#   }
-# }
-#
-# variable "kms_key_s3" {
-#   type        = map(string)
-#   description = "The ARN of the KMS key that is used to encrypt S3 buckets"
-#   default = {
-#     notprod = "arn:aws:kms:eu-west-2:483846886818:key/24b0cd4f-3117-4e9b-ada8-fa46e7fd6d70"
-#     prod    = "arn:aws:kms:eu-west-2:337779336338:key/ae75113d-f4f6-49c6-a15e-e8493fda0453"
-#   }
-# }
-#
-# locals {
-#   path_module = var.path_module != "unset" ? var.path_module : path.module
-# }
-#
-# variable "path_module" {
-#   default = "unset"
-# }
+variable "int_tab_monitor_name" {
+  default = "int-tab-monitor"
+}
+
+variable "int_tab_monitor_lambda_run" {
+  default = "900"
+}
+
+variable "int_tab_input_bucket" {
+  default = "s3-dq-data-archive-bucket"
+}
+
+variable "output_path_int_tab" {
+  default = "tableau-int/green/"
+}
+
+locals {
+  path_module = var.path_module != "unset" ? var.path_module : path.module
+}
+
+variable "path_module" {
+  default = "unset"
+}
+
+variable "kms_key_s3" {
+  description = "The ARN of the KMS key that is used to encrypt S3 buckets"
+  default     = "arn:aws:kms:eu-west-2:797728447925:key/ad7169c4-6d6a-4d21-84ee-a3b54f4bef87"
+}

@@ -35,7 +35,7 @@ def error_handler(lineno, error, fail=True):
 
         message = "https://{0}.console.aws.amazon.com/cloudwatch/home?region={0}#logEventViewer:group={1};stream={2}".format(region, LOG_GROUP_NAME, LOG_STREAM_NAME)
 
-        send_message_to_slack('Pipeline error: {0}'.format(message))
+        send_message_to_slack('OAG Data Ingest Error - Needs immediate attention:: {0}'.format(message))
         if fail:
             sys.exit(1)
 
@@ -54,12 +54,12 @@ def send_message_to_slack(text):
     Args:
         text : the message to be displayed on the Slack channel
     Returns:
-        Slack API repsonse
+        Slack OAG repsonse
     """
 
     try:
         post = {
-            "text": ":fire: :sad_parrot: *INTERNAL TABLEAU BACKUP PROCESS DID NOT COMPLETE* Files are not regularly arriving in *DATA ARCHIVE* :sad_parrot: :fire:",
+            "text": ":fire: :sad_parrot: *OAG Data Ingest Error - Needs immediate attention:* OAG files are not regularly arriving in *dq-oag-data-ingest Pod* :sad_parrot: :fire:",
             "attachments": [
                 {
                     "text": "{0}".format(text),
@@ -72,7 +72,7 @@ def send_message_to_slack(text):
                             "short": "false"
                         }
                     ],
-                    "footer": "AWS TABLEAU BACKUPS",
+                    "footer": "AWS OAG",
                     "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png"
                 }
             ]
@@ -114,7 +114,7 @@ def send_message_to_slack(text):
 # pylint: disable=unused-argument
 def lambda_handler(event, context):
     """
-    Trigger by cloudwatch rules to check API file are reguarly receiving or not
+    Trigger by cloudwatch rules to check OAG files are reguarly receiving or not
     Args:
         context (LamdaContext) : Runtime information
     Returns:
@@ -131,9 +131,7 @@ def lambda_handler(event, context):
 
         bucket_name = os.environ['bucket_name']
         LOGGER.info('bucket_name:{0}'.format(bucket_name))
-        path = os.environ['path_']
-        LOGGER.info('path:{0}'.format(path))
-        threashold_min = os.environ.get('threashold_min', '900')
+        threashold_min = os.environ.get('threashold_min', '15')
         LOGGER.info('threashold_min:{0}'.format(threashold_min))
 
         try:
@@ -142,31 +140,39 @@ def lambda_handler(event, context):
             threashold_min = int(threashold_min)
             x_mins = datetime.now() - timedelta(minutes=threashold_min)
             x_mins = x_mins.astimezone(from_zone)
-            prefix_search = path + x_mins.strftime('%Y-%m-%d') + "/"
-            LOGGER.info('built prefix to search :{0}'.format(prefix_search))
+            today = datetime.now().astimezone(from_zone)
+            prefix_search_previous = x_mins.strftime('%Y-%m-%d') + "/"
+            prefix_search_today = today.strftime('%Y-%m-%d') + "/"
+            LOGGER.info('built prefix search previous :{0}'.format(prefix_search_previous))
+            LOGGER.info('built prefix search today :{0}'.format(prefix_search_today))
 
-            LOGGER.info('Search bucket: {0} and search_path : {1}'.format(bucket_name, prefix_search))
+            LOGGER.info('Search bucket: {0} and search_paths : {1} and {2}'.format(bucket_name, prefix_search_previous, prefix_search_today))
             s3 = boto3.resource("s3")
             get_last_modified = lambda obj: int(obj.last_modified.strftime('%s'))
             bucket = s3.Bucket(bucket_name)
-            objs = [obj for obj in bucket.objects.filter(Prefix=prefix_search)]
-            objs = [obj for obj in sorted(objs, key=get_last_modified)]
+
+            # Search objects in the prefix path
+            objs_prev = [obj for obj in bucket.objects.filter(Prefix=prefix_search_previous)]
+            objs_today = [obj for obj in bucket.objects.filter(Prefix=prefix_search_today)]
+
+            # Get recent from the list
+            objs = [obj for obj in sorted(objs_prev + objs_today, key=get_last_modified)]
 
             if objs:
                 obj_name = objs[-1].key.split('/')[-1]
-                LOGGER.info('Lastest file found : {0}'.format(objs[-1].key))
+                LOGGER.info('Last file found : {0}'.format(objs[-1].key))
                 obj_ts = datetime.strptime(str(objs[-1].last_modified), '%Y-%m-%d %H:%M:%S+00:00')
                 obj_utc = obj_ts.replace(tzinfo=from_zone)
                 #obj_bst = obj_utc.astimezone(to_zone)
-                LOGGER.info('Lastest file timestamps : {0}'.format(obj_utc.strftime('%Y-%m-%d %H:%M:%S')))
+                LOGGER.info('Last file timestamps : {0}'.format(obj_utc.strftime('%Y-%m-%d %H:%M:%S')))
                 if x_mins > obj_utc:
-                    LOGGER.info('Please investigate Internal Tableau Backup Uploads. No backups uploaded for the last {0} minutes'.format(threashold_min))
-                    send_message_to_slack('Please investigate * Internal Tableau Backups*! No backups uploaded for the last {0} minutes. Last backup {1} was uploaded on {2} '.format(threashold_min, obj_name, obj_utc))
+                    LOGGER.info('Please investigate dq-oag-data-ingest Kube Pod. We have not received files for last {0} minutes'.format(threashold_min))
+                    send_message_to_slack('Please investigate *dq-oag-data-ingest Kube Pod*! Not received files for last {0} minutes. Last file {1} was received on {2} '.format(threashold_min, obj_name, obj_utc))
                 else:
-                    LOGGER.info('Nightly Backup uploaded succesffuly within last {0} minutes, nothing to do'.format(threashold_min))
+                    LOGGER.info('Files have been received within the last {0} minutes, nothing to do'.format(threashold_min))
             else:
-                LOGGER.info('No backups uploaded for the last {0}'.format(x_mins.strftime('%Y-%m-%d')))
-                send_message_to_slack('Please investigate Internal Tableau Backup Uploads! No backups uploaded for the last {0}'.format(x_mins.strftime('%Y-%m-%d')))
+                LOGGER.info('No OAG file found for {0}'.format(x_mins.strftime('%Y-%m-%d')))
+                send_message_to_slack('Please investigate *dq-oag-data-ingest Kube Pod*! No OAG file found for {0}'.format(x_mins.strftime('%Y-%m-%d')))
 
         except Exception as err:
             error_handler(sys.exc_info()[2].tb_lineno, err)
