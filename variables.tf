@@ -1,5 +1,5 @@
 variable "naming_suffix" {
-  default     = apps-test-dq
+  default     = "apps-test-dq"
   description = "Naming suffix for tags, value passed from dq-tf-apps"
 }
 
