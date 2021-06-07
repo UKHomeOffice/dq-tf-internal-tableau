@@ -2,9 +2,11 @@ variable "environment" {
 }
 
 variable "naming_suffix" {
+  default = "local.naming_suffix"
 }
 
 variable "pipeline_name" {
+  default = "int_tableau"
 }
 
 variable "swap_alarm" {
@@ -14,11 +16,6 @@ variable "swap_alarm" {
 
 variable "path_module" {
   default = "unset"
-}
-
-variable "ec2_instance_id" {
-  description = "The instance ID of the RDS database instance that you want to monitor."
-  type        = string
 }
 
 variable "cpu_utilization_threshold" {
