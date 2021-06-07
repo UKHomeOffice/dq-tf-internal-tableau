@@ -18,7 +18,7 @@ locals {
 #}
 
 module "ec2_alarms_int_tableau" {
-  source          = "./cloudwatch-ec2"
+  source          = "./cloudwatch-ec2/"
   naming_suffix   = local.naming_suffix
   environment     = var.environment
   pipeline_name   = "int_tableau"
