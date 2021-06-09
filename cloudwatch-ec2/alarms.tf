@@ -97,6 +97,6 @@ resource "aws_cloudwatch_metric_alarm" "Used_storage_space" {
 #   }
 #
 #   depends_on = [
-#     aws_instance.int_tableau_linux[0.id
+#     aws_instance.int_tableau_linux.id
 #   ]
 # }
