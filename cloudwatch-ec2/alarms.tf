@@ -1,5 +1,5 @@
 locals {
-  naming_suffix = "${aws_instance.int_tableau_linux[0].id}-${var.naming_suffix}"
+  naming_suffix = "${aws_instance.int_tableau_linux.id}-${var.naming_suffix}"
   path_module   = var.path_module != "unset" ? var.path_module : path.module
 
   thresholds = {
@@ -24,11 +24,11 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_too_high" {
   ok_actions          = [aws_sns_topic.ec2.arn]
 
   dimensions = {
-    InstanceId = aws_instance.int_tableau_linux[0].id
+    InstanceId = aws_instance.int_tableau_linux.id
   }
 
   depends_on = [
-    aws_instance.int_tableau_linux[0].id
+    aws_instance.int_tableau_linux.id
   ]
 
 }
@@ -47,11 +47,11 @@ resource "aws_cloudwatch_metric_alarm" "available_memory_too_low" {
   ok_actions          = [aws_sns_topic.ec2.arn]
 
   dimensions = {
-    InstanceId = aws_instance.int_tableau_linux[0].id
+    InstanceId = aws_instance.int_tableau_linux.id
   }
 
   depends_on = [
-    aws_instance.int_tableau_linux[0].id
+    aws_instance.int_tableau_linux.id
   ]
 }
 
@@ -69,13 +69,13 @@ resource "aws_cloudwatch_metric_alarm" "Used_storage_space" {
   ok_actions          = [aws_sns_topic.ec2.arn]
 
   dimensions = {
-    InstanceId = aws_instance.int_tableau_linux[0].id,
+    InstanceId = aws_instance.int_tableau_linux.id,
     path       = "/",
     fstype     = "xfs",
   }
 
   depends_on = [
-    aws_instance.int_tableau_linux[0].id
+    aws_instance.int_tableau_linux.id
   ]
 }
 #
@@ -93,10 +93,10 @@ resource "aws_cloudwatch_metric_alarm" "Used_storage_space" {
 #   ok_actions          = [aws_sns_topic.ec2.arn]
 #
 #   dimensions = {
-#     InstanceId = aws_instance.int_tableau_linux[0].id
+#     InstanceId = aws_instance.int_tableau_linux.id
 #   }
 #
 #   depends_on = [
-#     aws_instance.int_tableau_linux[0].id
+#     aws_instance.int_tableau_linux[0.id
 #   ]
 # }
