@@ -1,5 +1,5 @@
 locals {
-  naming_suffix = "${aws_instance.int_tableau_linux[0].id}-${var.naming_suffix}"
+  naming_suffix = "int_tableau"
   path_module   = var.path_module != "unset" ? var.path_module : path.module
 
   thresholds = {
@@ -11,6 +11,7 @@ locals {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_too_high" {
+  count               = var.environment == "prod" ? "2" : "1"
   alarm_name          = "${var.pipeline_name}-CPU-Utilization-too-high"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "1"
@@ -24,16 +25,17 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_too_high" {
   ok_actions          = [aws_sns_topic.ec2.arn]
 
   dimensions = {
-    InstanceId = aws_instance.int_tableau_linux[0].id
+    InstanceId = aws_instance.int_tableau_linux[count.index].id
   }
 
   depends_on = [
-    aws_instance.int_tableau_linux[0].id
+    aws_instance.int_tableau_linux[count.index].id
   ]
 
 }
 
 resource "aws_cloudwatch_metric_alarm" "available_memory_too_low" {
+  count               = var.environment == "prod" ? "2" : "1"
   alarm_name          = "${var.pipeline_name}-available-memory-too-low"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = "1"
@@ -47,15 +49,16 @@ resource "aws_cloudwatch_metric_alarm" "available_memory_too_low" {
   ok_actions          = [aws_sns_topic.ec2.arn]
 
   dimensions = {
-    InstanceId = aws_instance.int_tableau_linux[0].id
+    InstanceId = aws_instance.int_tableau_linux[count.index].id
   }
 
   depends_on = [
-    aws_instance.int_tableau_linux[0].id
+    aws_instance.int_tableau_linux[count.index].id
   ]
 }
 
 resource "aws_cloudwatch_metric_alarm" "Used_storage_space" {
+  count               = var.environment == "prod" ? "2" : "1"
   alarm_name          = "${var.pipeline_name}-used-storage-space"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "1"
@@ -69,17 +72,18 @@ resource "aws_cloudwatch_metric_alarm" "Used_storage_space" {
   ok_actions          = [aws_sns_topic.ec2.arn]
 
   dimensions = {
-    InstanceId = aws_instance.int_tableau_linux[0].id,
+    InstanceId = aws_instance.int_tableau_linux[count.index].id,
     path       = "/",
     fstype     = "xfs",
   }
 
   depends_on = [
-    aws_instance.int_tableau_linux[0].id
+    aws_instance.int_tableau_linux[count.index].id
   ]
 }
 #
 # resource "aws_cloudwatch_metric_alarm" "health" {
+#   count = var.environment == "prod" ? "2" : "1"
 #   alarm_name          = "web-health-alarm"
 #   comparison_operator = "GreaterThanOrEqualToThreshold"
 #   evaluation_periods  = "1"
@@ -93,10 +97,10 @@ resource "aws_cloudwatch_metric_alarm" "Used_storage_space" {
 #   ok_actions          = [aws_sns_topic.ec2.arn]
 #
 #   dimensions = {
-#     InstanceId = aws_instance.int_tableau_linux[0].id
+#     InstanceId = aws_instance.int_tableau_linux[count.index].id
 #   }
 #
 #   depends_on = [
-#     aws_instance.int_tableau_linux[0].id
+#     aws_instance.int_tableau_linux[count.index].id
 #   ]
 # }

@@ -2,11 +2,9 @@ variable "environment" {
 }
 
 variable "naming_suffix" {
-  default = "local.naming_suffix"
 }
 
 variable "pipeline_name" {
-  default = "int_tableau"
 }
 
 variable "swap_alarm" {
