@@ -1,8 +1,8 @@
-variable "environment" {
-}
-
-variable "naming_suffix" {
-}
+# variable "environment" {
+# }
+#
+# variable "naming_suffix" {
+# }
 
 variable "pipeline_name" {
 }
