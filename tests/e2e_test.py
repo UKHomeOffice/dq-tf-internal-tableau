@@ -34,10 +34,9 @@ class TestE2E(unittest.TestCase):
               lambda_subnet                     = "subnet-1234567890"
               lambda_subnet_az2                 = "subnet-1234567890"
               rds_enhanced_monitoring_role      = "arn:aws:iam::123456789:role/rds-enhanced-monitoring-role"
-              naming_suffix                     = local.naming_suffix
-              environment                       = var.environment
+              naming_suffix                     = "pre-prod"
+              environment                       = "pre-prod"
               pipeline_name                     = "int_tableau"
-              ec2_instance_id                   = aws_instance.int_tableau_linux[0].id
             }
         """
         self.runner = Runner(self.snippet)
