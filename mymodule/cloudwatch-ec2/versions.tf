@@ -6,3 +6,11 @@ terraform {
   }
 
 }
+
+module "aws_global" {
+  providers = {
+    aws.global = aws
+  }
+  source = "../mymodule/cloudwatch-ec2"
+
+}
