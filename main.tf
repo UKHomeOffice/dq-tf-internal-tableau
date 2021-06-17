@@ -157,12 +157,20 @@ cat >/opt/tableau/tableau_server/packages/scripts.$TAB_VERSION_NUMBER/config-tru
   }
 }
 EOL
+
+echo "#Pull values from Parameter Store and save smtp config locally"
+aws --region eu-west-2 ssm get-parameter --name tableau_config_smtp --query 'Parameter.Value' --output text --with-decryption > /opt/tableau/tableau_server/packages/scripts.$TAB_VERSION_NUMBER/config-smtp.json
+
 tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config.json
 tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-openid.json
 tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-trusted-auth.json
+tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-smtp.json
 
 echo "#TSM increase extract timeout - to 8 hours (=28,800 seconds)"
 tsm configuration set -k backgrounder.querylimit -v 28800
+
+# echo "#TSM configure alerting emails"
+tsm configuration set -k  storage.monitoring.email_enabled -v true
 
 echo "#TSM configure access to peering proxies"
 tsm configuration set -k wgserver.systeminfo.allow_referrer_ips -v 10.3.0.11
