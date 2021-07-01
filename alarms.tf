@@ -10,7 +10,7 @@ locals {
   }
 }
 
-resource "aws_cloudwatch_metric_alarm" "cpu_utilization_too_high" {
+resource "aws_cloudwatch_metric_alarm" "cpu_utilization_too_high_0" {
   count               = var.environment == "prod" ? "1" : "1"
   alarm_name          = "${var.pipeline_name}-CPU-Utilization-too-high"
   comparison_operator = "GreaterThanThreshold"
@@ -34,7 +34,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_too_high" {
 
 }
 
-resource "aws_cloudwatch_metric_alarm" "available_memory_too_low" {
+resource "aws_cloudwatch_metric_alarm" "available_memory_too_low_0" {
   count               = var.environment == "prod" ? "1" : "1"
   alarm_name          = "${var.pipeline_name}-available-memory-too-low"
   comparison_operator = "LessThanThreshold"
@@ -57,7 +57,7 @@ resource "aws_cloudwatch_metric_alarm" "available_memory_too_low" {
   ]
 }
 
-resource "aws_cloudwatch_metric_alarm" "Used_storage_space" {
+resource "aws_cloudwatch_metric_alarm" "Used_storage_space_0" {
   count               = var.environment == "prod" ? "1" : "1"
   alarm_name          = "${var.pipeline_name}-used-storage-space"
   comparison_operator = "GreaterThanThreshold"
@@ -82,7 +82,7 @@ resource "aws_cloudwatch_metric_alarm" "Used_storage_space" {
   ]
 }
 
-resource "aws_cloudwatch_metric_alarm" "cpu_utilization_too_high" {
+resource "aws_cloudwatch_metric_alarm" "cpu_utilization_too_high_1" {
   count               = var.environment == "prod" ? "1" : "0"
   alarm_name          = "${var.pipeline_name}-CPU-Utilization-too-high"
   comparison_operator = "GreaterThanThreshold"
@@ -106,7 +106,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_too_high" {
 
 }
 
-resource "aws_cloudwatch_metric_alarm" "available_memory_too_low" {
+resource "aws_cloudwatch_metric_alarm" "available_memory_too_low_1" {
   count               = var.environment == "prod" ? "1" : "0"
   alarm_name          = "${var.pipeline_name}-available-memory-too-low"
   comparison_operator = "LessThanThreshold"
@@ -129,7 +129,7 @@ resource "aws_cloudwatch_metric_alarm" "available_memory_too_low" {
   ]
 }
 
-resource "aws_cloudwatch_metric_alarm" "Used_storage_space" {
+resource "aws_cloudwatch_metric_alarm" "Used_storage_space_1" {
   count               = var.environment == "prod" ? "1" : "0"
   alarm_name          = "${var.pipeline_name}-used-storage-space"
   comparison_operator = "GreaterThanThreshold"
