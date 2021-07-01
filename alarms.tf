@@ -25,11 +25,11 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_too_high_0" {
   ok_actions          = [aws_sns_topic.ec2.arn]
 
   dimensions = {
-    InstanceId = aws_instance.ext_tableau_linux[0].id
+    InstanceId = aws_instance.int_tableau_linux[0].id
   }
 
   depends_on = [
-    aws_instance.ext_tableau_linux[0]
+    aws_instance.int_tableau_linux[0]
   ]
 
 }
@@ -49,11 +49,11 @@ resource "aws_cloudwatch_metric_alarm" "available_memory_too_low_0" {
   ok_actions          = [aws_sns_topic.ec2.arn]
 
   dimensions = {
-    InstanceId = aws_instance.ext_tableau_linux[0].id
+    InstanceId = aws_instance.int_tableau_linux[0].id
   }
 
   depends_on = [
-    aws_instance.ext_tableau_linux[0]
+    aws_instance.int_tableau_linux[0]
   ]
 }
 
@@ -72,13 +72,13 @@ resource "aws_cloudwatch_metric_alarm" "Used_storage_space_0" {
   ok_actions          = [aws_sns_topic.ec2.arn]
 
   dimensions = {
-    InstanceId = aws_instance.ext_tableau_linux[0].id,
+    InstanceId = aws_instance.int_tableau_linux[0].id,
     path       = "/",
     fstype     = "xfs",
   }
 
   depends_on = [
-    aws_instance.ext_tableau_linux[0]
+    aws_instance.int_tableau_linux[0]
   ]
 }
 
@@ -97,11 +97,11 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_too_high_1" {
   ok_actions          = [aws_sns_topic.ec2.arn]
 
   dimensions = {
-    InstanceId = aws_instance.ext_tableau_linux[1].id
+    InstanceId = aws_instance.int_tableau_linux[1].id
   }
 
   depends_on = [
-    aws_instance.ext_tableau_linux[1]
+    aws_instance.int_tableau_linux[1]
   ]
 
 }
@@ -121,11 +121,11 @@ resource "aws_cloudwatch_metric_alarm" "available_memory_too_low_1" {
   ok_actions          = [aws_sns_topic.ec2.arn]
 
   dimensions = {
-    InstanceId = aws_instance.ext_tableau_linux[1].id
+    InstanceId = aws_instance.int_tableau_linux[1].id
   }
 
   depends_on = [
-    aws_instance.ext_tableau_linux[1]
+    aws_instance.int_tableau_linux[1]
   ]
 }
 
@@ -144,13 +144,13 @@ resource "aws_cloudwatch_metric_alarm" "Used_storage_space_1" {
   ok_actions          = [aws_sns_topic.ec2.arn]
 
   dimensions = {
-    InstanceId = aws_instance.ext_tableau_linux[1].id,
+    InstanceId = aws_instance.int_tableau_linux[1].id,
     path       = "/",
     fstype     = "xfs",
   }
 
   depends_on = [
-    aws_instance.ext_tableau_linux[1]
+    aws_instance.int_tableau_linux[1]
   ]
 }
 #
@@ -168,11 +168,11 @@ resource "aws_cloudwatch_metric_alarm" "Used_storage_space_1" {
 #   ok_actions          = [aws_sns_topic.ec2.arn]
 #
 #   dimensions = {
-#     InstanceId = aws_instance.ext_tableau_linux[0].id
+#     InstanceId = aws_instance.int_tableau_linux[0].id
 #   }
 #
 #   depends_on = [
-#     aws_instance.ext_tableau_linux[0]
+#     aws_instance.int_tableau_linux[0]
 #   ]
 # }
 
