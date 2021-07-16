@@ -14,14 +14,14 @@ data "aws_ami" "int_tableau_linux" {
   ]
 }
 
-data "aws_ami" "int_tableau_linux_upgrade" {
+data "aws_ami" "int_tableau_linux_np" {
   most_recent = true
 
   filter {
     name = "name"
 
     values = [
-      "dq-tableau-linux-233*",
+      "dq-tableau-linux-238*",
     ]
   }
 
