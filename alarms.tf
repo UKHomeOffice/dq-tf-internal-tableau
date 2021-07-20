@@ -39,8 +39,6 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_too_high_0" {
   }
 }
 
-}
-
 resource "aws_cloudwatch_metric_alarm" "available_memory_too_low_0" {
   count               = var.environment == "prod" ? "1" : "1"
   alarm_name          = "${var.pipeline_name}-available-memory-too-low"
