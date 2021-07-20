@@ -32,6 +32,13 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_too_high_0" {
     aws_instance.int_tableau_linux[0]
   ]
 
+  lifecycle {
+    ignore_changes = [
+      dimensions,
+    ]
+  }
+}
+
 }
 
 resource "aws_cloudwatch_metric_alarm" "available_memory_too_low_0" {
@@ -80,6 +87,12 @@ resource "aws_cloudwatch_metric_alarm" "Used_storage_space_0" {
   depends_on = [
     aws_instance.int_tableau_linux[0]
   ]
+
+  lifecycle {
+    ignore_changes = [
+      dimensions,
+    ]
+  }
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_too_high_1" {
@@ -127,6 +140,12 @@ resource "aws_cloudwatch_metric_alarm" "available_memory_too_low_1" {
   depends_on = [
     aws_instance.int_tableau_linux[1]
   ]
+
+  lifecycle {
+    ignore_changes = [
+      dimensions,
+    ]
+  }
 }
 
 resource "aws_cloudwatch_metric_alarm" "Used_storage_space_1" {
