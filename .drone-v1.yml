@@ -24,9 +24,9 @@ steps:
   - python -m unittest tests/*_test.py
   environment:
     AWS_ACCESS_KEY_ID:
-      from_secret: NOTPROD_ACCESS_KEY_ID
+      from_secret: CI_ACCESS_KEY_ID
     AWS_SECRET_ACCESS_KEY:
-      from_secret: NOTPROD_SECRET_ACCESS_KEY
+      from_secret: CI_SECRET_ACCESS_KEY
   when:
     event:
     - push
