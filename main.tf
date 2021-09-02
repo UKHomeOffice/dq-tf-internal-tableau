@@ -159,7 +159,7 @@ cat >/opt/tableau/tableau_server/packages/scripts.$TAB_VERSION_NUMBER/config-tru
 EOL
 
 echo "#Pull values from Parameter Store and save smtp config locally"
-aws --region eu-west-2 ssm get-parameter --name tableau_config_smtp --query 'Parameter.Value' --output text --with-decryption > /opt/tableau/tableau_server/packages/scripts.$TAB_VERSION_NUMBER/config-smtp.json
+aws --region eu-west-2 ssm get-parameter --name tableau_config_smtp_int --query 'Parameter.Value' --output text --with-decryption > /opt/tableau/tableau_server/packages/scripts.$TAB_VERSION_NUMBER/config-smtp.json
 
 tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config.json
 tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-openid.json
