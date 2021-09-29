@@ -19,8 +19,7 @@ EOF
 
 }
 
-resource "aws_iam_role_policy" "int_tableau" {
-  role = aws_iam_role.int_tableau.id
+resource "aws_iam_policy" "int_tableau" {
 
   policy = <<EOF
 {
@@ -90,8 +89,12 @@ EOF
 
 }
 
-resource "aws_iam_role_policy" "int_tableau_s3" {
-  role = aws_iam_role.int_tableau.id
+resource "aws_iam_role_policy_attachment" "int_tableau" {
+  role       = aws_iam_role.int_tableau.id
+  policy_arn = "aws_iam_policy.int_tableau.id"
+}
+
+resource "aws_iam_policy" "int_tableau_s3" {
 
   policy = <<EOF
 {
@@ -139,6 +142,11 @@ resource "aws_iam_role_policy" "int_tableau_s3" {
 }
 EOF
 
+}
+
+resource "aws_iam_role_policy_attachment" "int_tableau_s3" {
+  role       = aws_iam_role.int_tableau.id
+  policy_arn = "aws_iam_policy.int_tableau_s3.id"
 }
 
 resource "aws_iam_instance_profile" "int_tableau" {
