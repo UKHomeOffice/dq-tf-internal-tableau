@@ -176,7 +176,7 @@ echo "#TSM configure access to peering proxies"
 tsm configuration set -k wgserver.systeminfo.allow_referrer_ips -v 10.3.0.11
 tsm configuration set -k wgserver.systeminfo.allow_referrer_ips -v 10.3.0.12
 
-echo "set the No backfrounder Processes to 3"
+echo "set the No backgrounder Processes to 3"
 tsm topology set-process -n node1 -pr backgrounder -c 3
 
 echo "#TSM apply pending changes"
