@@ -176,14 +176,17 @@ echo "#TSM configure access to peering proxies"
 tsm configuration set -k wgserver.systeminfo.allow_referrer_ips -v 10.3.0.11
 tsm configuration set -k wgserver.systeminfo.allow_referrer_ips -v 10.3.0.12
 
-#echo "set the No backgrounder Processes to 3"
-#tsm topology set-process -n node1 -pr backgrounder -c 3
-
 echo "#TSM apply pending changes"
 tsm pending-changes apply
 
 echo "#TSM initialise & start server"
 tsm initialize --start-server --request-timeout 1800
+
+echo "set the number of backgrounder processes to 3 once initialised"
+tsm topology set-process -n node1 -pr backgrounder -c 3
+
+echo "#TSM apply pending changes for backgrounder"
+tsm pending-changes apply
 
 echo "#TSMCMD accept EULA - only required for tableau_srv"
 su -c "tabcmd --accepteula" - tableau_srv
