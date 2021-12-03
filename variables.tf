@@ -1,3 +1,11 @@
+variable "account_id" {
+  type = map(string)
+  default = {
+    "notprod" = "483846886818"
+    "prod"    = "337779336338"
+  }
+}
+
 variable "naming_suffix" {
   default     = false
   description = "Naming suffix for tags, value passed from dq-tf-apps"

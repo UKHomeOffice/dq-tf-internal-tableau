@@ -1,4 +1,5 @@
 resource "aws_iam_role" "int_tableau" {
+  name               = "internal-tableau"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -156,4 +157,14 @@ resource "aws_iam_instance_profile" "int_tableau" {
 resource "aws_iam_role_policy_attachment" "cloud_watch_agent" {
   role       = aws_iam_role.int_tableau.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "int_tableau" {
+  role       = aws_iam_role.int_tableau.id
+  policy_arn = "arn:aws:iam::797728447925:policy/dq-tf-infra-write-to-cw"
+}
+
+resource "aws_iam_role_policy_attachment" "dq_tf_infra_write_to_cw" {
+  role       = aws_iam_role.int_tableau.id
+  policy_arn = "arn:aws:iam::${var.account_id[var.environment]}:policy/dq-tf-infra-write-to-cw"
 }
