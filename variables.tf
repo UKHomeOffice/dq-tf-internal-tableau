@@ -6,6 +6,10 @@ variable "account_id" {
   }
 }
 
+variable "application_name" {
+  default = "internal-tableau"
+}
+
 variable "naming_suffix" {
   default     = false
   description = "Naming suffix for tags, value passed from dq-tf-apps"

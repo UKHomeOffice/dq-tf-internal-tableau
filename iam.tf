@@ -1,5 +1,5 @@
 resource "aws_iam_role" "int_tableau" {
-  name               = "internal-tableau"
+  name               = var.application_name
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -21,6 +21,7 @@ EOF
 }
 
 resource "aws_iam_policy" "int_tableau" {
+  name = "${var.application_name}-ssm-parameter"
 
   policy = <<EOF
 {
@@ -96,6 +97,7 @@ resource "aws_iam_role_policy_attachment" "int_tableau" {
 }
 
 resource "aws_iam_policy" "int_tableau_s3" {
+  name = "${var.application_name}-s3"
 
   policy = <<EOF
 {
