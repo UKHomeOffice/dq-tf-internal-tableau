@@ -96,6 +96,11 @@ EOF
 
 }
 
+resource "aws_iam_role_policy_attachment" "dq_tf_infra_write_to_cw" {
+  role       = aws_iam_role.postgres.id
+  policy_arn = "arn:aws:iam::${var.account_id[var.environment]}:policy/dq-tf-infra-write-to-cw"
+}
+
 resource "aws_db_instance" "postgres" {
   identifier                      = "postgres-${local.naming_suffix}"
   allocated_storage               = var.environment == "prod" ? "3630" : "1000"
