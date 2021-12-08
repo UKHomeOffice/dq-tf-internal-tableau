@@ -37,9 +37,8 @@ resource "aws_lambda_function" "lambda_slack" {
 
 }
 
-resource "aws_iam_role_policy" "lambda_policy_slack" {
+resource "aws_iam_policy" "lambda_policy_slack" {
   name = "${var.pipeline_name}-lambda-policy-slack-${var.environment}"
-  role = aws_iam_role.lambda_role_slack.id
 
   policy = <<EOF
 {
@@ -60,6 +59,11 @@ EOF
 
 
   depends_on = [aws_iam_role.lambda_role_slack]
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_policy_slack" {
+  role = aws_iam_role.lambda_role_slack.id
+  policy_arn = aws_iam_policy.lambda_policy_slack.arn
 }
 
 resource "aws_iam_role" "lambda_role_slack" {
