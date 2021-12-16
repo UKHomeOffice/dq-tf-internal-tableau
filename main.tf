@@ -26,7 +26,7 @@ locals {
 # }
 
 resource "aws_instance" "int_tableau_linux" {
-  count                       = var.environment == "prod" ? "3" : "2" # Allow different instance count in prod and notprod
+  count                       = var.environment == "prod" ? "3" : "1" # Allow different instance count in prod and notprod
   key_name                    = var.key_name
   ami                         = data.aws_ami.int_tableau_linux.id
   instance_type               = var.environment == "prod" ? "r5d.4xlarge" : "r5d.2xlarge"
