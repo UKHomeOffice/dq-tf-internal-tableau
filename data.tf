@@ -5,23 +5,7 @@ data "aws_ami" "int_tableau_linux" {
     name = "name"
 
     values = [
-      "dq-tableau-linux-238*",
-    ]
-  }
-
-  owners = [
-    "self",
-  ]
-}
-
-data "aws_ami" "int_tableau_linux_np" {
-  most_recent = true
-
-  filter {
-    name = "name"
-
-    values = [
-      "dq-tableau-linux-240*",
+      "dq-tableau-linux-241*",
     ]
   }
 
