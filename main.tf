@@ -5,7 +5,7 @@ locals {
 
 #module "dq-lambda-run-command-ec2" {
 #  source             = "github.com/UKHomeOffice/dq-lambda-run-command-ec2"
-#  count_tag          = "${var.environment == "prod" ? "0" : "0"}"                       # Used as 'count', as count is not supported in modules
+#  count_tag          = "${var.environment == "prod" ? "0" : "0"}"
 #  namespace          = "${var.environment}"
 #  instance_id        = "${aws_instance.int_tableau_linux.id}"
 #  ip_address         = ""
@@ -26,7 +26,7 @@ locals {
 # }
 
 resource "aws_instance" "int_tableau_linux" {
-  count                       = var.environment == "prod" ? "3" : "1" # Allow different instance count in prod and notprod
+  count                       = var.environment == "prod" ? "3" : "1"
   key_name                    = var.key_name
   ami                         = data.aws_ami.int_tableau_linux.id
   instance_type               = var.environment == "prod" ? "r5d.4xlarge" : "r5d.2xlarge"
@@ -246,7 +246,7 @@ EOF
 }
 
 resource "aws_instance" "int_tableau_linux_staging" {
-  count                       = var.environment == "prod" ? "1" : "0" # Allow different instance count in prod and notprod
+  count                       = var.environment == "prod" ? "1" : "0"
   key_name                    = var.key_name
   ami                         = data.aws_ami.int_tableau_linux.id
   instance_type               = "r5d.4xlarge" # "c5.4xlarge"
