@@ -167,7 +167,7 @@ tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-tru
 tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-smtp.json
 
 echo "#TSM increase extract timeout - to 8 hours (=28,800 seconds)"
-tsm configuration set -k backgrounder.querylimit -v 28800
+tsm configuration set -k backgrounder.querylimit -v 43200
 
 # echo "#TSM configure alerting emails"
 tsm configuration set -k  storage.monitoring.email_enabled -v true
@@ -395,7 +395,7 @@ tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-ope
 tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-trusted-auth.json
 
 echo "#TSM increase extract timeout - to 8 hours (=28,800 seconds)"
-tsm configuration set -k backgrounder.querylimit -v 28800
+tsm configuration set -k backgrounder.querylimit -v 43200
 
 echo "#TSM apply pending changes"
 tsm pending-changes apply
