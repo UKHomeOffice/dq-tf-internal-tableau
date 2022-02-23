@@ -194,15 +194,6 @@ su -c "tabcmd --accepteula" - tableau_srv
 echo "#TSMCMD - initial user"
 tabcmd initialuser --server 'localhost:80' --username "$TAB_ADMIN_USER" --password "$TAB_ADMIN_PASSWORD"
 
-echo "#Checking environment: if notprod then move Tableau-Backup cron to daytime"
-if [ ${var.environment} == "notprod" ]; then
-  echo "#Notprod Env: Moving Tableau-backup cronjob to daytime in notprod"
-  echo "0 17 * * * source /home/tableau_srv/.bashrc; /home/tableau_srv/scripts/tableau-backup.sh" > /tmp/backupcron
-  crontab -u tableau_srv /tmp/backupcron
-else
-  echo "#Tableau-Backup cronjob remains at 7pm for environment ${var.environment}"
-fi
-
 # Always restore from green
 export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/green/"
 
