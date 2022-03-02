@@ -112,17 +112,24 @@ echo "#Get latest code from git"
 su -c "git clone $TAB_INT_REPO_URL" - tableau_srv
 
 echo "#Initialise TSM (finishes off Tableau Server install/config)"
-/opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula --no-activation-service -f -a tableau_srv
+/opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula --activation-service -f -a tableau_srv
 
 echo "#sourcing tableau server envs - because this script is run as root not tableau_srv"
 source /etc/profile.d/tableau_server.sh
 
-echo "#TSM active TRIAL license as tableau_srv"
-tsm licenses activate --trial --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
-#echo "#TSM active actual licenses as tableau_srv"
-#tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
-#tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
-#tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+echo "#License activation - Checking environment..."
+echo "#Environment == '${var.environment}'"
+if [ ${var.environment} == "notprod" ]; then
+  echo "#TSM activate TRIAL license as tableau_srv"
+  tsm licenses activate --trial --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
+elif [ ${var.environment} == "prod" ]; then
+  echo "#TSM activate actual licenses as tableau_srv"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+else
+  echo "ERROR: Unexpected Environment"
+fi
 
 echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
@@ -168,6 +175,19 @@ tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-smt
 
 echo "#TSM increase extract timeout - to 12 hours (=43,200 seconds)"
 tsm configuration set -k backgrounder.querylimit -v 43200
+
+#Set ATR (Authorization-To-Run) duration, depending on Environment
+echo "#Setting ATR Duration - Checking environment..."
+echo "#Environment == '${var.environment}'"
+if [ ${var.environment} == "notprod" ]; then
+  echo "#TSM set ATR Duration to 6 days (=518,400 seconds)"
+  tsm licenses atr-configuration set -–duration 518400 --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
+elif [ ${var.environment} == "prod" ]; then
+  echo "#TSM set ATR Duration to 4 hours (=14,400 seconds)"
+  tsm licenses atr-configuration set -–duration 14400 --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
+else
+  echo "ERROR: Unexpected Environment"
+fi
 
 # echo "#TSM configure alerting emails"
 tsm configuration set -k  storage.monitoring.email_enabled -v true
@@ -306,15 +326,6 @@ echo "
 source /home/tableau_srv/env_vars.sh
 " >> /home/tableau_srv/.bashrc
 
-echo "#Create the cronjob for the Tab backup"
-if [ ${var.environment} == "prod" ]; then
-  echo "0 19 * * * /bin/bash /home/tableau_srv/scripts/tableau-backup.sh" > /tmp/backupcron
-  crontab -u tableau_srv /tmp/backupcron
-else
-  echo "0 17 * * * /bin/bash /home/tableau_srv/scripts/tableau-backup.sh" > /tmp/backupcron
-  crontab -u tableau_srv /tmp/backupcron
-fi
-
 echo "#Set password for tableau_srv"
 echo $TAB_SRV_PASSWORD | passwd tableau_srv --stdin
 
@@ -335,18 +346,21 @@ echo "#Get latest code from git"
 su -c "git clone $TAB_INT_REPO_URL" - tableau_srv
 
 echo "#Initialise TSM (finishes off Tableau Server install/config)"
-/opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
+/opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula --activation-service -f -a tableau_srv
 
 echo "#sourcing tableau server envs - because this script is run as root not tableau_srv"
 source /etc/profile.d/tableau_server.sh
 
-echo "#TSM active TRIAL license as tableau_srv"
-#tsm licenses activate --trial -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
-
-echo "#TSM active actual licenses as tableau_srv"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
-tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+#By default, activate TRIAL license in Staging,
+#can be upgraded to full license after server is up and running IF:
+# 1. We need server to be long running
+# 2. We have spare licenses (we are only allowed to run 3: 1x Prod, 2x non-Prod)
+echo "#TSM activate TRIAL license as tableau_srv"
+tsm licenses activate --trial -u $TAB_SRV_USER -p $TAB_SRV_PASSWORD
+#echo "#TSM activate actual licenses as tableau_srv"
+#tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+#tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+#tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
 echo "#TSM register user details"
 tsm register --file /tmp/install/tab_reg_file.json --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
@@ -388,6 +402,9 @@ tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-tru
 echo "#TSM increase extract timeout - to 12 hours (=43,200 seconds)"
 tsm configuration set -k backgrounder.querylimit -v 43200
 
+echo "#TSM set ATR Duration to 6 days (=518,400 seconds)"
+tsm licenses atr-configuration set -–duration 518400 --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
+
 echo "#TSM apply pending changes"
 tsm pending-changes apply
 
@@ -399,15 +416,6 @@ su -c "tabcmd --accepteula" - tableau_srv
 
 echo "#TSMCMD - initial user"
 tabcmd initialuser --server 'localhost:80' --username "$TAB_ADMIN_USER" --password "$TAB_ADMIN_PASSWORD"
-
-echo "#Checking environment: if notprod then move Tableau-Backup cron to daytime"
-if [ ${var.environment} == "notprod" ]; then
-  echo "#Notprod Env: Moving Tableau-backup cronjob to daytime in notprod"
-  echo "0 17 * * * source /home/tableau_srv/.bashrc; /home/tableau_srv/scripts/tableau-backup.sh" > /tmp/backupcron
-  crontab -u tableau_srv /tmp/backupcron
-else
-  echo "#Tableau-Backup cronjob remains at 7pm for environment ${var.environment}"
-fi
 
 # Always restore from green
 export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/green/"
