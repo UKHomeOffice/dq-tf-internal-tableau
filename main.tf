@@ -112,7 +112,7 @@ echo "#Get latest code from git"
 su -c "git clone $TAB_INT_REPO_URL" - tableau_srv
 
 echo "#Initialise TSM (finishes off Tableau Server install/config)"
-/opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
+/opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula --activation-service -f -a tableau_srv
 
 echo "#sourcing tableau server envs - because this script is run as root not tableau_srv"
 source /etc/profile.d/tableau_server.sh
@@ -176,18 +176,18 @@ tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-smt
 echo "#TSM increase extract timeout - to 12 hours (=43,200 seconds)"
 tsm configuration set -k backgrounder.querylimit -v 43200
 
-# #Set ATR (Authorization-To-Run) duration, depending on Environment
-# echo "#Setting ATR Duration - Checking environment..."
-# echo "#Environment == '${var.environment}'"
-# if [ ${var.environment} == "notprod" ]; then
-#   echo "#TSM set ATR Duration to 6 days (=518,400 seconds)"
-#   tsm licenses atr-configuration set -–duration 518400 --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
-# elif [ ${var.environment} == "prod" ]; then
-#   echo "#TSM set ATR Duration to 4 hours (=14,400 seconds)"
-#   tsm licenses atr-configuration set -–duration 14400 --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
-# else
-#   echo "ERROR: Unexpected Environment"
-# fi
+#Set ATR (Authorization-To-Run) duration, depending on Environment
+echo "#Setting ATR Duration - Checking environment..."
+echo "#Environment == '${var.environment}'"
+if [ ${var.environment} == "notprod" ]; then
+  echo "#TSM set ATR Duration to 6 days (=518,400 seconds)"
+  tsm licenses atr-configuration set -–duration 518400 --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
+elif [ ${var.environment} == "prod" ]; then
+  echo "#TSM set ATR Duration to 4 hours (=14,400 seconds)"
+  tsm licenses atr-configuration set -–duration 14400 --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
+else
+  echo "ERROR: Unexpected Environment"
+fi
 
 # echo "#TSM configure alerting emails"
 tsm configuration set -k  storage.monitoring.email_enabled -v true
