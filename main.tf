@@ -176,19 +176,6 @@ tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-smt
 echo "#TSM increase extract timeout - to 12 hours (=43,200 seconds)"
 tsm configuration set -k backgrounder.querylimit -v 43200
 
-#Set ATR (Authorization-To-Run) duration, depending on Environment
-echo "#Setting ATR Duration - Checking environment..."
-echo "#Environment == '${var.environment}'"
-if [ ${var.environment} == "notprod" ]; then
-  echo "#TSM set ATR Duration to 6 days (=518,400 seconds)"
-  tsm licenses atr-configuration set -–duration 518400 --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
-elif [ ${var.environment} == "prod" ]; then
-  echo "#TSM set ATR Duration to 4 hours (=14,400 seconds)"
-  tsm licenses atr-configuration set -–duration 14400 --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
-else
-  echo "ERROR: Unexpected Environment"
-fi
-
 # echo "#TSM configure alerting emails"
 tsm configuration set -k  storage.monitoring.email_enabled -v true
 
@@ -202,7 +189,20 @@ tsm pending-changes apply
 echo "#TSM initialise & start server"
 tsm initialize --start-server --request-timeout 1800
 
-echo "set the number of backgrounder processes to 3 once initialised"
+#Set ATR (Authorization-To-Run) duration, depending on Environment
+echo "#Setting ATR Duration - Checking environment..."
+echo "#Environment == '${var.environment}'"
+if [ ${var.environment} == "notprod" ]; then
+  echo "#TSM set ATR Duration to 6 days (=518,400 seconds)"
+  tsm licenses atr-configuration set -–duration 518400 --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
+elif [ ${var.environment} == "prod" ]; then
+  echo "#TSM set ATR Duration to 4 hours (=14,400 seconds)"
+  tsm licenses atr-configuration set -–duration 14400 --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
+else
+  echo "ERROR: Unexpected Environment"
+fi
+
+echo "#Set the number of backgrounder processes to 3 once initialised"
 tsm topology set-process -n node1 -pr backgrounder -c 3
 
 echo "#TSM apply pending changes for backgrounder"
