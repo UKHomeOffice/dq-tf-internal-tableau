@@ -29,6 +29,7 @@ class TestE2E(unittest.TestCase):
               s3_httpd_config_bucket            = "s3-bucket-name"
               s3_httpd_config_bucket_key        = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
               haproxy_private_ip                = "1.2.3.4"
+              haproxy_private_ip2               = "1.2.3.5"
               environment                       = "prod"
               security_group_ids                = "sg-1234567890"
               lambda_subnet                     = "subnet-1234567890"
