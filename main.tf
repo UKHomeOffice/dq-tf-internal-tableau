@@ -159,7 +159,7 @@ cat >/opt/tableau/tableau_server/packages/scripts.$TAB_VERSION_NUMBER/config-tru
   "configEntities": {
     "trustedAuthenticationSettings": {
       "_type": "trustedAuthenticationSettingsType",
-      "trustedHosts": [ "${var.haproxy_private_ip}" ]
+      "trustedHosts": [ "${var.haproxy_private_ip}","${var.haproxy_private_ip2}" ]
     }
   }
 }
@@ -180,8 +180,7 @@ tsm configuration set -k backgrounder.querylimit -v 43200
 tsm configuration set -k  storage.monitoring.email_enabled -v true
 
 echo "#TSM configure access to peering proxies"
-tsm configuration set -k wgserver.systeminfo.allow_referrer_ips -v ${var.haproxy_private_ip}
-tsm configuration set -k wgserver.systeminfo.allow_referrer_ips -v ${var.haproxy_private_ip2}
+tsm configuration set -k wgserver.systeminfo.allow_referrer_ips -v ${var.haproxy_private_ip},${var.haproxy_private_ip2}
 
 echo "#TSM apply pending changes"
 tsm pending-changes apply

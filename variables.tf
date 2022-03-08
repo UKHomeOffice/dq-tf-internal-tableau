@@ -168,6 +168,10 @@ variable "haproxy_private_ip" {
   description = "IP of HaProxy 1"
 }
 
+variable "haproxy_private_ip2" {
+  description = "IP of HaProxy 2"
+}
+
 variable "database_name" {
   default     = "internal_tableau"
   description = "RDS Postgres database name"
