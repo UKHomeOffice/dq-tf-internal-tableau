@@ -376,7 +376,7 @@ cat >/opt/tableau/tableau_server/packages/scripts.$TAB_VERSION_NUMBER/config-tru
   "configEntities": {
     "trustedAuthenticationSettings": {
       "_type": "trustedAuthenticationSettingsType",
-      "trustedHosts": [ "${var.haproxy_private_ip}" ]
+      "trustedHosts": [ "${var.haproxy_private_ip}","${var.haproxy_private_ip2}" ]
     }
   }
 }
