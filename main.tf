@@ -112,131 +112,118 @@ echo "#Get latest code from git"
 su -c "git clone $TAB_INT_REPO_URL" - tableau_srv
 
 echo "#Initialise TSM (finishes off Tableau Server install/config)"
-/opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula --activation-service -f -a tableau_srv
+/opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
 
-#echo "#sourcing tableau server envs - because this script is run as root not tableau_srv"
-#source /etc/profile.d/tableau_server.sh
-#
-# echo "#License activation - Checking environment..."
-# echo "#Environment == '${var.environment}'"
-# if [ ${var.environment} == "notprod" ]; then
-#   echo "#TSM activate TRIAL license as tableau_srv"
-#   tsm licenses activate --trial --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
-# elif [ ${var.environment} == "prod" ]; then
-#   echo "#TSM activate actual licenses as tableau_srv"
-#   tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
-#   tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
-#   tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
-# else
-#   echo "ERROR: Unexpected Environment"
-# fi
-#
-# echo "#TSM register user details"
-# tsm register --file /tmp/install/tab_reg_file.json --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
-#
-# echo "#TSM settings (add default)"
-# export CLIENT_ID=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_provider_client_id --query 'Parameter.Value' --output text`
-# export CLIENT_SECRET=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_client_secret --query 'Parameter.Value' --output text --with-decryption`
-# export CONFIG_URL=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_provider_config_url --query 'Parameter.Value' --output text`
-# export EXTERNAL_URL=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_tableau_server_external_url --query 'Parameter.Value' --output text`
-# export TAB_VERSION_NUMBER=`echo $PATH | awk -F customer '{print $2}' | cut -d \. -f2- | awk -F : '{print $1}'`
-# cat >/opt/tableau/tableau_server/packages/scripts.$TAB_VERSION_NUMBER/config-openid.json <<EOL
-# {
-#   "configEntities": {
-#     "openIDSettings": {
-#       "_type": "openIDSettingsType",
-#       "enabled": true,
-#       "clientId": "$CLIENT_ID",
-#       "clientSecret": "$CLIENT_SECRET",
-#       "configURL": "$CONFIG_URL",
-#       "externalURL": "$EXTERNAL_URL"
-#     }
-#   }
-# }
-# EOL
-# cat >/opt/tableau/tableau_server/packages/scripts.$TAB_VERSION_NUMBER/config-trusted-auth.json <<EOL
-# {
-#   "configEntities": {
-#     "trustedAuthenticationSettings": {
-#       "_type": "trustedAuthenticationSettingsType",
-#       "trustedHosts": [ "${var.haproxy_private_ip}" ]
-#     }
-#   }
-# }
-# EOL
-#
-# echo "#Pull values from Parameter Store and save smtp config locally"
-# aws --region eu-west-2 ssm get-parameter --name tableau_config_smtp_int --query 'Parameter.Value' --output text --with-decryption > /opt/tableau/tableau_server/packages/scripts.$TAB_VERSION_NUMBER/config-smtp.json
-#
-# tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config.json
-# tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-openid.json
-# tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-trusted-auth.json
-# tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-smtp.json
-#
-# echo "#TSM increase extract timeout - to 12 hours (=43,200 seconds)"
-# tsm configuration set -k backgrounder.querylimit -v 43200
-#
-# # echo "#TSM configure alerting emails"
-# tsm configuration set -k  storage.monitoring.email_enabled -v true
-#
-# echo "#TSM configure access to peering proxies"
-# tsm configuration set -k wgserver.systeminfo.allow_referrer_ips -v 10.3.0.11
-# tsm configuration set -k wgserver.systeminfo.allow_referrer_ips -v 10.3.0.12
-#
-# echo "#TSM apply pending changes"
-# tsm pending-changes apply
-#
-# echo "#TSM initialise & start server"
-# tsm initialize --start-server --request-timeout 1800
+echo "#sourcing tableau server envs - because this script is run as root not tableau_srv"
+source /etc/profile.d/tableau_server.sh
 
-# #Set ATR (Authorization-To-Run) duration, depending on Environment
-# echo "#Setting ATR Duration - Checking environment..."
-# echo "#Environment == '${var.environment}'"
-# if [ ${var.environment} == "notprod" ]; then
-#   echo "#TSM set ATR Duration to 6 days (=518,400 seconds)"
-#   tsm licenses atr-configuration set -–duration 518400 --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
-# elif [ ${var.environment} == "prod" ]; then
-#   echo "#TSM set ATR Duration to 4 hours (=14,400 seconds)"
-#   tsm licenses atr-configuration set -–duration 14400 --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
-# else
-#   echo "ERROR: Unexpected Environment"
-# fi
+echo "#License activation - Checking environment..."
+echo "#Environment == '${var.environment}'"
+if [ ${var.environment} == "notprod" ]; then
+  echo "#TSM activate TRIAL license as tableau_srv"
+  tsm licenses activate --trial --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
+elif [ ${var.environment} == "prod" ]; then
+  echo "#TSM activate actual licenses as tableau_srv"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_1" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_2" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_3" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+else
+  echo "ERROR: Unexpected Environment"
+fi
 
-# echo "#Set the number of backgrounder processes to 3 once initialised"
-# tsm topology set-process -n node1 -pr backgrounder -c 3
-#
-# echo "#TSM apply pending changes for backgrounder"
-# tsm pending-changes apply
-#
-# echo "#TSMCMD accept EULA - only required for tableau_srv"
-# su -c "tabcmd --accepteula" - tableau_srv
-#
-# echo "#TSMCMD - initial user"
-# tabcmd initialuser --server 'localhost:80' --username "$TAB_ADMIN_USER" --password "$TAB_ADMIN_PASSWORD"
-#
-# # Always restore from green
-# export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/green/"
-#
-# echo "#Get most recent Tableau backup from S3"
-# export LATEST_BACKUP_NAME=`aws s3 ls $BACKUP_LOCATION | tail -1 | awk '{print $4}'`
-# aws s3 cp $BACKUP_LOCATION$LATEST_BACKUP_NAME /var/opt/tableau/tableau_server/data/tabsvc/files/backups/$LATEST_BACKUP_NAME
-#
-# echo "#Restore latest backup to Tableau Server"
-# tsm stop --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm maintenance restore --file $LATEST_BACKUP_NAME --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm start --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
-#
-# echo "#Publishing required DataSources and WorkBooks"
-# su -c "/home/tableau_srv/scripts/tableau_pub.py /home/tableau_srv/$TAB_INT_REPO_NAME DQDashboards" - tableau_srv
-#
-# echo "#Mount filesystem - /var/log/"
-# mkfs.xfs /dev/nvme1n1
-# mkdir -p /mnt/var/log/
-# mount /dev/nvme1n1 /mnt/var/log
-# rsync -a /var/log/ /mnt/var/log
-# semanage fcontext -a -t var_t "/mnt/var" && semanage fcontext -a -e /var/log /mnt/var/log && restorecon -R -v /mnt/var
-# echo '/dev/nvme1n1 /var/log xfs defaults 0 0' >> /etc/fstab
-# umount /mnt/var/log/
-#
-# reboot
+echo "#TSM register user details"
+tsm register --file /tmp/install/tab_reg_file.json --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+
+echo "#TSM settings (add default)"
+export CLIENT_ID=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_provider_client_id --query 'Parameter.Value' --output text`
+export CLIENT_SECRET=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_client_secret --query 'Parameter.Value' --output text --with-decryption`
+export CONFIG_URL=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_provider_config_url --query 'Parameter.Value' --output text`
+export EXTERNAL_URL=`aws --region eu-west-2 ssm get-parameter --name tableau_int_openid_tableau_server_external_url --query 'Parameter.Value' --output text`
+export TAB_VERSION_NUMBER=`echo $PATH | awk -F customer '{print $2}' | cut -d \. -f2- | awk -F : '{print $1}'`
+cat >/opt/tableau/tableau_server/packages/scripts.$TAB_VERSION_NUMBER/config-openid.json <<EOL
+{
+  "configEntities": {
+    "openIDSettings": {
+      "_type": "openIDSettingsType",
+      "enabled": true,
+      "clientId": "$CLIENT_ID",
+      "clientSecret": "$CLIENT_SECRET",
+      "configURL": "$CONFIG_URL",
+      "externalURL": "$EXTERNAL_URL"
+    }
+  }
+}
+EOL
+cat >/opt/tableau/tableau_server/packages/scripts.$TAB_VERSION_NUMBER/config-trusted-auth.json <<EOL
+{
+  "configEntities": {
+    "trustedAuthenticationSettings": {
+      "_type": "trustedAuthenticationSettingsType",
+      "trustedHosts": [ "${var.haproxy_private_ip}" ]
+    }
+  }
+}
+EOL
+
+echo "#Pull values from Parameter Store and save smtp config locally"
+aws --region eu-west-2 ssm get-parameter --name tableau_config_smtp_int --query 'Parameter.Value' --output text --with-decryption > /opt/tableau/tableau_server/packages/scripts.$TAB_VERSION_NUMBER/config-smtp.json
+
+tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config.json
+tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-openid.json
+tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-trusted-auth.json
+tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-smtp.json
+
+echo "#TSM increase extract timeout - to 12 hours (=43,200 seconds)"
+tsm configuration set -k backgrounder.querylimit -v 43200
+
+# echo "#TSM configure alerting emails"
+tsm configuration set -k  storage.monitoring.email_enabled -v true
+
+echo "#TSM configure access to peering proxies"
+tsm configuration set -k wgserver.systeminfo.allow_referrer_ips -v ${var.haproxy_private_ip}
+tsm configuration set -k wgserver.systeminfo.allow_referrer_ips -v ${var.haproxy_private_ip2}
+
+echo "#TSM apply pending changes"
+tsm pending-changes apply
+
+echo "#TSM initialise & start server"
+tsm initialize --start-server --request-timeout 1800
+
+echo "#Set the number of backgrounder processes to 3 once initialised"
+tsm topology set-process -n node1 -pr backgrounder -c 3
+
+echo "#TSM apply pending changes for backgrounder"
+tsm pending-changes apply
+
+echo "#TSMCMD accept EULA - only required for tableau_srv"
+su -c "tabcmd --accepteula" - tableau_srv
+
+echo "#TSMCMD - initial user"
+su -c "tabcmd initialuser --server 'localhost:80' --username $TAB_ADMIN_USER --password $TAB_ADMIN_PASSWORD" - tableau_srv
+
+# Always restore from green
+export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/green/"
+
+echo "#Get most recent Tableau backup from S3"
+export LATEST_BACKUP_NAME=`aws s3 ls $BACKUP_LOCATION | tail -1 | awk '{print $4}'`
+aws s3 cp $BACKUP_LOCATION$LATEST_BACKUP_NAME /var/opt/tableau/tableau_server/data/tabsvc/files/backups/$LATEST_BACKUP_NAME
+
+echo "#Restore latest backup to Tableau Server"
+tsm stop --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm maintenance restore --file $LATEST_BACKUP_NAME --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm start --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+
+echo "#Publishing required DataSources and WorkBooks"
+su -c "/home/tableau_srv/scripts/tableau_pub.py /home/tableau_srv/$TAB_INT_REPO_NAME DQDashboards" - tableau_srv
+
+echo "#Mount filesystem - /var/log/"
+mkfs.xfs /dev/nvme1n1
+mkdir -p /mnt/var/log/
+mount /dev/nvme1n1 /mnt/var/log
+rsync -a /var/log/ /mnt/var/log
+semanage fcontext -a -t var_t "/mnt/var" && semanage fcontext -a -e /var/log /mnt/var/log && restorecon -R -v /mnt/var
+echo '/dev/nvme1n1 /var/log xfs defaults 0 0' >> /etc/fstab
+umount /mnt/var/log/
+
+reboot
 
 EOF
 
@@ -346,7 +333,7 @@ echo "#Get latest code from git"
 su -c "git clone $TAB_INT_REPO_URL" - tableau_srv
 
 echo "#Initialise TSM (finishes off Tableau Server install/config)"
-/opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula --activation-service -f -a tableau_srv
+/opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
 
 echo "#sourcing tableau server envs - because this script is run as root not tableau_srv"
 source /etc/profile.d/tableau_server.sh
@@ -402,9 +389,6 @@ tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-tru
 echo "#TSM increase extract timeout - to 12 hours (=43,200 seconds)"
 tsm configuration set -k backgrounder.querylimit -v 43200
 
-echo "#TSM set ATR Duration to 6 days (=518,400 seconds)"
-tsm licenses atr-configuration set -–duration 518400 --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
-
 echo "#TSM apply pending changes"
 tsm pending-changes apply
 
@@ -415,7 +399,7 @@ echo "#TSMCMD accept EULA - only required for tableau_srv"
 su -c "tabcmd --accepteula" - tableau_srv
 
 echo "#TSMCMD - initial user"
-tabcmd initialuser --server 'localhost:80' --username "$TAB_ADMIN_USER" --password "$TAB_ADMIN_PASSWORD"
+su -c "tabcmd initialuser --server 'localhost:80' --username $TAB_ADMIN_USER --password $TAB_ADMIN_PASSWORD" - tableau_srv
 
 # Always restore from green
 export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/green/"
