@@ -88,9 +88,19 @@ echo "#Load the env vars needed for this user_data script"
 source /home/tableau_srv/env_vars.sh
 
 echo "#Load the env vars when tableau_srv logs in"
-echo "
+cat >>/home/tableau_srv/.bashrc <<EOL
+alias la='ls -laF'
+alias atrdiag='echo "Run atrdiag as user tableau, not tableau_srv"'
+alias tll='/home/tableau_srv/scripts/tableau-license-list.sh'
 source /home/tableau_srv/env_vars.sh
-" >> /home/tableau_srv/.bashrc
+EOL
+
+echo "#set aliases for tableau user"
+cat >>/var/opt/tableau/tableau_server/.bashrc <<EOL
+alias la='ls -laF'
+# atrdiag only returns something useful when Full licenses are active, not when Trial license is in use
+alias atrdiag='atrdiag -product "Tableau Server"'
+EOL
 
 echo "#Set password for tableau_srv"
 echo $TAB_SRV_PASSWORD | passwd tableau_srv --stdin
@@ -210,9 +220,6 @@ aws s3 cp $BACKUP_LOCATION$LATEST_BACKUP_NAME /var/opt/tableau/tableau_server/da
 echo "#Restore latest backup to Tableau Server"
 tsm stop --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm maintenance restore --file $LATEST_BACKUP_NAME --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm start --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 
-echo "#Publishing required DataSources and WorkBooks"
-su -c "/home/tableau_srv/scripts/tableau_pub.py /home/tableau_srv/$TAB_INT_REPO_NAME DQDashboards" - tableau_srv
-
 echo "#Mount filesystem - /var/log/"
 mkfs.xfs /dev/nvme1n1
 mkdir -p /mnt/var/log/
@@ -308,9 +315,19 @@ echo "#Load the env vars needed for this user_data script"
 source /home/tableau_srv/env_vars.sh
 
 echo "#Load the env vars when tableau_srv logs in"
-echo "
+cat >>/home/tableau_srv/.bashrc <<EOL
+alias la='ls -laF'
+alias atrdiag='echo "Run atrdiag as user tableau, not tableau_srv"'
+alias tll='/home/tableau_srv/scripts/tableau-license-list.sh'
 source /home/tableau_srv/env_vars.sh
-" >> /home/tableau_srv/.bashrc
+EOL
+
+echo "#set aliases for tableau user"
+cat >>/var/opt/tableau/tableau_server/.bashrc <<EOL
+alias la='ls -laF'
+# atrdiag only returns something useful when Full licenses are active, not when Trial license is in use
+alias atrdiag='atrdiag -product "Tableau Server"'
+EOL
 
 echo "#Set password for tableau_srv"
 echo $TAB_SRV_PASSWORD | passwd tableau_srv --stdin
@@ -409,9 +426,6 @@ aws s3 cp $BACKUP_LOCATION$LATEST_BACKUP_NAME /var/opt/tableau/tableau_server/da
 
 echo "#Restore latest backup to Tableau Server"
 tsm stop --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm maintenance restore --file $LATEST_BACKUP_NAME --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" && tsm start --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
-
-echo "#Publishing required DataSources and WorkBooks"
-su -c "/home/tableau_srv/scripts/tableau_pub.py /home/tableau_srv/$TAB_INT_REPO_NAME DQDashboards" - tableau_srv
 
 echo "#Mount filesystem - /var/log/"
 mkfs.xfs /dev/nvme1n1
