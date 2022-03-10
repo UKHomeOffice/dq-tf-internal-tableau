@@ -95,13 +95,6 @@ alias tll='/home/tableau_srv/scripts/tableau-license-list.sh'
 source /home/tableau_srv/env_vars.sh
 EOL
 
-echo "#set aliases for tableau user"
-cat >>/var/opt/tableau/tableau_server/.bashrc <<EOL
-alias la='ls -laF'
-# atrdiag only returns something useful when Full licenses are active, not when Trial license is in use
-alias atrdiag='atrdiag -product "Tableau Server"'
-EOL
-
 echo "#Set password for tableau_srv"
 echo $TAB_SRV_PASSWORD | passwd tableau_srv --stdin
 
@@ -123,6 +116,13 @@ su -c "git clone $TAB_INT_REPO_URL" - tableau_srv
 
 echo "#Initialise TSM (finishes off Tableau Server install/config)"
 /opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
+
+echo "#set aliases for tableau user"
+cat >>/var/opt/tableau/tableau_server/.bashrc <<EOL
+alias la='ls -laF'
+# atrdiag only returns something useful when Full licenses are active, not when Trial license is in use
+alias atrdiag='atrdiag -product "Tableau Server"'
+EOL
 
 echo "#sourcing tableau server envs - because this script is run as root not tableau_srv"
 source /etc/profile.d/tableau_server.sh
