@@ -137,7 +137,7 @@ class TestE2E(unittest.TestCase):
     #     self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.internal_reporting_snapshot_stg[0]", "apply_immediately"), True)
 
     def test_rds_postgres_postgres_engine_version(self):
-        self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.postgres", "engine_version"), "10.13")
+        self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.postgres", "engine_version"), "10.18")
 
 if __name__ == '__main__':
     unittest.main()
