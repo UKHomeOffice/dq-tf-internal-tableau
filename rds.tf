@@ -103,10 +103,11 @@ resource "aws_iam_role_policy_attachment" "dq_tf_infra_write_to_cw_rds" {
 
 resource "aws_db_instance" "postgres" {
   identifier                      = "postgres-${local.naming_suffix}"
+  auto_minor_version_upgrade      = "false"
   allocated_storage               = var.environment == "prod" ? "3630" : "1500"
   storage_type                    = "gp2"
   engine                          = "postgres"
-  engine_version                  = var.environment == "prod" ? "10.13" : "10.13"
+  engine_version                  = var.environment == "prod" ? "10.18" : "10.18"
   instance_class                  = var.environment == "prod" ? "db.m5.4xlarge" : "db.m5.2xlarge"
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
   username                        = random_string.username.result
@@ -245,7 +246,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
 resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   count                               = local.internal_reporting_stg_count
   snapshot_identifier                 = var.environment == "prod" ? "rds:postgres-internal-tableau-apps-prod-dq-2022-03-07-00-09" : "rds:postgres-internal-tableau-apps-notprod-dq-2020-03-23-07-07"
-  auto_minor_version_upgrade          = "true"
+  auto_minor_version_upgrade          = "false"
   backup_retention_period             = "14"
   copy_tags_to_snapshot               = "false"
   db_subnet_group_name                = aws_db_subnet_group.rds.id
@@ -269,7 +270,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   ca_cert_identifier                  = var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"
   monitoring_interval                 = "60"
   monitoring_role_arn                 = var.rds_enhanced_monitoring_role
-  engine_version                      = var.environment == "prod" ? "10.17" : "10.17"
+  engine_version                      = var.environment == "prod" ? "10.18" : "10.18"
   apply_immediately                   = var.environment == "prod" ? "true" : "true"
 
   performance_insights_enabled          = true
