@@ -133,7 +133,7 @@ def lambda_handler(event, context):
         LOGGER.info('bucket_name:{0}'.format(bucket_name))
         path = os.environ['path_']
         LOGGER.info('path:{0}'.format(path))
-        threashold_min = os.environ.get('threashold_min', '1440')
+        threashold_min = os.environ.get('threashold_min', '1380')
         LOGGER.info('threashold_min:{0}'.format(threashold_min))
 
         try:
