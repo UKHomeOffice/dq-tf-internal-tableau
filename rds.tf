@@ -245,7 +245,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
 
 resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   count                               = local.internal_reporting_stg_count
-  snapshot_identifier                 = var.environment == "prod" ? "rds:postgres-internal-tableau-apps-prod-dq-2022-04-06-00-08" : "rds:postgres-internal-tableau-apps-notprod-dq-2020-03-23-07-07"
+  snapshot_identifier                 = var.environment == "prod" ? "rds:postgres-internal-tableau-apps-prod-dq-2022-04-19-00-08" : "rds:postgres-internal-tableau-apps-notprod-dq-2020-03-23-07-07"
   auto_minor_version_upgrade          = "false"
   backup_retention_period             = "14"
   copy_tags_to_snapshot               = "false"
