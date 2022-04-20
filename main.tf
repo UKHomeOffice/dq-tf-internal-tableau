@@ -244,7 +244,7 @@ EOF
     ignore_changes = [
       user_data,
       ami,
-      instance_type,
+      instance_type
     ]
   }
 }
