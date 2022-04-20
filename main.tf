@@ -26,7 +26,7 @@ locals {
 # }
 
 resource "aws_instance" "int_tableau_linux" {
-  count                       = var.environment == "prod" ? "2" : "2"
+  count                       = var.environment == "prod" ? "3" : "2"
   key_name                    = var.key_name
   ami                         = data.aws_ami.int_tableau_linux.id
   instance_type               = var.environment == "prod" ? "r5d.4xlarge" : "r5d.2xlarge"
@@ -239,7 +239,7 @@ EOF
   }
 
   lifecycle {
-    prevent_destroy = true
+    # prevent_destroy = true
 
     ignore_changes = [
       user_data,
