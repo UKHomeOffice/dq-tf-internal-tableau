@@ -196,8 +196,9 @@ variable "s3_httpd_config_bucket_key" {
 }
 
 variable "dq_internal_staging_dashboard_instance_ip" {
-  description = "IP for staging instance"
-  default     = "10.1.12.115"
+  description = "IP address of Tab STG EC2 instance"
+  type        = list(string)
+  default     = ["10.1.12.115", "10.1.12.116", "10.1.12.117", "10.1.12.118"]
 }
 
 variable "security_group_ids" {
