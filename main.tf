@@ -29,7 +29,7 @@ resource "aws_instance" "int_tableau_linux" {
   count                       = var.environment == "prod" ? "2" : "2"
   key_name                    = var.key_name
   ami                         = data.aws_ami.int_tableau_linux.id
-  instance_type               = var.environment == "prod" ? "r5.8xlarge" : "r5d.2xlarge"
+  instance_type               = var.environment == "prod" ? "r5.4xlarge" : "r5.2xlarge"
   iam_instance_profile        = aws_iam_instance_profile.int_tableau.id
   vpc_security_group_ids      = [aws_security_group.sgrp.id]
   associate_public_ip_address = false
@@ -198,8 +198,8 @@ tsm pending-changes apply
 echo "#TSM initialise & start server"
 tsm initialize --start-server --request-timeout 1800
 
-echo "#Set the number of backgrounder processes to 3 once initialised"
-tsm topology set-process -n node1 -pr backgrounder -c 3
+echo "#Set the number of backgrounder processes to 4 once initialised"
+tsm topology set-process -n node1 -pr backgrounder -c 4
 
 echo "#TSM apply pending changes for backgrounder"
 tsm pending-changes apply
@@ -253,7 +253,7 @@ resource "aws_instance" "int_tableau_linux_staging" {
   count                       = var.environment == "prod" ? "1" : "0"
   key_name                    = var.key_name
   ami                         = data.aws_ami.int_tableau_linux.id
-  instance_type               = "r5d.4xlarge" # "c5.4xlarge"
+  instance_type               = "r5.4xlarge" # "c5.4xlarge"
   iam_instance_profile        = aws_iam_instance_profile.int_tableau.id
   vpc_security_group_ids      = [aws_security_group.sgrp.id]
   associate_public_ip_address = false
