@@ -250,7 +250,7 @@ EOF
 }
 
 resource "aws_instance" "int_tableau_linux_staging" {
-  count                       = var.environment == "prod" ? "1" : "0"
+  count                       = var.environment == "prod" ? "3" : "0"
   key_name                    = var.key_name
   ami                         = data.aws_ami.int_tableau_linux.id
   instance_type               = "r5.4xlarge" # "c5.4xlarge"

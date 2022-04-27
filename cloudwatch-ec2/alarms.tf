@@ -55,24 +55,43 @@ resource "aws_cloudwatch_metric_alarm" "available_memory_too_low" {
   ]
 }
 
-resource "aws_cloudwatch_metric_alarm" "Used_storage_space" {
-  alarm_name          = "${var.pipeline_name}-used-storage-space"
+resource "aws_cloudwatch_metric_alarm" "Used_storage_space_tab" {
+  alarm_name          = "${var.pipeline_name}-used-storage-space-tab"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "1"
-  metric_name         = "disk_used_percent"
+  metric_name         = "disk_used_percent_tab"
   namespace           = "CWAgent"
   period              = "600"
   statistic           = "Average"
   threshold           = local.thresholds["UsedStorageSpaceThreshold"]
-  alarm_description   = "Average database free storage space over last 10 minutes too low"
+  alarm_description   = "Average Tableau disk free storage space over last 10 minutes too low"
   alarm_actions       = [aws_sns_topic.ec2.arn]
   ok_actions          = [aws_sns_topic.ec2.arn]
 
   dimensions = {
     InstanceId = aws_instance.int_tableau_linux[0].id,
-    path       = "/",
+    path       = "/var/opt/tableau",
     fstype     = "xfs",
   }
+
+  resource "aws_cloudwatch_metric_alarm" "Used_storage_space_root" {
+    alarm_name          = "${var.pipeline_name}-used-storage-space-root"
+    comparison_operator = "GreaterThanThreshold"
+    evaluation_periods  = "1"
+    metric_name         = "disk_used_percent_root"
+    namespace           = "CWAgent"
+    period              = "600"
+    statistic           = "Average"
+    threshold           = local.thresholds["UsedStorageSpaceThreshold"]
+    alarm_description   = "Average root disk free storage space over last 10 minutes too low"
+    alarm_actions       = [aws_sns_topic.ec2.arn]
+    ok_actions          = [aws_sns_topic.ec2.arn]
+
+    dimensions = {
+      InstanceId = aws_instance.int_tableau_linux[0].id,
+      path       = "/",
+      fstype     = "xfs",
+    }
 
   depends_on = [
     aws_instance.int_tableau_linux[0].id
