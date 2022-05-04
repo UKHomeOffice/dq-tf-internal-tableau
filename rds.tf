@@ -275,7 +275,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
 
   performance_insights_enabled          = true
   performance_insights_retention_period = "7"
-  parameter_group_name = aws_db_parameter_group.DQCustom.id
+  parameter_group_name = "DQCustom"
 
   lifecycle {
     ignore_changes = [
