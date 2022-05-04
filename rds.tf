@@ -352,7 +352,6 @@ resource "aws_ssm_parameter" "rds_internal_tableau_stg_endpoint" {
 resource "aws_db_parameter_group" "DQCustom" {
   name   = "DQ.postgres10"
   family = "postgres1"
-  Description = "Custom parameter group for postgres10"
 
   parameter {
     name  = "work_mem"
