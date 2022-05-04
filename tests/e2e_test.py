@@ -139,5 +139,9 @@ class TestE2E(unittest.TestCase):
     def test_rds_postgres_postgres_engine_version(self):
         self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.postgres", "engine_version"), "10.18")
 
+    def test_rds_postgres_postgres_parameter_grop(self):
+        self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.postgres", "engine_version"), "DQCustom")
+
+
 if __name__ == '__main__':
     unittest.main()
