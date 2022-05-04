@@ -275,7 +275,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
 
   performance_insights_enabled          = true
   performance_insights_retention_period = "7"
-  parameter_group_name = "DQCustom"
+  parameter_group_name = "DQ.postgres10"
 
   lifecycle {
     ignore_changes = [
