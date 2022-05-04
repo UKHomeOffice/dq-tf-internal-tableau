@@ -1,7 +1,7 @@
 locals {
   internal_reporting_dev_count     = var.environment == "prod" ? "0" : "0"
   internal_reporting_qa_count      = var.environment == "prod" ? "0" : "0"
-  internal_reporting_stg_count     = var.environment == "prod" ? "1" : "0"
+  internal_reporting_stg_count     = var.environment == "prod" ? "1" : "1"
   internal_reporting_upgrade_count = var.environment == "prod" ? "0" : "1"
 }
 
@@ -275,6 +275,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
 
   performance_insights_enabled          = true
   performance_insights_retention_period = "7"
+  parameter_group_name = aws_db_parameter_group.DQCustom.id
 
   lifecycle {
     ignore_changes = [
@@ -347,4 +348,30 @@ resource "aws_ssm_parameter" "rds_internal_tableau_stg_endpoint" {
   name  = "rds_internal_tableau_stg_endpoint"
   type  = "String"
   value = aws_db_instance.internal_reporting_snapshot_stg[0].endpoint
+}
+
+resource "aws_db_parameter_group" "DQCustom" {
+  name   = "DQ.postgres10"
+  family = "postgres1"
+  Description = "Custom parameter group for postgres10"
+
+  parameter {
+    name  = "work_mem"
+    value = "32768"
+  }
+
+  parameter {
+    name  = "shared_buffers"
+    value = "16384"
+  }
+
+  parameter {
+    name  = "max_parallel_workers"
+    value = "10"
+  }
+
+  parameter {
+    name  = "max_parallel_workers_per_gather"
+    value = "4"
+  }
 }
