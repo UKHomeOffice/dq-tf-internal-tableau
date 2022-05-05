@@ -353,11 +353,11 @@ resource "aws_ssm_parameter" "rds_internal_tableau_stg_endpoint" {
 resource "aws_db_parameter_group" "DQCustom" {
   name   = "dqpostgresx"
   family = "postgres1"
+  description = "Custom parameter group for Tableau"
 
   parameter {
     name  = "work_mem"
     value = "32768"
-    description = "kB Sets the maximum memory to be used for query workspaces."
     apply_method = "pending-reboot"
   }
 
