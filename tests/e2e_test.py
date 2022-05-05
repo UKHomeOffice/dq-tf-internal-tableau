@@ -140,7 +140,7 @@ class TestE2E(unittest.TestCase):
         self.assertEqual(self.runner.get_value("module.root_modules.aws_db_instance.postgres", "engine_version"), "10.18")
 
     def test_rds_parameter_group(self):
-        self.assertEqual(self.runner.get_value("module.root_modules.aws_db_parameter_group.DQCustom", "name"), "DQ.postgres10")
+        self.assertEqual(self.runner.get_value("module.root_modules.aws_db_parameter_group.DQCustom", "name"), "dqpostgresx")
 
 
 if __name__ == '__main__':
