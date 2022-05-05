@@ -275,7 +275,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
 
   performance_insights_enabled          = true
   performance_insights_retention_period = "7"
-  parameter_group_name                  = var.environment == "prod" ? "default.postgres10" : aws_db_parameter_group.DQCustom.name
+  # parameter_group_name                  = var.environment == "prod" ? "default.postgres10" : aws_db_parameter_group.DQCustom.name
 
   lifecycle {
     ignore_changes = [
@@ -357,7 +357,6 @@ resource "aws_db_parameter_group" "DQCustom" {
   parameter {
     name  = "work_mem"
     value = "32768"
-    apply_method = "pending-reboot"
   }
 
   parameter {
