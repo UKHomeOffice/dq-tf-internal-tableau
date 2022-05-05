@@ -275,7 +275,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
 
   performance_insights_enabled          = true
   performance_insights_retention_period = "7"
-  # parameter_group_name                  = var.environment == "prod" ? "default.postgres10" : aws_db_parameter_group.DQCustom.name
+  parameter_group_name                  = var.environment == "prod" ? "default.postgres10" : "dqpostgres10"
 
   lifecycle {
     ignore_changes = [
@@ -348,29 +348,4 @@ resource "aws_ssm_parameter" "rds_internal_tableau_stg_endpoint" {
   name  = "rds_internal_tableau_stg_endpoint"
   type  = "String"
   value = aws_db_instance.internal_reporting_snapshot_stg[0].endpoint
-}
-
-resource "aws_db_parameter_group" "DQCustom" {
-  name   = "dqpostgresx"
-  family = "postgres10"
-
-  parameter {
-    name  = "work_mem"
-    value = "32768"
-  }
-
-  parameter {
-    name  = "shared_buffers"
-    value = "16384"
-  }
-
-  parameter {
-    name  = "max_parallel_workers"
-    value = "10"
-  }
-
-  parameter {
-    name  = "max_parallel_workers_per_gather"
-    value = "4"
-  }
 }
