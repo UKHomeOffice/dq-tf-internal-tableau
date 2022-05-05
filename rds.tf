@@ -357,6 +357,7 @@ resource "aws_db_parameter_group" "DQCustom" {
   parameter {
     name  = "work_mem"
     value = "32768"
+    apply_method = "pending-reboot"
   }
 
   parameter {
