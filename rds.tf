@@ -350,7 +350,7 @@ resource "aws_ssm_parameter" "rds_internal_tableau_stg_endpoint" {
 }
 
 resource "aws_db_parameter_group" "DQCustom" {
-  name   = "DQpostgres10"
+  name   = "postgresxx"
   family = "postgres1"
 
   parameter {
