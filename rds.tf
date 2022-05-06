@@ -321,7 +321,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg2" {
 
   performance_insights_enabled          = true
   performance_insights_retention_period = "7"
-  parameter_group_name                  = var.environment == "prod" ? "default.postgres10" : "dqpostgres10"
+  parameter_group_name                  = var.environment == "prod" ? "akertest-mergejoin-off" : "default.postgres10"
 
   lifecycle {
     ignore_changes = [
