@@ -411,6 +411,12 @@ tsm pending-changes apply
 echo "#TSM initialise & start server"
 tsm initialize --start-server --request-timeout 1800
 
+echo "#Set the number of backgrounder processes to 4 once initialised"
+tsm topology set-process -n node1 -pr backgrounder -c 4
+
+echo "#TSM apply pending changes for backgrounder"
+tsm pending-changes apply
+
 echo "#TSMCMD accept EULA - only required for tableau_srv"
 su -c "tabcmd --accepteula" - tableau_srv
 
