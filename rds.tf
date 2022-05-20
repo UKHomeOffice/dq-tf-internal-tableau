@@ -1,7 +1,7 @@
 locals {
   internal_reporting_dev_count     = var.environment == "prod" ? "0" : "0"
   internal_reporting_qa_count      = var.environment == "prod" ? "0" : "0"
-  internal_reporting_stg_count     = var.environment == "prod" ? "1" : "1"
+  internal_reporting_stg_count     = var.environment == "prod" ? "1" : "0"
   internal_reporting_stg2_count    = var.environment == "prod" ? "1" : "0"
   internal_reporting_upgrade_count = var.environment == "prod" ? "0" : "1"
 }
@@ -124,6 +124,7 @@ resource "aws_db_instance" "postgres" {
   skip_final_snapshot             = true
   apply_immediately               = var.environment == "prod" ? "false" : "true"
   ca_cert_identifier              = var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"
+  parameter_group_name            = var.environment == "prod" ? "default.postgres10" : "postgres10-mem"
 
   performance_insights_enabled          = true
   performance_insights_retention_period = "7"
@@ -321,7 +322,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg2" {
 
   performance_insights_enabled          = true
   performance_insights_retention_period = "7"
-  parameter_group_name                  = var.environment == "prod" ? "akertest-mergejoin-off" : "dqpostgres10"
+  parameter_group_name                  = var.environment == "prod" ? "default.postgres10" : "dqpostgres10"
 
   lifecycle {
     ignore_changes = [
