@@ -124,7 +124,7 @@ resource "aws_db_instance" "postgres" {
   skip_final_snapshot             = true
   apply_immediately               = var.environment == "prod" ? "false" : "true"
   ca_cert_identifier              = var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"
-  parameter_group_name            = var.environment == "prod" ? "postgres10-mem" : "postgres10-mem"
+  parameter_group_name            = "postgres10-mem"
 
   performance_insights_enabled          = true
   performance_insights_retention_period = "7"
