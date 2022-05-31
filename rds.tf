@@ -105,7 +105,7 @@ resource "aws_iam_role_policy_attachment" "dq_tf_infra_write_to_cw_rds" {
 resource "aws_db_instance" "postgres" {
   identifier                      = "postgres-${local.naming_suffix}"
   auto_minor_version_upgrade      = "false"
-  allocated_storage               = var.environment == "prod" ? "3630" : "1500"
+  allocated_storage               = var.environment == "prod" ? "3630" : "2000"
   storage_type                    = "gp2"
   engine                          = "postgres"
   engine_version                  = var.environment == "prod" ? "10.18" : "10.18"
