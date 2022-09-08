@@ -5,7 +5,7 @@ data "aws_ami" "int_tableau_linux" {
     name = "name"
 
     values = [
-      "dq-tableau-linux-279*",
+      "dq-tableau-linux-284*",
     ]
   }
 
