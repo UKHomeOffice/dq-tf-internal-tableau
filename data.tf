@@ -7,7 +7,7 @@ data "aws_ami" "int_tableau_linux" {
     values = [
       "dq-tableau-linux-388*",
     ]
-   }
+  }
 
   owners = [
     "self",
