@@ -78,3 +78,4 @@ To explicitly delete the stale resource from TF state use the following command 
 ```shell
 terragrunt state rm aws_resource_name
 ```
+
