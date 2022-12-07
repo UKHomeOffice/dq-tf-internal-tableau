@@ -111,13 +111,12 @@ chown -R tableau_srv:tableau_srv /home/tableau_srv/
 chmod 0400 /home/tableau_srv/.ssh/id_rsa
 chmod 0444 /home/tableau_srv/.ssh/id_rsa.pub
 chmod 0644 /home/tableau_srv/env_vars.sh
-usermod tableau_srv -G tableau,wheel
 
 echo "#Get latest code from git"
 su -c "git clone $TAB_INT_REPO_URL" - tableau_srv
 
 echo "#Initialise TSM (finishes off Tableau Server install/config)"
-sudo /opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
+/opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
 
 echo "#set aliases for tableau user"
 cat >>/var/opt/tableau/tableau_server/.bashrc <<EOL
