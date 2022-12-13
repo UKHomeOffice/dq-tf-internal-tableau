@@ -1,3 +1,4 @@
+
 data "aws_ami" "int_tableau_linux" {
   most_recent = true
 
