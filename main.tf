@@ -117,7 +117,7 @@ echo "#Get latest code from git"
 su -c "git clone $TAB_INT_REPO_URL" - tableau_srv
 
 echo "#Initialise TSM (finishes off Tableau Server install/config)"
-/opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
+sudo /opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
 
 echo "#set aliases for tableau user"
 cat >>/var/opt/tableau/tableau_server/.bashrc <<EOL
