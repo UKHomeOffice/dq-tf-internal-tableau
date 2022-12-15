@@ -55,6 +55,7 @@ mkdir -p /var/opt/tableau/
 mount /dev/nvme2n1 /var/opt/tableau
 echo '/dev/nvme2n1 /var/opt/tableau xfs defaults 0 0' >> /etc/fstab
 
+export PATH=$PATH:/usr/local/bin
 
 echo "#Pull values from Parameter Store and save to profile"
 touch /home/tableau_srv/env_vars.sh
@@ -117,7 +118,7 @@ echo "#Get latest code from git"
 su -c "git clone $TAB_INT_REPO_URL" - tableau_srv
 
 echo "#Initialise TSM (finishes off Tableau Server install/config)"
-/opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
+sudo /opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
 
 echo "#set aliases for tableau user"
 cat >>/var/opt/tableau/tableau_server/.bashrc <<EOL
