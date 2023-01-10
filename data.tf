@@ -9,6 +9,10 @@ data "aws_ami" "int_tableau_linux" {
     ]
   }
 
+owners = [
+    "093401982388",
+  ]
+
 }
 
 data "aws_kms_key" "rds_kms_key" {
