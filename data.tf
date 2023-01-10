@@ -10,7 +10,7 @@ data "aws_ami" "int_tableau_linux" {
   }
 
   owners = [
-    "self",
+    "self","093401982388"
   ]
 }
 
