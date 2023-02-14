@@ -217,22 +217,6 @@ variable "rds_enhanced_monitoring_role" {
   description = "ARN of the RDS enhanced monitoring role"
 }
 
-# variable "input_bucket" {
-#   default = "s3-dq-data-archive-bucket"
-# }
-#
-# variable "backup_path" {
-#   default = "tableau-int/green/"
-# }
-#
-# variable "monitor_lambda_run" {
-#   default = "900"
-# }
-#
-# variable "monitor_name" {
-#   default = "int_tableau_backup_monitor"
-# }
-#
 # variable "region" {
 #   default = "eu-west-2"
 # }
