@@ -213,8 +213,8 @@ su -c "tabcmd --accepteula" - tableau_srv
 echo "#TSMCMD - initial user"
 su -c "tabcmd initialuser --server 'localhost:80' --username $TAB_ADMIN_USER --password $TAB_ADMIN_PASSWORD" - tableau_srv
 
-# Always restore from green
-export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/green/"
+# Always restore from Blue
+export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/blue/"
 
 echo "#Get most recent Tableau backup from S3"
 export LATEST_BACKUP_NAME=`aws s3 ls $BACKUP_LOCATION | tail -1 | awk '{print $4}'`
@@ -426,8 +426,8 @@ su -c "tabcmd --accepteula" - tableau_srv
 echo "#TSMCMD - initial user"
 su -c "tabcmd initialuser --server 'localhost:80' --username $TAB_ADMIN_USER --password $TAB_ADMIN_PASSWORD" - tableau_srv
 
-# Always restore from green
-export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/green/"
+# Always restore from Blue
+export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/blue/"
 
 echo "#Get most recent Tableau backup from S3"
 export LATEST_BACKUP_NAME=`aws s3 ls $BACKUP_LOCATION | tail -1 | awk '{print $4}'`
