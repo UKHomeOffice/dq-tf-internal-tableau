@@ -38,7 +38,7 @@ data "aws_ami" "int_tableau_linux_wip" {
     # "dq-tableau-linux-nnn" is used to pull exact image
     # "copied from*" is used to pull copy of nnn image copied to NotProd/Prod
     values = [
-      "dq-tableau-linux-668 copied from*"
+      "dq-tableau-linux-670 copied from*"
     ]
   }
 
