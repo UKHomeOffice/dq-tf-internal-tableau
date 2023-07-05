@@ -29,7 +29,7 @@ locals {
 resource "aws_instance" "int_tableau_linux" {
   count                       = var.environment == "prod" ? "2" : "2"
   key_name                    = var.key_name
-  ami                         = var.environment == "prod" ? "ami-0e781a36f3c4c452a" : data.aws_ami.int_tableau_linux.id # TEMP to fix plan-prod and test NotProd
+  ami                         = data.aws_ami.int_tableau_linux.id
   instance_type               = var.environment == "prod" ? "r5.4xlarge" : "r5.2xlarge"
   iam_instance_profile        = aws_iam_instance_profile.int_tableau.id
   vpc_security_group_ids      = [aws_security_group.sgrp.id]
