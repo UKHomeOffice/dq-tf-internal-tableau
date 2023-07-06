@@ -9,11 +9,6 @@ data "aws_ami" "int_tableau_linux" {
     values = [
       "dq-tableau-linux-690 copied from*"
     ]
-
-    ## TEMPORARILY hardcoding to 533 (the version used in Prod)
-    #values = [
-    #  "dq-tableau-linux-533"
-    #]
   }
 
   # "self" is used to ensure that NotProd uses image copied to NotProd account
@@ -21,11 +16,6 @@ data "aws_ami" "int_tableau_linux" {
   owners = [
     "self"
   ]
-
-  ## TEMPORARILY using the CI account - to use the CI AMI in NotProd & Prod
-  #owners = [
-  #  "093401982388"
-  #]
 }
 
 data "aws_kms_key" "rds_kms_key" {
