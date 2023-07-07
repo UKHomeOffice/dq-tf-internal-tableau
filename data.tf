@@ -4,13 +4,17 @@ data "aws_ami" "int_tableau_linux" {
   filter {
     name = "name"
 
+    # "dq-tableau-linux-nnn" is used to pull exact image
+    # "copied from*" is used to pull copy of nnn image copied to NotProd/Prod
     values = [
-      "dq-tableau-linux-533"
+      "dq-tableau-linux-690 copied from*"
     ]
   }
 
+  # "self" is used to ensure that NotProd uses image copied to NotProd account
+  # and Prod uses image copied to Prod account
   owners = [
-    "093401982388",
+    "self"
   ]
 }
 
