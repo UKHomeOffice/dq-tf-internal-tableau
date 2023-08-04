@@ -207,12 +207,6 @@ tsm topology set-process -n node1 -pr backgrounder -c 4
 echo "#TSM apply pending changes for backgrounder"
 tsm pending-changes apply
 
-echo "#TSMCMD accept EULA - only required for tableau_srv"
-su -c "tabcmd --accepteula" - tableau_srv
-
-echo "#TSMCMD - initial user"
-su -c "tabcmd initialuser --server 'localhost:80' --username $TAB_ADMIN_USER --password $TAB_ADMIN_PASSWORD" - tableau_srv
-
 # Always restore from Blue
 export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/blue/"
 
@@ -419,12 +413,6 @@ tsm topology set-process -n node1 -pr backgrounder -c 4
 
 echo "#TSM apply pending changes for backgrounder"
 tsm pending-changes apply
-
-echo "#TSMCMD accept EULA - only required for tableau_srv"
-su -c "tabcmd --accepteula" - tableau_srv
-
-echo "#TSMCMD - initial user"
-su -c "tabcmd initialuser --server 'localhost:80' --username $TAB_ADMIN_USER --password $TAB_ADMIN_PASSWORD" - tableau_srv
 
 # Always restore from Blue
 export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/blue/"
