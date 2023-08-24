@@ -107,7 +107,7 @@ resource "aws_db_instance" "postgres" {
   allocated_storage               = var.environment == "prod" ? "3630" : "3630"
   storage_type                    = "gp2"
   engine                          = "postgres"
-  engine_version                  = var.environment == "prod" ? "10.18" : "10.18"
+  engine_version                  = var.environment == "prod" ? "10.18" : "14.7"
   instance_class                  = var.environment == "prod" ? "db.m5.4xlarge" : "db.m5.4xlarge"
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
   username                        = random_string.username.result
@@ -123,7 +123,7 @@ resource "aws_db_instance" "postgres" {
   skip_final_snapshot             = true
   apply_immediately               = var.environment == "prod" ? "false" : "true"
   ca_cert_identifier              = var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"
-  parameter_group_name            = "postgres10-mem"
+  parameter_group_name            = var.environment == "prod" ? "postgres10-mem" : "default.postgres14"
 
   performance_insights_enabled          = true
   performance_insights_retention_period = "7"
