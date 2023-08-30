@@ -126,6 +126,7 @@ resource "aws_db_instance" "postgres" {
 
   performance_insights_enabled          = true
   performance_insights_retention_period = "7"
+  parameter_group_name                  = var.environment == "prod" ? "postgres14-mem" : "default.postgres14"
 
   monitoring_interval = "60"
   monitoring_role_arn = var.rds_enhanced_monitoring_role
@@ -275,7 +276,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
 
   performance_insights_enabled          = true
   performance_insights_retention_period = "7"
-  parameter_group_name                  = var.environment == "prod" ? "postgres10-mem" : "dqpostgres10"
+  parameter_group_name                  = var.environment == "prod" ? "postgres14-mem" : "default.postgres14"
 
   lifecycle {
     ignore_changes = [
