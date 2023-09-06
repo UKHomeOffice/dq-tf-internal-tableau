@@ -183,7 +183,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   storage_type                        = "gp2"
   vpc_security_group_ids              = [aws_security_group.internal_tableau_db.id]
   ca_cert_identifier                  = var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"
-  engine_version                      = var.environment == "prod" ? "10.6" : "10.13"
+  engine_version                      = var.environment == "prod" ? "14.7" : "14.7"
   apply_immediately                   = var.environment == "prod" ? "false" : "true"
 
   performance_insights_enabled          = true
@@ -226,7 +226,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
   storage_type                        = "gp2"
   vpc_security_group_ids              = [aws_security_group.internal_tableau_db.id]
   ca_cert_identifier                  = var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"
-  engine_version                      = var.environment == "prod" ? "10.6" : "10.13"
+  engine_version                      = var.environment == "prod" ? "14.7" : "14.7"
   apply_immediately                   = var.environment == "prod" ? "false" : "true"
 
   performance_insights_enabled          = true
@@ -271,7 +271,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   ca_cert_identifier                  = var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"
   monitoring_interval                 = "60"
   monitoring_role_arn                 = var.rds_enhanced_monitoring_role
-  engine_version                      = var.environment == "prod" ? "10.18" : "10.18"
+  engine_version                      = var.environment == "prod" ? "14.7" : "14.7"
   apply_immediately                   = var.environment == "prod" ? "true" : "true"
 
   performance_insights_enabled          = true
