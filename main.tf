@@ -195,9 +195,6 @@ tsm configuration set -k  storage.monitoring.email_enabled -v true
 echo "#TSM configure access to peering proxies"
 tsm configuration set -k wgserver.systeminfo.allow_referrer_ips -v ${var.haproxy_private_ip},${var.haproxy_private_ip2}
 
-echo "#TSM apply pending changes"
-tsm pending-changes apply
-
 echo "#TSM initialise & start server"
 tsm initialize --start-server --request-timeout 1800
 
@@ -206,6 +203,9 @@ tsm topology set-process -n node1 -pr backgrounder -c 4
 
 echo "#TSM apply pending changes for backgrounder"
 tsm pending-changes apply
+
+echo "#Enable Tableau Repo Access"
+tsm data-access repository-access enable --repository-username "$TAB_TABSVR_REPO_USER" --repository-password "$TAB_TABSVR_REPO_PASSWORD" --ignore-prompt --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" 
 
 # Always restore from Blue
 export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/blue/"
@@ -402,9 +402,6 @@ tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-tru
 echo "#TSM increase extract timeout - to 12 hours (=43,200 seconds)"
 tsm configuration set -k backgrounder.querylimit -v 43200
 
-echo "#TSM apply pending changes"
-tsm pending-changes apply
-
 echo "#TSM initialise & start server"
 tsm initialize --start-server --request-timeout 1800
 
@@ -413,6 +410,9 @@ tsm topology set-process -n node1 -pr backgrounder -c 4
 
 echo "#TSM apply pending changes for backgrounder"
 tsm pending-changes apply
+
+echo "#Enable Tableau Repo Access"
+tsm data-access repository-access enable --repository-username "$TAB_TABSVR_REPO_USER" --repository-password "$TAB_TABSVR_REPO_PASSWORD" --ignore-prompt --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" 
 
 # Always restore from Blue
 export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/blue/"
