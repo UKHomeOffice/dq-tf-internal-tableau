@@ -195,6 +195,9 @@ tsm configuration set -k  storage.monitoring.email_enabled -v true
 echo "#TSM configure access to peering proxies"
 tsm configuration set -k wgserver.systeminfo.allow_referrer_ips -v ${var.haproxy_private_ip},${var.haproxy_private_ip2}
 
+echo "#TSM apply pending changes for backgrounder"
+tsm pending-changes apply
+
 echo "#TSM initialise & start server"
 tsm initialize --start-server --request-timeout 1800
 
@@ -401,6 +404,9 @@ tsm settings import -f /opt/tableau/tableau_server/packages/scripts.*/config-tru
 
 echo "#TSM increase extract timeout - to 12 hours (=43,200 seconds)"
 tsm configuration set -k backgrounder.querylimit -v 43200
+
+echo "#TSM apply pending changes for backgrounder"
+tsm pending-changes apply
 
 echo "#TSM initialise & start server"
 tsm initialize --start-server --request-timeout 1800
