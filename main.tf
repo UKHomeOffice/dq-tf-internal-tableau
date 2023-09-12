@@ -61,6 +61,7 @@ echo "#Pull values from Parameter Store and save to profile"
 touch /home/tableau_srv/env_vars.sh
 echo "
 export TABLEAU_ENVIRONMENT=internal
+export TABLEAU_REPO_ENVIRONMENT=internal
 export S3_HTTPD_CONFIG_BUCKET=${var.s3_httpd_config_bucket}
 export DATA_ARCHIVE_TAB_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_url --query 'Parameter.Value' --output text`
 export TAB_INT_REPO_PROTOCOL=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_protocol --query 'Parameter.Value' --output text`
@@ -79,9 +80,9 @@ export TAB_TABSVR_REPO_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name
 export TAB_PRODUCT_KEY=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key --query 'Parameter.Value' --output text --with-decryption`
 export DATASOURCES_TO_PUBLISH='`aws --region eu-west-2 ssm get-parameter --name tableau_int_publish_datasources --query 'Parameter.Value' --output text`'
 export WORKBOOKS_TO_PUBLISH='`aws --region eu-west-2 ssm get-parameter --name tableau_int_publish_workbooks --query 'Parameter.Value' --output text`'
-export RDS_POSTGRES=`aws --region eu-west-2 ssm get-parameter --name rds_internal_tableau_postgres_endpoint --query 'Parameter.Value' --output text`
-export RDS_POSTGRES_DEV=`aws --region eu-west-2 ssm get-parameter --name rds_internal_tableau_dev_endpoint --query 'Parameter.Value' --output text`
-export RDS_POSTGRES_QA=`aws --region eu-west-2 ssm get-parameter --name rds_internal_tableau_qa_endpoint --query 'Parameter.Value' --output text`
+export RDS_POSTGRES_ENDPOINT=`aws --region eu-west-2 ssm get-parameter --name rds_internal_tableau_postgres_endpoint --query 'Parameter.Value' --output text`
+export RDS_POSTGRES_SERVICE_USER=`aws --region eu-west-2 ssm get-parameter --name rds_internal_tableau_service_username --query 'Parameter.Value' --output text --with-decryption`
+export RDS_POSTGRES_SERVICE_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name rds_internal_tableau_service_password --query 'Parameter.Value' --output text --with-decryption`
 " > /home/tableau_srv/env_vars.sh
 
 echo "#Load the env vars needed for this user_data script"
@@ -276,6 +277,7 @@ echo "#Pull values from Parameter Store and save to profile"
 touch /home/tableau_srv/env_vars.sh
 echo "
 export TABLEAU_ENVIRONMENT=staging
+export TABLEAU_REPO_ENVIRONMENT=internal_staging
 export S3_HTTPD_CONFIG_BUCKET=${var.s3_httpd_config_bucket}
 export DATA_ARCHIVE_TAB_BACKUP_URL=`aws --region eu-west-2 ssm get-parameter --name data_archive_tab_int_backup_url --query 'Parameter.Value' --output text`
 export TAB_INT_REPO_PROTOCOL=`aws --region eu-west-2 ssm get-parameter --name tab_int_repo_protocol --query 'Parameter.Value' --output text`
@@ -295,14 +297,8 @@ export TAB_PRODUCT_KEY=`aws --region eu-west-2 ssm get-parameter --name tableau_
 export DATASOURCES_TO_PUBLISH='`aws --region eu-west-2 ssm get-parameter --name tableau_int_publish_datasources --query 'Parameter.Value' --output text`'
 export WORKBOOKS_TO_PUBLISH='`aws --region eu-west-2 ssm get-parameter --name tableau_int_publish_workbooks --query 'Parameter.Value' --output text`'
 export RDS_POSTGRES_ENDPOINT=`aws --region eu-west-2 ssm get-parameter --name rds_internal_tableau_postgres_endpoint --query 'Parameter.Value' --output text`
-export RDS_POSTGRES_ENDPOINT_DEV=`aws --region eu-west-2 ssm get-parameter --name rds_internal_tableau_dev_endpoint --query 'Parameter.Value' --output text`
-export RDS_POSTGRES_ENDPOINT_QA=`aws --region eu-west-2 ssm get-parameter --name rds_internal_tableau_qa_endpoint --query 'Parameter.Value' --output text`
 export RDS_POSTGRES_SERVICE_USER=`aws --region eu-west-2 ssm get-parameter --name rds_internal_tableau_service_username --query 'Parameter.Value' --output text --with-decryption`
 export RDS_POSTGRES_SERVICE_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name rds_internal_tableau_service_password --query 'Parameter.Value' --output text --with-decryption`
-export RDS_POSTGRES_USER=`aws --region eu-west-2 ssm get-parameter --name rds_internal_tableau_username --query 'Parameter.Value' --output text --with-decryption`
-export RDS_POSTGRES_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name rds_internal_tableau_password --query 'Parameter.Value' --output text --with-decryption`
-export TAB_DB_USER=\$RDS_POSTGRES_SERVICE_USER
-export TAB_DB_PASSWORD=\$RDS_POSTGRES_SERVICE_PASSWORD
 " > /home/tableau_srv/env_vars.sh
 
 echo "#Load the env vars needed for this user_data script"
