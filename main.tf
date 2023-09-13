@@ -57,8 +57,8 @@ echo '/dev/nvme2n1 /var/opt/tableau xfs defaults 0 0' >> /etc/fstab
 
 export PATH=$PATH:/usr/local/bin
 
-echo "Enforcing imdsv2 on ec2 instance"
-curl http://169.254.169.254/latest/meta-data/instance-id | xargs -I {} aws ec2 modify-instance-metadata-options --instance-id {} --http-endpoint enabled --http-tokens required
+#echo "Enforcing imdsv2 on ec2 instance"
+#curl http://169.254.169.254/latest/meta-data/instance-id | xargs -I {} aws ec2 modify-instance-metadata-options --instance-id {} --http-endpoint enabled --http-tokens required
 
 echo "#Pull values from Parameter Store and save to profile"
 touch /home/tableau_srv/env_vars.sh
