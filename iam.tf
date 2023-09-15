@@ -81,7 +81,7 @@ resource "aws_iam_policy" "int_tableau" {
       "Action": [
           "Action": "ec2:ModifyInstanceMetadataOptions"
       ],
-      "Resource": "arn:aws:ec2:*:*:instance/*"
+      "Resource": "arn:aws:ec2:eu-west-2:*:instance/*"
     }
   ]
 }
