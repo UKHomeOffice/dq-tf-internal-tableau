@@ -22,9 +22,9 @@ data "aws_kms_key" "rds_kms_key" {
   key_id = "alias/aws/rds"
 }
 
-data "aws_subnet" "sub_dq_internal_dashboard_subnet_cidr" {
+data "aws_subnets" "sub_dq_internal_dashboard_subnet_cidr" {
   filter {
-    name   = "name"
+    name   = "tag:Name"
     values = ["subnet-internal-tableau-apps-*"]
   }
 }
