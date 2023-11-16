@@ -21,3 +21,10 @@ data "aws_ami" "int_tableau_linux" {
 data "aws_kms_key" "rds_kms_key" {
   key_id = "alias/aws/rds"
 }
+
+ data "aws_subnet" "sub_dq_internal_dashboard_subnet_cidr" {
+    filter {
+      name   = "Name"
+      values = ["subnet-internal-tableau-apps-*"]    
+    }
+  }
