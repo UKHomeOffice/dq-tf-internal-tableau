@@ -24,7 +24,7 @@ data "aws_kms_key" "rds_kms_key" {
 
 data "aws_subnet" "sub_dq_internal_dashboard_subnet_cidr" {
   filter {
-    name   = "Name"
+    name   = "name"
     values = ["subnet-internal-tableau-apps-*"]
   }
 }
