@@ -147,7 +147,7 @@ resource "aws_db_instance" "postgres" {
 }
 
 module "rds_alarms" {
-  source = "github.com/UKHomeOffice/dq-tf-cloudwatch-rds"
+  source = "github.com/UKHomeOffice/dq-tf-cloudwatch-rds?ref=yel-8750-migrate-tf-version"
 
   naming_suffix                = local.naming_suffix
   environment                  = var.naming_suffix
