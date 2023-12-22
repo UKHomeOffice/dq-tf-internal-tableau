@@ -32,7 +32,7 @@ class TestE2E(unittest.TestCase):
               security_group_ids                = "sg-1234567890"
               lambda_subnet                     = "subnet-1234567890"
               lambda_subnet_az2                 = "subnet-1234567890"
-              rds_enhanced_monitoring_role      = "arn:aws:iam::123456789:role/rds-enhanced-monitoring-role"
+              rds_enhanced_monitoring_role      = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
             }
         """
         self.runner = Runner(self.snippet)
