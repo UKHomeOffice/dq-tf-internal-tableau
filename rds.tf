@@ -190,7 +190,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   performance_insights_retention_period = "7"
 
   monitoring_interval = "60"
-  monitoring_role_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+  monitoring_role_arn = var.rds_enhanced_monitoring_role
 
   lifecycle {
     prevent_destroy = true
@@ -233,7 +233,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
   performance_insights_retention_period = "7"
 
   monitoring_interval = "60"
-  monitoring_role_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+  monitoring_role_arn = var.rds_enhanced_monitoring_role
 
   lifecycle {
     prevent_destroy = true
@@ -270,7 +270,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   vpc_security_group_ids              = [aws_security_group.internal_tableau_db.id]
   ca_cert_identifier                  = var.environment == "prod" ? "rds-ca-2019" : "rds-ca-2019"
   monitoring_interval                 = "60"
-  monitoring_role_arn                 = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+  monitoring_role_arn                 = var.rds_enhanced_monitoring_role
   engine_version                      = var.environment == "prod" ? "14.7" : "14.7"
   apply_immediately                   = var.environment == "prod" ? "true" : "true"
 
