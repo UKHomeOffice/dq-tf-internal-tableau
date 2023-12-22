@@ -42,7 +42,7 @@ resource "random_string" "password" {
 resource "random_string" "username" {
   length  = 8
   special = false
-  number  = false
+  numeric  = false
 }
 
 resource "aws_security_group" "internal_tableau_db" {
@@ -305,7 +305,7 @@ resource "aws_ssm_parameter" "rds_internal_tableau_password" {
 resource "random_string" "service_username" {
   length  = 8
   special = false
-  number  = false
+  numeric  = false
 }
 
 resource "random_string" "service_password" {
@@ -351,4 +351,3 @@ resource "aws_ssm_parameter" "rds_internal_tableau_stg_endpoint" {
   type  = "String"
   value = aws_db_instance.internal_reporting_snapshot_stg[0].endpoint
 }
-
