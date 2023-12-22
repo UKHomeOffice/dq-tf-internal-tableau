@@ -10,7 +10,6 @@ class TestE2E(unittest.TestCase):
         self.snippet = """
             provider "aws" {
               region = "eu-west-2"
-              profile = "foo"
               skip_credentials_validation = true
             }
             module "root_modules" {
