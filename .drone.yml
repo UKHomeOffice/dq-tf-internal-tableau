@@ -64,9 +64,9 @@ steps:
   commands: *retrieve-aws-key
   environment:
     VAULT_ADDR:
-      from_secret: VAULT_ADDR_DEV
+      from_secret: VAULT_ADDR_NOTPROD
     VAULT_TOKEN:
-      from_secret: VAULT_TOKEN_DEV
+      from_secret: VAULT_TOKEN_NOTPROD
   when:
     event:
       - push
