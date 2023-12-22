@@ -215,7 +215,7 @@ variable "lambda_subnet_az2" {
 
 variable "rds_enhanced_monitoring_role" {
   description = "ARN of the RDS enhanced monitoring role"
-  default = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+  default     = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
 
 # variable "region" {
