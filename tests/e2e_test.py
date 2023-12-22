@@ -12,7 +12,6 @@ class TestE2E(unittest.TestCase):
               region = "eu-west-2"
               profile = "foo"
               skip_credentials_validation = true
-              skip_get_ec2_platforms = true
             }
             module "root_modules" {
               source = "./mymodule"
