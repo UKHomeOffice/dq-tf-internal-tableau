@@ -112,7 +112,7 @@ resource "aws_db_instance" "postgres" {
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
   username                        = random_string.username.result
   password                        = random_string.password.result
-  db_name                         = var.database_name
+  name                            = var.database_name
   port                            = var.port
   backup_window                   = var.environment == "prod" ? "00:00-01:00" : "07:00-08:00"
   maintenance_window              = var.environment == "prod" ? "mon:22:00-mon:23:00" : "mon:08:00-mon:09:00"
