@@ -10,9 +10,7 @@ class TestE2E(unittest.TestCase):
         self.snippet = """
             provider "aws" {
               region = "eu-west-2"
-              profile = "foo"
               skip_credentials_validation = true
-              skip_get_ec2_platforms = true
             }
             module "root_modules" {
               source = "./mymodule"
@@ -34,7 +32,7 @@ class TestE2E(unittest.TestCase):
               security_group_ids                = "sg-1234567890"
               lambda_subnet                     = "subnet-1234567890"
               lambda_subnet_az2                 = "subnet-1234567890"
-              rds_enhanced_monitoring_role      = "arn:aws:iam::123456789:role/rds-enhanced-monitoring-role"
+              rds_enhanced_monitoring_role      = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
             }
         """
         self.runner = Runner(self.snippet)

@@ -42,7 +42,7 @@ resource "random_string" "password" {
 resource "random_string" "username" {
   length  = 8
   special = false
-  number  = false
+  numeric = false
 }
 
 resource "aws_security_group" "internal_tableau_db" {
@@ -112,7 +112,7 @@ resource "aws_db_instance" "postgres" {
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
   username                        = random_string.username.result
   password                        = random_string.password.result
-  name                            = var.database_name
+  db_name                         = var.database_name
   port                            = var.port
   backup_window                   = var.environment == "prod" ? "00:00-01:00" : "07:00-08:00"
   maintenance_window              = var.environment == "prod" ? "mon:22:00-mon:23:00" : "mon:08:00-mon:09:00"
@@ -152,7 +152,7 @@ module "rds_alarms" {
   naming_suffix                = local.naming_suffix
   environment                  = var.naming_suffix
   pipeline_name                = "internal-tableau"
-  db_instance_id               = aws_db_instance.postgres.id
+  db_instance_id               = aws_db_instance.postgres.identifier
   free_storage_space_threshold = 250000000000 # 250GB free space
   read_latency_threshold       = 0.05         # 50 milliseconds
   write_latency_threshold      = 1            # 1 second
@@ -305,7 +305,7 @@ resource "aws_ssm_parameter" "rds_internal_tableau_password" {
 resource "random_string" "service_username" {
   length  = 8
   special = false
-  number  = false
+  numeric = false
 }
 
 resource "random_string" "service_password" {
@@ -351,4 +351,3 @@ resource "aws_ssm_parameter" "rds_internal_tableau_stg_endpoint" {
   type  = "String"
   value = aws_db_instance.internal_reporting_snapshot_stg[0].endpoint
 }
-

@@ -1,9 +1,9 @@
 ---
 global-variables:
-  testrunner-image: &testrunner-image quay.io/ukhomeofficedigital/tf-testrunner:32
-#  testrunner-image: &testrunner-image quay.io/ukhomeofficedigital/tf-testrunner:TF1.6
-  terragrunt-image: &terragrunt-image quay.io/ukhomeofficedigital/dq-docker-terragrunt:v0.23.18
-#  terragrunt-image: &terragrunt-image quay.io/ukhomeofficedigital/dq-docker-terragrunt:v0.26.2 # TF0.13
+#  testrunner-image: &testrunner-image quay.io/ukhomeofficedigital/tf-testrunner:32
+  testrunner-image: &testrunner-image quay.io/ukhomeofficedigital/tf-testrunner:TF1.6
+#  terragrunt-image: &terragrunt-image quay.io/ukhomeofficedigital/dq-docker-terragrunt:v0.23.18
+  terragrunt-image: &terragrunt-image quay.io/ukhomeofficedigital/dq-docker-terragrunt:v0.26.2 # TF0.13
 #  terragrunt-image: &terragrunt-image quay.io/ukhomeofficedigital/dq-docker-terragrunt:TGv0.54.4_TFv1.6.6
   vault-image: &vault-image docker.digital.homeoffice.gov.uk/dq/dq-vault-awscli:1.43
 
