@@ -103,15 +103,17 @@ resource "aws_iam_policy" "lambda_logging_policy_slack" {
   "Version": "2012-10-17",
   "Statement": [
     {
+       "Effect": "Allow",
+       "Action": "logs:CreateLogGroup",
+       "Resource": "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/*"
+    },
+    {
+      "Effect": "Allow",
       "Action": [
         "logs:CreateLogStream",
         "logs:PutLogEvents"
       ],
-      "Resource": [
-        "${aws_cloudwatch_log_group.lambda_log_group_slack.arn}",
-        "${aws_cloudwatch_log_group.lambda_log_group_slack.arn}/*"
-      ],
-      "Effect": "Allow"
+      "Resource": "${aws_cloudwatch_log_group.lambda_log_group_slack.arn}:log-stream:*"
     }
   ]
 }
