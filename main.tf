@@ -106,19 +106,11 @@ echo "#Download SSH Key pair to allow us to log in to the GitLab repo"
 aws --region eu-west-2 ssm get-parameter --name tableau_linux_ssh_private_key --query 'Parameter.Value' --output text --with-decryption > /home/tableau_srv/.ssh/id_rsa
 aws --region eu-west-2 ssm get-parameter --name tableau_linux_ssh_public_key --query 'Parameter.Value' --output text --with-decryption > /home/tableau_srv/.ssh/id_rsa.pub
 
-#Commenting out as a test as the below block is broken
-#echo "#Add gitlab host to known_hosts"
-#ssh-keyscan -t rsa -p $TAB_INT_REPO_PORT $TAB_INT_REPO_HOST >>  /home/tableau_srv/.ssh/known_hosts
-
 echo "#Change ownership and permissions of tableau_srv files"
 chown -R tableau_srv:tableau_srv /home/tableau_srv/
 chmod 0400 /home/tableau_srv/.ssh/id_rsa
 chmod 0444 /home/tableau_srv/.ssh/id_rsa.pub
 chmod 0644 /home/tableau_srv/env_vars.sh
-
-#Commenting out as a test as the below block is broken
-#echo "#Get latest code from git"
-#su -c "git clone $TAB_INT_REPO_URL" - tableau_srv
 
 echo "#Initialise TSM (finishes off Tableau Server install/config)"
 sudo /opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --accepteula -f -a tableau_srv
