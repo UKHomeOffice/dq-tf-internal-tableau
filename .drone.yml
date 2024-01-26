@@ -1,4 +1,32 @@
 ---
+kind: pipeline
+name: token renew
+type: kubernetes
+
+platform:
+  os: linux
+  arch: amd64
+
+
+steps:
+- name: Renew Vault Tokens
+  pull: if-not-exists
+  image: quay.io/ukhomeofficedigital/hashicorp-vault:1.6.0
+  commands:
+    #Renew DEV Drone Vault Token
+    - export VAULT_TOKEN=$${VAULT_TOKEN_NOTPROD}
+    - export VAULT_ADDR=$${VAULT_ADDR_NOTPROD}
+    - vault token renew > /dev/null
+  environment:
+    VAULT_ADDR_NOTPROD:
+      from_secret: VAULT_ADDR_NOTPROD
+    VAULT_TOKEN_NOTPROD:
+      from_secret: VAULT_TOKEN_NOTPROD
+  when:
+    event: [ cron ]
+    cron: [ renew-vault-tokens ]
+
+---
 global-variables:
 #  testrunner-image: &testrunner-image quay.io/ukhomeofficedigital/tf-testrunner:32
   testrunner-image: &testrunner-image quay.io/ukhomeofficedigital/tf-testrunner:TF1.6
