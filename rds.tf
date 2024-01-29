@@ -244,6 +244,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
   }
 }
 
+
 resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   count                               = local.internal_reporting_stg_count
   snapshot_identifier                 = var.environment == "prod" ? "rds:postgres-internal-tableau-apps-prod-dq-2024-01-29-00-08" : "rds:postgres-internal-tableau-apps-notprod-dq-2022-05-05-07-08"
