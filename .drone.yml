@@ -1,40 +1,3 @@
----
-kind: pipeline
-name: token renew
-type: kubernetes
-
-platform:
-  os: linux
-  arch: amd64
-
-
-steps:
-- name: Renew Vault Tokens
-  pull: if-not-exists
-  image: quay.io/ukhomeofficedigital/hashicorp-vault:1.6.0
-  commands:
-    #Renew DEV Drone Vault Token
-    - export VAULT_TOKEN=$${VAULT_TOKEN_NOTPROD}
-    - export VAULT_ADDR=$${VAULT_ADDR_NOTPROD}
-    - vault token renew > /dev/null
-  environment:
-    VAULT_ADDR_NOTPROD:
-      from_secret: VAULT_ADDR_NOTPROD
-    VAULT_TOKEN_NOTPROD:
-      from_secret: VAULT_TOKEN_NOTPROD
-  when:
-    event: [ cron ]
-    cron: [ renew-vault-tokens ]
-
----
-global-variables:
-#  testrunner-image: &testrunner-image quay.io/ukhomeofficedigital/tf-testrunner:32
-  testrunner-image: &testrunner-image quay.io/ukhomeofficedigital/tf-testrunner:TF1.6
-#  terragrunt-image: &terragrunt-image quay.io/ukhomeofficedigital/dq-docker-terragrunt:v0.23.18
-  terragrunt-image: &terragrunt-image quay.io/ukhomeofficedigital/dq-docker-terragrunt:v0.26.2 # TF0.13
-#  terragrunt-image: &terragrunt-image quay.io/ukhomeofficedigital/dq-docker-terragrunt:TGv0.54.4_TFv1.6.6
-  vault-image: &vault-image docker.digital.homeoffice.gov.uk/dq/dq-vault-awscli:1.43
-
 kind: pipeline
 name: default
 type: kubernetes
@@ -43,67 +6,13 @@ platform:
   os: linux
   arch: amd64
 
-environment:
-  AWS_REGION: eu-west-2
-
-x-anchors:
-  retrieve-aws-key: &retrieve-aws-key
-    - vault --version
-    # All Terraform operations need access to an AWS Account
-    # - so all Terraform steps will need to source AWS_SECRETS_FILE
-    - export AWS_CREDS_FILE="aws_creds.json"
-    - export AWS_SECRETS_FILE="set_aws_secrets.sh"
-    # Retrieve vault secrets
-    - vault read aws_dacc_dq/creds/drone > $${AWS_CREDS_FILE}
-    - export LEASE_ID=$(cat $${AWS_CREDS_FILE} | grep lease_id | awk -F ' ' '{print $2}')
-    - export ACCESS_KEY=$(cat $${AWS_CREDS_FILE} | grep access_key | awk -F ' ' '{print $2}')
-    - export SECRET_KEY=$(cat $${AWS_CREDS_FILE} | grep secret_key | awk -F ' ' '{print $2}')
-    # Update the token TTL to 10mins
-    - vault lease renew -increment=3600 $${LEASE_ID}
-    # Get the AWS credentials - for `Terragrunt/Terraform`
-    - echo "export AWS_ACCESS_KEY_ID=$${ACCESS_KEY}" > $${AWS_SECRETS_FILE}
-    - echo "export AWS_SECRET_ACCESS_KEY=$${SECRET_KEY}" >> $${AWS_SECRETS_FILE}
-    - echo "export AWS_DEFAULT_REGION=$${AWS_REGION}" >> $${AWS_SECRETS_FILE}
-
-  check-format: &check-format
-    - terraform --version
-    - terraform fmt --diff --check
-
-  run-testrunner-tests: &run-testrunner-tests
-    # Get AWS secrets for TF State
-    - export AWS_SECRETS_FILE="/drone/src/set_aws_secrets.sh"
-    - source $${AWS_SECRETS_FILE}
-    # Run the actual tests
-    - python -m unittest tests/*_test.py
-
-
 steps:
-- name: check-format
-  pull: if-not-exists
-  image: *terragrunt-image
-  commands: *check-format
-  when:
-    event:
-      - push
-
-- name: retrieve_aws_secrets
-  pull: if-not-exists
-  image: *vault-image
-  commands: *retrieve-aws-key
-  environment:
-    VAULT_ADDR:
-      from_secret: VAULT_ADDR_NOTPROD
-    VAULT_TOKEN:
-      from_secret: VAULT_TOKEN_NOTPROD
-  when:
-    event:
-      - push
-
-- name: run-testrunner-tests
-  pull: if-not-exists
-  image: *testrunner-image
-  commands: *run-testrunner-tests
-  when:
-    event:
-      - push
-
+  - name: test-echo
+    image: alpine
+    commands:
+      - echo "Hi"
+    when:
+      branch:
+        - sam-test-branch-drone
+      event:
+        - push
