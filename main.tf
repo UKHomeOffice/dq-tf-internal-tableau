@@ -81,6 +81,7 @@ export TAB_ADMIN_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name table
 export TAB_TABSVR_REPO_USER=`aws --region eu-west-2 ssm get-parameter --name tableau_server_repository_username --query 'Parameter.Value' --output text`
 export TAB_TABSVR_REPO_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name tableau_server_repository_password --query 'Parameter.Value' --output text --with-decryption`
 export TAB_PRODUCT_KEY=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP=`aws --region eu-west-2 ssm get-parameter --name tableau_ext_product_key --query 'Parameter.Value' --output text --with-decryption`
 export DATASOURCES_TO_PUBLISH='`aws --region eu-west-2 ssm get-parameter --name tableau_int_publish_datasources --query 'Parameter.Value' --output text`'
 export WORKBOOKS_TO_PUBLISH='`aws --region eu-west-2 ssm get-parameter --name tableau_int_publish_workbooks --query 'Parameter.Value' --output text`'
 export RDS_POSTGRES_ENDPOINT=`aws --region eu-west-2 ssm get-parameter --name rds_internal_tableau_postgres_endpoint --query 'Parameter.Value' --output text`
@@ -125,11 +126,12 @@ EOL
 echo "#sourcing tableau server envs - because this script is run as root not tableau_srv"
 source /etc/profile.d/tableau_server.sh
 
+#This block activates the Tableau External License in NotProd and the Tableau Internal License in Prod
 echo "#License activation - Checking environment..."
 echo "#Environment == '${var.environment}'"
 if [ ${var.environment} == "notprod" ]; then
-  echo "#TSM activate TRIAL license as tableau_srv"
-  tsm licenses activate --trial --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
+  echo "#TSM activate NOTPROD (EXT) license as tableau_srv"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP"   --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 elif [ ${var.environment} == "prod" ]; then
   echo "#TSM activate actual licenses as tableau_srv"
   tsm licenses activate --license-key "$TAB_PRODUCT_KEY"   --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
