@@ -126,12 +126,12 @@ EOL
 echo "#sourcing tableau server envs - because this script is run as root not tableau_srv"
 source /etc/profile.d/tableau_server.sh
 
-#This block activates the Tableau External License in NotProd and the Tableau Internal License in Prod
+#This block activates the Trial License in NotProd and the Tableau Internal License in Prod
 echo "#License activation - Checking environment..."
 echo "#Environment == '${var.environment}'"
 if [ ${var.environment} == "notprod" ]; then
-  echo "#TSM activate NOTPROD (EXT) license as tableau_srv"
-  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP"   --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  echo "#TSM activate TRIAL license as tableau_srv"
+  tsm licenses activate --trial --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
 elif [ ${var.environment} == "prod" ]; then
   echo "#TSM activate actual licenses as tableau_srv"
   tsm licenses activate --license-key "$TAB_PRODUCT_KEY"   --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
