@@ -81,7 +81,31 @@ export TAB_ADMIN_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name table
 export TAB_TABSVR_REPO_USER=`aws --region eu-west-2 ssm get-parameter --name tableau_server_repository_username --query 'Parameter.Value' --output text`
 export TAB_TABSVR_REPO_PASSWORD=`aws --region eu-west-2 ssm get-parameter --name tableau_server_repository_password --query 'Parameter.Value' --output text --with-decryption`
 export TAB_PRODUCT_KEY=`aws --region eu-west-2 ssm get-parameter --name tableau_int_product_key --query 'Parameter.Value' --output text --with-decryption`
-export TAB_PRODUCT_KEY_NP=`aws --region eu-west-2 ssm get-parameter --name tableau_ext_product_key --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_01=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_01 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_02=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_02 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_03=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_03 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_04=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_04 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_05=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_05 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_06=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_06 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_07=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_07 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_08=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_08 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_09=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_09 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_10=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_10 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_11=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_11 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_12=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_12 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_13=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_13 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_14=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_14 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_15=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_15 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_16=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_16 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_17=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_17 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_18=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_18 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_19=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_19 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_20=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_20 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_21=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_21 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_22=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_22 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_23=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_23 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_24=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_24 --query 'Parameter.Value' --output text --with-decryption`
+export TAB_PRODUCT_KEY_NP_25=`aws --region eu-west-2 ssm get-parameter --name tableau_notprod_product_key_25 --query 'Parameter.Value' --output text --with-decryption`
 export DATASOURCES_TO_PUBLISH='`aws --region eu-west-2 ssm get-parameter --name tableau_int_publish_datasources --query 'Parameter.Value' --output text`'
 export WORKBOOKS_TO_PUBLISH='`aws --region eu-west-2 ssm get-parameter --name tableau_int_publish_workbooks --query 'Parameter.Value' --output text`'
 export RDS_POSTGRES_ENDPOINT=`aws --region eu-west-2 ssm get-parameter --name rds_internal_tableau_postgres_endpoint --query 'Parameter.Value' --output text`
@@ -130,8 +154,32 @@ source /etc/profile.d/tableau_server.sh
 echo "#License activation - Checking environment..."
 echo "#Environment == '${var.environment}'"
 if [ ${var.environment} == "notprod" ]; then
-  echo "#TSM activate TRIAL license as tableau_srv"
-  tsm licenses activate --trial --username $TAB_SRV_USER --password $TAB_SRV_PASSWORD
+  echo "#TSM activate NOTPROD licenses as tableau_srv"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_01" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_02" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_03" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_04" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_05" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_06" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_07" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_08" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_09" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_10" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_11" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_12" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_13" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_14" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_15" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_16" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_17" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_18" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_19" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_20" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_21" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_22" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_23" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_24" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
+  tsm licenses activate --license-key "$TAB_PRODUCT_KEY_NP_25" --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
 elif [ ${var.environment} == "prod" ]; then
   echo "#TSM activate actual licenses as tableau_srv"
   tsm licenses activate --license-key "$TAB_PRODUCT_KEY"   --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD"
