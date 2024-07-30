@@ -7,7 +7,7 @@ data "aws_ami" "int_tableau_linux" {
     # "dq-tableau-linux-nnn" is used to pull exact image
     # "copied from*" is used to pull copy of nnn image copied to NotProd/Prod
     values = [
-      "dq-tableau-linux-910 copied from*"
+      "dq-tableau-linux-923 copied from*"
     ]
   }
 
