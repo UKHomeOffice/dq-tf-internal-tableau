@@ -9,7 +9,7 @@ platform:
 
 
 steps:
-- name: Renew Vault Tokens
+- name: enew-vault-tokens
   pull: if-not-exists
   image: quay.io/ukhomeofficedigital/hashicorp-vault:1.6.0
   commands:
