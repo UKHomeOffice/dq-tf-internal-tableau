@@ -9,15 +9,23 @@ platform:
 
 
 steps:
-- name: Renew Vault Tokens
+- name: renew-vault-tokens
   pull: if-not-exists
   image: quay.io/ukhomeofficedigital/hashicorp-vault:1.6.0
   commands:
     #Renew DEV Drone Vault Token
+    - export VAULT_TOKEN=$${VAULT_TOKEN_DEV}
+    - export VAULT_ADDR=$${VAULT_ADDR_DEV}
+    - vault token renew > /dev/null
+    #Renew NOTPROD Drone Vault Token
     - export VAULT_TOKEN=$${VAULT_TOKEN_NOTPROD}
     - export VAULT_ADDR=$${VAULT_ADDR_NOTPROD}
     - vault token renew > /dev/null
   environment:
+    VAULT_ADDR_DEV:
+      from_secret: VAULT_ADDR_DEV
+    VAULT_TOKEN_DEV:
+      from_secret: VAULT_TOKEN_DEV
     VAULT_ADDR_NOTPROD:
       from_secret: VAULT_ADDR_NOTPROD
     VAULT_TOKEN_NOTPROD:
