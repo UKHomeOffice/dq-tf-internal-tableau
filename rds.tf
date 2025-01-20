@@ -107,7 +107,7 @@ resource "aws_db_instance" "postgres" {
   allocated_storage               = var.environment == "prod" ? "3630" : "3630"
   storage_type                    = "gp2"
   engine                          = "postgres"
-  engine_version                  = var.environment == "prod" ? "14.10" : "14.10"
+  engine_version                  = var.environment == "prod" ? "14.15" : "14.15"
   instance_class                  = var.environment == "prod" ? "db.m5.4xlarge" : "db.m5.4xlarge"
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
   username                        = random_string.username.result
@@ -183,7 +183,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_dev" {
   storage_type                        = "gp2"
   vpc_security_group_ids              = [aws_security_group.internal_tableau_db.id]
   ca_cert_identifier                  = var.environment == "prod" ? "rds-ca-rsa2048-g1" : "rds-ca-rsa2048-g1"
-  engine_version                      = var.environment == "prod" ? "14.10" : "14.10"
+  engine_version                      = var.environment == "prod" ? "14.15" : "14.15"
   apply_immediately                   = var.environment == "prod" ? "false" : "true"
 
   performance_insights_enabled          = true
@@ -226,7 +226,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
   storage_type                        = "gp2"
   vpc_security_group_ids              = [aws_security_group.internal_tableau_db.id]
   ca_cert_identifier                  = var.environment == "prod" ? "rds-ca-rsa2048-g1" : "rds-ca-rsa2048-g1"
-  engine_version                      = var.environment == "prod" ? "14.10" : "14.10"
+  engine_version                      = var.environment == "prod" ? "14.15" : "14.15"
   apply_immediately                   = var.environment == "prod" ? "false" : "true"
 
   performance_insights_enabled          = true
@@ -247,7 +247,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_qa" {
 
 resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   count                               = local.internal_reporting_stg_count
-  snapshot_identifier                 = var.environment == "prod" ? "rds:postgres-internal-tableau-apps-prod-dq-2025-01-07-00-08" : "rds:postgres-internal-tableau-apps-notprod-dq-2022-05-05-07-08"
+  snapshot_identifier                 = var.environment == "prod" ? "rds:postgres-internal-tableau-apps-prod-dq-2025-01-20-00-08" : "rds:postgres-internal-tableau-apps-notprod-dq-2022-05-05-07-08"
   auto_minor_version_upgrade          = "false"
   backup_retention_period             = "14"
   copy_tags_to_snapshot               = "false"
@@ -272,7 +272,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   ca_cert_identifier                  = var.environment == "prod" ? "rds-ca-rsa2048-g1" : "rds-ca-rsa2048-g1"
   monitoring_interval                 = "60"
   monitoring_role_arn                 = var.rds_enhanced_monitoring_role
-  engine_version                      = var.environment == "prod" ? "14.10" : "14.10"
+  engine_version                      = var.environment == "prod" ? "14.15" : "14.15"
   apply_immediately                   = var.environment == "prod" ? "true" : "true"
 
   performance_insights_enabled          = true
