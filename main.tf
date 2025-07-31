@@ -375,8 +375,8 @@ tsm pending-changes apply
 echo "#Enable Tableau Repo Access"
 tsm data-access repository-access enable --repository-username "$TAB_TABSVR_REPO_USER" --repository-password "$TAB_TABSVR_REPO_PASSWORD" --ignore-prompt --username "$TAB_SRV_USER" --password "$TAB_SRV_PASSWORD" 
 
-# Always restore from Blue
-export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/blue/"
+# Restore Staging backup
+export BACKUP_LOCATION="$DATA_ARCHIVE_TAB_BACKUP_URL/staging/"
 
 echo "#Get most recent Tableau backup from S3"
 export LATEST_BACKUP_NAME=`aws s3 ls $BACKUP_LOCATION | tail -1 | awk '{print $4}'`
