@@ -352,4 +352,3 @@ resource "aws_ssm_parameter" "rds_internal_tableau_stg_endpoint" {
   type  = "String"
   value = aws_db_instance.internal_reporting_snapshot_stg[0].endpoint
 }
-
