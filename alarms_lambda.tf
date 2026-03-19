@@ -27,12 +27,12 @@ resource "aws_lambda_function" "lambda_slack" {
 
   depends_on = [aws_iam_role.lambda_role_slack]
 
-  lifecycle {
-    ignore_changes = [
-      filename,
-      source_code_hash,
-    ]
-  }
+  #lifecycle {
+  #  ignore_changes = [
+  #    filename,
+  #    source_code_hash,
+  #  ]
+  #}
 
 }
 
