@@ -32,11 +32,11 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_too_high_0" {
     aws_instance.int_tableau_linux[0]
   ]
 
-  lifecycle {
-    ignore_changes = [
-      dimensions,
-    ]
-  }
+  #lifecycle {
+  #  ignore_changes = [
+  #    dimensions,
+  #  ]
+  #}
 }
 
 resource "aws_cloudwatch_metric_alarm" "available_memory_too_low_0" {
