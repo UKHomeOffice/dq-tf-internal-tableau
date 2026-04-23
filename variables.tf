@@ -286,3 +286,15 @@ variable "used_storage_space_threshold" {
   type        = string
   default     = 80
 }
+
+variable "prod_postgres_version" {
+  description = "postgres db engine version for prod."
+  type        = string
+  default     = 14.15
+}
+
+variable "notprod_postgres_version" {
+  description = "postgres db engine version for notprod environments."
+  type        = string
+  default     = 14.15
+}
