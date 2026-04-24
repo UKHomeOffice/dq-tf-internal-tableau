@@ -137,25 +137,25 @@ resource "aws_db_instance" "postgres" {
   lifecycle {
     prevent_destroy = true
     ignore_changes = [
-      #    engine_version,
+      engine_version,
     ]
   }
 
   # ─────────────────────────────────────────────────────────────
   # ZERO-DOWNTIME BLUE/GREEN DEPLOYMENT (AWS RECOMMENDED)
   # ─────────────────────────────────────────────────────────────
-  blue_green_update {
-    enabled = true
-  }
+  #blue_green_update {
+  #  enabled = true
+  #}
 
   # ─────────────────────────────────────────────────────────────
   # TIMEOUTS - VERY IMPORTANT FOR BLUE/GREEN UPGRADES
   # ─────────────────────────────────────────────────────────────
-  timeouts {
-    create = "4h"
-    update = "4h" # Critical - Blue/Green engine upgrades take time
-    delete = "4h"
-  }
+  #timeouts {
+  #  create = "4h"
+  #  update = "4h" # Critical - Blue/Green engine upgrades take time
+  #  delete = "4h"
+  #}
 
   tags = {
     Name = "rds-postgres-${local.naming_suffix}"
