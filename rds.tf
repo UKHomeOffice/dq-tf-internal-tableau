@@ -288,34 +288,34 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   ca_cert_identifier                  = var.environment == "prod" ? "rds-ca-rsa2048-g1" : "rds-ca-rsa2048-g1"
   monitoring_interval                 = "60"
   monitoring_role_arn                 = var.rds_enhanced_monitoring_role
-  engine_version                      = var.environment == "prod" ? "14.15" : "14.15"
+  engine_version                      = var.environment == "prod" ? "14.20" : "14.20"
   apply_immediately                   = var.environment == "prod" ? "false" : "false"
 
   performance_insights_enabled          = true
   performance_insights_retention_period = "7"
   parameter_group_name                  = var.environment == "prod" ? "postgres14-mem" : "postgres14-mem"
 
-  # # ─────────────────────────────────────────────────────────────
-  # # ZERO-DOWNTIME BLUE/GREEN DEPLOYMENT (AWS RECOMMENDED)
-  # # ─────────────────────────────────────────────────────────────
-  # blue_green_update {
-  #   enabled = true
-  # }
-
-  # # ─────────────────────────────────────────────────────────────
-  # # TIMEOUTS - VERY IMPORTANT FOR BLUE/GREEN UPGRADES
-  # # ─────────────────────────────────────────────────────────────
-  # timeouts {
-  #   create = "4h"
-  #   update = "4h" # Critical - Blue/Green engine upgrades take time
-  #   delete = "4h"
-  # }
-
-  lifecycle {
-    ignore_changes = [
-      engine_version,
-    ]
+  # ─────────────────────────────────────────────────────────────
+  # ZERO-DOWNTIME BLUE/GREEN DEPLOYMENT (AWS RECOMMENDED)
+  # ─────────────────────────────────────────────────────────────
+  blue_green_update {
+    enabled = true
   }
+
+  # ─────────────────────────────────────────────────────────────
+  # TIMEOUTS - VERY IMPORTANT FOR BLUE/GREEN UPGRADES
+  # ─────────────────────────────────────────────────────────────
+  timeouts {
+    create = "4h"
+    update = "4h" # Critical - Blue/Green engine upgrades take time
+    delete = "4h"
+  }
+
+  # lifecycle {
+  #   ignore_changes = [
+  #     engine_version,
+  #   ]
+  # }
 
   tags = {
     Name = "stg-postgres-${local.naming_suffix}"
