@@ -288,7 +288,7 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
   ca_cert_identifier                  = var.environment == "prod" ? "rds-ca-rsa2048-g1" : "rds-ca-rsa2048-g1"
   monitoring_interval                 = "60"
   monitoring_role_arn                 = var.rds_enhanced_monitoring_role
-  engine_version                      = var.environment == "prod" ? "14.20" : "14.20"
+  engine_version                      = var.environment == "prod" ? "14.22" : "14.22"
   apply_immediately                   = var.environment == "prod" ? "false" : "false"
 
   performance_insights_enabled          = true
