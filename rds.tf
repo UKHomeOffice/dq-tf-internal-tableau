@@ -311,11 +311,11 @@ resource "aws_db_instance" "internal_reporting_snapshot_stg" {
     delete = "4h"
   }
 
-  # lifecycle {
-  #   ignore_changes = [
-  #     engine_version,
-  #   ]
-  # }
+  lifecycle {
+    ignore_changes = [
+      engine_version,
+    ]
+  }
 
   tags = {
     Name = "stg-postgres-${local.naming_suffix}"
