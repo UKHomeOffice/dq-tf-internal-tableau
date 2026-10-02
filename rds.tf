@@ -105,7 +105,7 @@ resource "aws_db_instance" "postgres" {
   identifier                      = "postgres-${local.naming_suffix}"
   auto_minor_version_upgrade      = "false"
   allocated_storage               = var.environment == "prod" ? "5000" : "5000"
-  storage_type                    = var.environment == "prod" ? "gp2" : "gp3"
+  storage_type                    = var.environment == "prod" ? "gp2" : "gp2"
   engine                          = "postgres"
   engine_version                  = var.environment == "prod" ? "14.22" : "14.22"
   instance_class                  = var.environment == "prod" ? "db.m5.4xlarge" : "db.m5.4xlarge"
@@ -134,13 +134,13 @@ resource "aws_db_instance" "postgres" {
   db_subnet_group_name   = aws_db_subnet_group.rds.id
   vpc_security_group_ids = [aws_security_group.internal_tableau_db.id]
 
-  lifecycle {
-    prevent_destroy = true
-    ignore_changes = [
-      #engine_version,
-      storage_type,
-    ]
-  }
+  #lifecycle {
+  #  prevent_destroy = true
+  #  ignore_changes = [
+  #    #engine_version,
+  #    storage_type,
+  #  ]
+  #}
 
   # ─────────────────────────────────────────────────────────────
   # ZERO-DOWNTIME BLUE/GREEN DEPLOYMENT (AWS RECOMMENDED)
